@@ -4,7 +4,7 @@ import {
   ProblemCard,
   PatternCard,
   HypothesisCard,
-  SolutionCard,
+  NewHireCard,
 } from "@/components/BoardColumn";
 
 export default function BoardPage() {
@@ -76,25 +76,23 @@ export default function BoardPage() {
           ))}
         </BoardColumn>
 
-        {/* Solutions */}
+        {/* Agent New Hires */}
         <BoardColumn
           stageKey="routes"
-          title="Solutions"
-          count={data.solutions.length}
+          title="Agent New Hires"
+          count={data.newHires.length}
         >
-          {data.solutions
-            .sort((a, b) => a.priority - b.priority)
-            .map((sol) => (
-              <SolutionCard
-                key={sol.mapping_id}
-                id={sol.mapping_id}
-                solverType={sol.solver_type}
-                assignedTo={sol.assigned_to_role}
-                priority={sol.priority}
-                status={sol.status}
-                rationale={sol.rationale}
-              />
-            ))}
+          {data.newHires.map((agent) => (
+            <NewHireCard
+              key={agent.agent_id}
+              id={agent.agent_id}
+              name={agent.name}
+              title={agent.title}
+              persona={agent.persona}
+              skills={agent.skills}
+              assignedTo={agent.assigned_to_role}
+            />
+          ))}
         </BoardColumn>
       </div>
     </div>

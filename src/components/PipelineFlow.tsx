@@ -9,6 +9,11 @@ interface StageInfo {
 }
 
 export function PipelineFlow({ data }: { data: PipelineData }) {
+  const totalSkills = data.newHires.reduce(
+    (sum, a) => sum + a.skills.length,
+    0
+  );
+
   const stages: StageInfo[] = [
     {
       key: "problems",
@@ -36,15 +41,15 @@ export function PipelineFlow({ data }: { data: PipelineData }) {
     },
     {
       key: "routes",
-      label: "Routed",
-      count: data.solutions.length,
-      sublabel: "assigned",
+      label: "New Hires",
+      count: data.newHires.length,
+      sublabel: "specialists hired",
     },
     {
       key: "solve",
-      label: "Solving",
-      count: data.solutions.filter((s) => s.status === "complete").length,
-      sublabel: `of ${data.solutions.length} total`,
+      label: "Skills",
+      count: totalSkills,
+      sublabel: `across ${data.newHires.length} agents`,
     },
   ];
 

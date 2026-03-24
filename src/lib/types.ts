@@ -42,25 +42,31 @@ export interface Hypothesis {
   risks: string[];
 }
 
-export interface SolutionMapping {
-  mapping_id: string;
+// --- Three-Tier Agent Model ---
+
+export type SkillType = "recommend" | "action_plan" | "process_doc" | "investigate";
+
+export interface AgentSkill {
+  skill_type: SkillType;
   hypothesis_id: string;
-  solver_type: "recommendation" | "action_plan" | "process_doc" | "investigation";
-  assigned_to_role: string | null;
-  rationale: string;
   priority: number;
-  status: "pending" | "in_progress" | "complete" | "blocked";
+  status: "pending" | "in_progress" | "complete";
 }
 
-export interface PipelineData {
-  catalog: CatalogEntry[];
-  patterns: Pattern[];
-  themes: ThemeSummary[];
-  hypotheses: Hypothesis[];
-  solutions: SolutionMapping[];
+export interface AgentNewHire {
+  agent_id: string;
+  name: string;
+  title: string;
+  persona: string;
+  pattern_id: string;
+  hypothesis_ids: string[];
+  skills: AgentSkill[];
+  assigned_to_role: string | null;
+  model: string;
 }
 
-export interface Agent {
+// Tier 1: Engine agents (defined in code, not data)
+export interface EngineAgent {
   id: string;
   name: string;
   title: string;
@@ -69,4 +75,12 @@ export interface Agent {
   model: string;
   status: "idle" | "working" | "done";
   itemsProcessed: number;
+}
+
+export interface PipelineData {
+  catalog: CatalogEntry[];
+  patterns: Pattern[];
+  themes: ThemeSummary[];
+  hypotheses: Hypothesis[];
+  newHires: AgentNewHire[];
 }

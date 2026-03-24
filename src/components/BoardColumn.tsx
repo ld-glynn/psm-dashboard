@@ -201,67 +201,74 @@ export function HypothesisCard({
   );
 }
 
-export function SolutionCard({
+export function NewHireCard({
   id,
-  solverType,
+  name,
+  title,
+  persona,
+  skills,
   assignedTo,
-  priority,
-  status,
-  rationale,
 }: {
   id: string;
-  solverType: string;
+  name: string;
+  title: string;
+  persona: string;
+  skills: { skill_type: string; status: string; priority: number }[];
   assignedTo: string | null;
-  priority: number;
-  status: string;
-  rationale: string;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const typeLabels: Record<string, string> = {
-    recommendation: "Recommendation",
-    action_plan: "Action Plan",
-    process_doc: "Process Doc",
-    investigation: "Investigation",
-  };
-  const typeColors: Record<string, string> = {
-    recommendation: "bg-blue-500/10 text-blue-300",
+  const skillColors: Record<string, string> = {
+    recommend: "bg-blue-500/10 text-blue-300",
     action_plan: "bg-green-500/10 text-green-300",
     process_doc: "bg-purple-500/10 text-purple-300",
-    investigation: "bg-yellow-500/10 text-yellow-300",
+    investigate: "bg-yellow-500/10 text-yellow-300",
   };
   const statusDot: Record<string, string> = {
     pending: "bg-gray-400",
     in_progress: "bg-blue-400",
     complete: "bg-green-400",
-    blocked: "bg-red-400",
   };
 
   return (
     <div
-      className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg p-3 cursor-pointer hover:border-[#3a3a5e] transition-colors"
+      className="bg-[#1a1a2e] border border-purple-500/20 rounded-lg p-3 cursor-pointer hover:border-purple-500/40 transition-colors"
       onClick={() => setExpanded(!expanded)}
     >
       <div className="flex items-center gap-2 mb-1">
-        <div
-          className={`w-1.5 h-1.5 rounded-full ${statusDot[status] || "bg-gray-400"}`}
-        />
-        <span className="text-xs text-white/30">{id}</span>
-        <span className="text-[10px] ml-auto px-1.5 py-0.5 rounded bg-white/5 text-white/40">
-          P{priority}
-        </span>
+        <div className="w-6 h-6 rounded bg-purple-500/10 flex items-center justify-center">
+          <span className="text-[10px] font-bold text-purple-400">
+            {name[0]}
+          </span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-medium text-white/90 truncate">
+            {name}
+          </div>
+          <div className="text-[10px] text-white/30">{title}</div>
+        </div>
       </div>
-      <div
-        className={`inline-block text-[10px] px-1.5 py-0.5 rounded mb-1.5 ${typeColors[solverType] || ""}`}
-      >
-        {typeLabels[solverType] || solverType}
-      </div>
-      {assignedTo && (
-        <div className="text-xs text-white/50">{assignedTo}</div>
-      )}
       {expanded && (
         <p className="text-xs text-white/40 mt-2 leading-relaxed">
-          {rationale}
+          {persona}
         </p>
+      )}
+      <div className="flex flex-wrap gap-1 mt-2">
+        {skills
+          .sort((a, b) => a.priority - b.priority)
+          .map((skill, i) => (
+            <div
+              key={i}
+              className={`text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1 ${skillColors[skill.skill_type] || ""}`}
+            >
+              <div
+                className={`w-1 h-1 rounded-full ${statusDot[skill.status] || "bg-gray-400"}`}
+              />
+              {skill.skill_type.replace("_", " ")}
+            </div>
+          ))}
+      </div>
+      {assignedTo && (
+        <div className="text-[10px] text-white/30 mt-1.5">{assignedTo}</div>
       )}
     </div>
   );

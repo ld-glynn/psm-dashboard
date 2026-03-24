@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import {
   ReactFlow,
   Background,
@@ -23,7 +23,7 @@ export default function GraphPage() {
 
   const nodes: Node[] = useMemo(() => {
     const n: Node[] = [];
-    const colX = { problems: 0, patterns: 400, hypotheses: 800, solutions: 1200 };
+    const colX = { problems: 0, patterns: 400, hypotheses: 800, agents: 1200 };
     const spacing = 120;
 
     // Problem nodes
@@ -90,28 +90,25 @@ export default function GraphPage() {
       });
     });
 
-    // Solution nodes
-    data.solutions.forEach((sol, i) => {
-      const typeColor: Record<string, string> = {
-        recommendation: "#3b82f6",
-        action_plan: "#22c55e",
-        process_doc: "#8b5cf6",
-        investigation: "#eab308",
-      };
+    // Agent New Hire nodes (Tier 2)
+    data.newHires.forEach((agent, i) => {
+      const skillList = agent.skills
+        .map((s) => s.skill_type.replace("_", " "))
+        .join(", ");
       n.push({
-        id: sol.mapping_id,
-        position: { x: colX.solutions, y: i * spacing },
+        id: agent.agent_id,
+        position: { x: colX.agents, y: i * spacing * 2 + spacing / 2 },
         data: {
-          label: `${sol.mapping_id}\n${sol.solver_type.replace("_", " ")}\n${sol.assigned_to_role || "unassigned"}`,
+          label: `${agent.name}\n${agent.skills.length} skills: ${skillList}`,
         },
         style: {
           background: "#1a1a2e",
           color: "#e4e4ef",
-          border: `1px solid ${typeColor[sol.solver_type] || "#666"}`,
-          borderRadius: "8px",
-          padding: "8px 12px",
+          border: "2px solid #a855f7",
+          borderRadius: "12px",
+          padding: "10px 14px",
           fontSize: "11px",
-          width: 160,
+          width: 200,
           textAlign: "center" as const,
         },
         ...nodeDefaults,
@@ -148,14 +145,16 @@ export default function GraphPage() {
       });
     });
 
-    // Hypothesis → Solution
-    data.solutions.forEach((sol) => {
-      e.push({
-        id: `${sol.hypothesis_id}-${sol.mapping_id}`,
-        source: sol.hypothesis_id,
-        target: sol.mapping_id,
-        style: { stroke: "#3b82f6", strokeWidth: 1, opacity: 0.4 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: "#3b82f6" },
+    // Hypothesis → Agent New Hire (via the agent's hypothesis_ids)
+    data.newHires.forEach((agent) => {
+      agent.hypothesis_ids.forEach((hid) => {
+        e.push({
+          id: `${hid}-${agent.agent_id}`,
+          source: hid,
+          target: agent.agent_id,
+          style: { stroke: "#a855f7", strokeWidth: 1.5, opacity: 0.5 },
+          markerEnd: { type: MarkerType.ArrowClosed, color: "#a855f7" },
+        });
       });
     });
 
@@ -167,7 +166,7 @@ export default function GraphPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Relationship Graph</h1>
         <p className="text-sm text-white/40 mt-1">
-          Problems → Patterns → Hypotheses → Solutions
+          Problems → Patterns → Hypotheses → Agent New Hires
         </p>
       </div>
       <div

@@ -26,9 +26,11 @@ export function StatsGrid({ data }: { data: PipelineData }) {
     {} as Record<string, number>
   );
 
-  const solverTypeCounts = data.solutions.reduce(
-    (acc, s) => {
-      acc[s.solver_type] = (acc[s.solver_type] || 0) + 1;
+  const skillTypeCounts = data.newHires.reduce(
+    (acc, agent) => {
+      agent.skills.forEach((s) => {
+        acc[s.skill_type] = (acc[s.skill_type] || 0) + 1;
+      });
       return acc;
     },
     {} as Record<string, number>
@@ -52,9 +54,11 @@ export function StatsGrid({ data }: { data: PipelineData }) {
         detail={`across ${data.patterns.length} patterns`}
       />
       <StatCard
-        label="Solution Types"
-        value={Object.keys(solverTypeCounts).length.toString()}
-        detail={Object.entries(solverTypeCounts)
+        label="Agent Skills"
+        value={Object.values(skillTypeCounts)
+          .reduce((a, b) => a + b, 0)
+          .toString()}
+        detail={Object.entries(skillTypeCounts)
           .map(([k, v]) => `${v} ${k.replace("_", " ")}`)
           .join(", ")}
       />

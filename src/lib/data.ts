@@ -1,10 +1,10 @@
-import { PipelineData, Agent } from "./types";
+import { PipelineData, EngineAgent } from "./types";
 
 import catalogData from "../../public/data/catalog.json";
 import patternsData from "../../public/data/patterns.json";
 import themesData from "../../public/data/themes.json";
 import hypothesesData from "../../public/data/hypotheses.json";
-import solutionsData from "../../public/data/solution_map.json";
+import newHiresData from "../../public/data/new_hires.json";
 
 export function loadPipelineData(): PipelineData {
   return {
@@ -12,18 +12,18 @@ export function loadPipelineData(): PipelineData {
     patterns: patternsData as PipelineData["patterns"],
     themes: themesData as PipelineData["themes"],
     hypotheses: hypothesesData as PipelineData["hypotheses"],
-    solutions: solutionsData as PipelineData["solutions"],
+    newHires: newHiresData as PipelineData["newHires"],
   };
 }
 
-export function getAgents(data: PipelineData): Agent[] {
+export function getEngineAgents(data: PipelineData): EngineAgent[] {
   return [
     {
       id: "orchestrator",
-      name: "The New Hire",
+      name: "Orchestrator",
       title: "Pipeline Coordinator",
       stage: "all",
-      description: "Coordinates the full pipeline and delegates to skill agents",
+      description: "Coordinates the full pipeline and delegates to engine agents",
       model: "claude-sonnet",
       status: "done",
       itemsProcessed: data.catalog.length,
@@ -59,24 +59,15 @@ export function getAgents(data: PipelineData): Agent[] {
       itemsProcessed: data.hypotheses.length,
     },
     {
-      id: "solver_router",
-      name: "Solver Router",
-      title: "Solution Router & Dispatcher",
-      stage: "routes",
-      description: "Maps hypotheses to solver types and team roles",
+      id: "hiring_manager",
+      name: "Hiring Manager",
+      title: "Agent Designer & Dispatcher",
+      stage: "hire",
+      description:
+        "Creates specialist Agent New Hires with personas and skills for each problem cluster",
       model: "claude-sonnet",
-      status: data.solutions.length > 0 ? "done" : "idle",
-      itemsProcessed: data.solutions.length,
-    },
-    {
-      id: "solver",
-      name: "Solver Agents",
-      title: "Deliverable Producers",
-      stage: "solve",
-      description: "Produce recommendations, action plans, process docs",
-      model: "claude-haiku",
-      status: data.solutions.some((s) => s.status === "in_progress") ? "working" : "idle",
-      itemsProcessed: data.solutions.filter((s) => s.status === "complete").length,
+      status: data.newHires.length > 0 ? "done" : "idle",
+      itemsProcessed: data.newHires.length,
     },
   ];
 }
