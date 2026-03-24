@@ -1,0 +1,193 @@
+"use client";
+
+import { useCallback, useMemo } from "react";
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  Node,
+  Edge,
+  Position,
+  MarkerType,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { loadPipelineData } from "@/lib/data";
+
+const nodeDefaults = {
+  sourcePosition: Position.Right,
+  targetPosition: Position.Left,
+};
+
+export default function GraphPage() {
+  const data = useMemo(() => loadPipelineData(), []);
+
+  const nodes: Node[] = useMemo(() => {
+    const n: Node[] = [];
+    const colX = { problems: 0, patterns: 400, hypotheses: 800, solutions: 1200 };
+    const spacing = 120;
+
+    // Problem nodes
+    data.catalog.forEach((entry, i) => {
+      n.push({
+        id: entry.problem_id,
+        position: { x: colX.problems, y: i * spacing },
+        data: { label: `${entry.problem_id}\n${entry.title}` },
+        style: {
+          background: "#1a1a2e",
+          color: "#e4e4ef",
+          border: "1px solid #f97316",
+          borderRadius: "8px",
+          padding: "8px 12px",
+          fontSize: "11px",
+          width: 160,
+          textAlign: "center" as const,
+        },
+        ...nodeDefaults,
+      });
+    });
+
+    // Pattern nodes
+    data.patterns.forEach((pat, i) => {
+      n.push({
+        id: pat.pattern_id,
+        position: { x: colX.patterns, y: i * spacing * 2 + spacing },
+        data: {
+          label: `${pat.pattern_id}\n${pat.name}\n${(pat.confidence * 100).toFixed(0)}%`,
+        },
+        style: {
+          background: "#1a1a2e",
+          color: "#e4e4ef",
+          border: "1px solid #eab308",
+          borderRadius: "8px",
+          padding: "8px 12px",
+          fontSize: "11px",
+          width: 180,
+          textAlign: "center" as const,
+        },
+        ...nodeDefaults,
+      });
+    });
+
+    // Hypothesis nodes
+    data.hypotheses.forEach((hyp, i) => {
+      n.push({
+        id: hyp.hypothesis_id,
+        position: { x: colX.hypotheses, y: i * spacing },
+        data: {
+          label: `${hyp.hypothesis_id}\n${hyp.effort_estimate} effort\n${(hyp.confidence * 100).toFixed(0)}%`,
+        },
+        style: {
+          background: "#1a1a2e",
+          color: "#e4e4ef",
+          border: "1px solid #22c55e",
+          borderRadius: "8px",
+          padding: "8px 12px",
+          fontSize: "11px",
+          width: 160,
+          textAlign: "center" as const,
+        },
+        ...nodeDefaults,
+      });
+    });
+
+    // Solution nodes
+    data.solutions.forEach((sol, i) => {
+      const typeColor: Record<string, string> = {
+        recommendation: "#3b82f6",
+        action_plan: "#22c55e",
+        process_doc: "#8b5cf6",
+        investigation: "#eab308",
+      };
+      n.push({
+        id: sol.mapping_id,
+        position: { x: colX.solutions, y: i * spacing },
+        data: {
+          label: `${sol.mapping_id}\n${sol.solver_type.replace("_", " ")}\n${sol.assigned_to_role || "unassigned"}`,
+        },
+        style: {
+          background: "#1a1a2e",
+          color: "#e4e4ef",
+          border: `1px solid ${typeColor[sol.solver_type] || "#666"}`,
+          borderRadius: "8px",
+          padding: "8px 12px",
+          fontSize: "11px",
+          width: 160,
+          textAlign: "center" as const,
+        },
+        ...nodeDefaults,
+      });
+    });
+
+    return n;
+  }, [data]);
+
+  const edges: Edge[] = useMemo(() => {
+    const e: Edge[] = [];
+
+    // Problem → Pattern
+    data.patterns.forEach((pat) => {
+      pat.problem_ids.forEach((pid) => {
+        e.push({
+          id: `${pid}-${pat.pattern_id}`,
+          source: pid,
+          target: pat.pattern_id,
+          style: { stroke: "#eab308", strokeWidth: 1, opacity: 0.4 },
+          markerEnd: { type: MarkerType.ArrowClosed, color: "#eab308" },
+        });
+      });
+    });
+
+    // Pattern → Hypothesis
+    data.hypotheses.forEach((hyp) => {
+      e.push({
+        id: `${hyp.pattern_id}-${hyp.hypothesis_id}`,
+        source: hyp.pattern_id,
+        target: hyp.hypothesis_id,
+        style: { stroke: "#22c55e", strokeWidth: 1, opacity: 0.4 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: "#22c55e" },
+      });
+    });
+
+    // Hypothesis → Solution
+    data.solutions.forEach((sol) => {
+      e.push({
+        id: `${sol.hypothesis_id}-${sol.mapping_id}`,
+        source: sol.hypothesis_id,
+        target: sol.mapping_id,
+        style: { stroke: "#3b82f6", strokeWidth: 1, opacity: 0.4 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: "#3b82f6" },
+      });
+    });
+
+    return e;
+  }, [data]);
+
+  return (
+    <div className="max-w-full mx-auto">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-white">Relationship Graph</h1>
+        <p className="text-sm text-white/40 mt-1">
+          Problems → Patterns → Hypotheses → Solutions
+        </p>
+      </div>
+      <div
+        className="bg-[#0d0d14] border border-[#2a2a3e] rounded-xl overflow-hidden"
+        style={{ height: "calc(100vh - 180px)" }}
+      >
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          fitView
+          minZoom={0.3}
+          maxZoom={1.5}
+          proOptions={{ hideAttribution: true }}
+        >
+          <Background color="#1a1a2e" gap={20} />
+          <Controls
+            className="!bg-[#1a1a2e] !border-[#2a2a3e] !rounded-lg [&>button]:!bg-[#1a1a2e] [&>button]:!border-[#2a2a3e] [&>button]:!text-white/60 [&>button:hover]:!bg-[#2a2a3e]"
+          />
+        </ReactFlow>
+      </div>
+    </div>
+  );
+}

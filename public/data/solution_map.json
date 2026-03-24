@@ -1,0 +1,65 @@
+[
+  {
+    "mapping_id": "SOL-001",
+    "hypothesis_id": "HYP-001",
+    "solver_type": "action_plan",
+    "assigned_to_role": "Engineering Lead",
+    "rationale": "Requires coordinating across teams to gather and organize existing docs into a structured guide. Needs an implementation plan with clear steps.",
+    "priority": 2,
+    "status": "pending"
+  },
+  {
+    "mapping_id": "SOL-002",
+    "hypothesis_id": "HYP-002",
+    "solver_type": "process_doc",
+    "assigned_to_role": "Operations",
+    "rationale": "A departure checklist is a process document. Operations owns internal workflows and can integrate this into the offboarding process.",
+    "priority": 3,
+    "status": "pending"
+  },
+  {
+    "mapping_id": "SOL-003",
+    "hypothesis_id": "HYP-003",
+    "solver_type": "recommendation",
+    "assigned_to_role": "Product Manager",
+    "rationale": "Product already owns the feedback collection. This is a recommendation to formalize the routing — PM needs to decide the format and cadence.",
+    "priority": 1,
+    "status": "in_progress"
+  },
+  {
+    "mapping_id": "SOL-004",
+    "hypothesis_id": "HYP-004",
+    "solver_type": "process_doc",
+    "assigned_to_role": "Operations",
+    "rationale": "A meeting decisions template is a lightweight process doc that Operations can roll out to all recurring meetings.",
+    "priority": 3,
+    "status": "pending"
+  },
+  {
+    "mapping_id": "SOL-005",
+    "hypothesis_id": "HYP-005",
+    "solver_type": "action_plan",
+    "assigned_to_role": "Engineering Lead",
+    "rationale": "Writing runbooks requires identifying top incident types, interviewing responders, and creating docs. Needs a sequenced plan.",
+    "priority": 1,
+    "status": "in_progress"
+  },
+  {
+    "mapping_id": "SOL-006",
+    "hypothesis_id": "HYP-006",
+    "solver_type": "recommendation",
+    "assigned_to_role": "Engineering Lead",
+    "rationale": "The triage rotation is a structural change that needs buy-in from engineering leadership. A recommendation doc makes the case.",
+    "priority": 2,
+    "status": "pending"
+  },
+  {
+    "mapping_id": "SOL-007",
+    "hypothesis_id": "HYP-007",
+    "solver_type": "investigation",
+    "assigned_to_role": "Engineering Lead",
+    "rationale": "Before implementing estimation tracking, need to investigate what tooling exists and whether teams will adopt it. Needs research first.",
+    "priority": 4,
+    "status": "pending"
+  }
+]

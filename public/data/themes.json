@@ -1,0 +1,16 @@
+[
+  {
+    "theme_id": "THM-001",
+    "name": "Information Architecture",
+    "pattern_ids": ["PAT-001", "PAT-002"],
+    "summary": "The team's biggest challenges stem from how information is captured, stored, and routed. Knowledge lives in heads, feedback doesn't flow between teams, and decisions aren't tracked.",
+    "priority_score": 8.5
+  },
+  {
+    "theme_id": "THM-002",
+    "name": "Operational Maturity",
+    "pattern_ids": ["PAT-003", "PAT-004"],
+    "summary": "Critical operational processes are undocumented and unmeasured. The team has outgrown ad-hoc operations but hasn't invested in formalization.",
+    "priority_score": 7.0
+  }
+]
