@@ -8,12 +8,13 @@ import { CostPanel } from "@/components/CostPanel";
 
 export default function Home() {
   const {
-    data, drafts, skillFeedback,
+    data, drafts, skillFeedback, ingestionRecords,
     costSummary, costEntries, costBudget,
     addCost, removeCost, simulateCosts, clearCosts, updateBudget,
   } = usePipelineData();
 
   const draftCount = drafts.filter((d) => d.status === "draft").length;
+  const ingestionCount = ingestionRecords.length;
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
@@ -27,7 +28,7 @@ export default function Home() {
         </p>
       </div>
 
-      <PipelineFlow data={data} draftCount={draftCount} costSummary={costSummary} />
+      <PipelineFlow data={data} draftCount={draftCount} ingestionCount={ingestionCount} costSummary={costSummary} />
       <StatsGrid data={data} skillFeedback={skillFeedback} costSummary={costSummary} />
       <CostPanel
         costSummary={costSummary}

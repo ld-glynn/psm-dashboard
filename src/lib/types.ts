@@ -1,3 +1,12 @@
+export interface ProblemSource {
+  sourceType: IntegrationSource | "ai_intake";
+  sourceRecordId: string | null;
+  label: string;
+  addedAt: string;
+  addedBy: "system" | "manual";
+  note: string | null;
+}
+
 export interface CatalogEntry {
   problem_id: string;
   title: string;
@@ -9,6 +18,7 @@ export interface CatalogEntry {
   affected_roles: string[];
   frequency: string | null;
   impact_summary: string | null;
+  sources?: ProblemSource[];
 }
 
 export interface Pattern {
@@ -217,6 +227,39 @@ export interface SkillTypeTrend {
   usefulPct: number;
   notUsefulPct: number;
   revisionPct: number;
+}
+
+// --- Integrations ---
+
+export type IntegrationSource = "salesforce" | "gong" | "slack" | "csv" | "manual";
+export type IntegrationStatus = "connected" | "disconnected" | "error" | "mock";
+
+export interface IntegrationFilter {
+  channels: string[];
+  objects: string[];
+  keywords: string[];
+}
+
+export interface IntegrationConfig {
+  source: IntegrationSource;
+  enabled: boolean;
+  status: IntegrationStatus;
+  lastSyncAt: string | null;
+  recordCount: number;
+  errorMessage: string | null;
+  syncFrequency: "manual" | "15min" | "hourly" | "daily";
+  connectionUrl: string | null;
+  filters: IntegrationFilter;
+}
+
+export interface IngestionRecord {
+  recordId: string;
+  source: IntegrationSource;
+  sourceRecordId: string | null;
+  rawTextPreview: string;
+  ingestedAt: string;
+  structured: boolean;
+  extractedProblemId: string | null;
 }
 
 export interface PipelineData {

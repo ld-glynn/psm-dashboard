@@ -12,13 +12,23 @@ interface StageInfo {
 interface PipelineFlowProps {
   data: PipelineData;
   draftCount?: number;
+  ingestionCount?: number;
   costSummary?: CostSummary;
 }
 
-export function PipelineFlow({ data, draftCount = 0, costSummary }: PipelineFlowProps) {
+export function PipelineFlow({ data, draftCount = 0, ingestionCount = 0, costSummary }: PipelineFlowProps) {
   const totalSkills = data.newHires.reduce((sum, a) => sum + a.skills.length, 0);
 
   const stages: StageInfo[] = [];
+
+  if (ingestionCount > 0) {
+    stages.push({
+      key: "sources",
+      label: "Sources",
+      count: ingestionCount,
+      sublabel: "ingested records",
+    });
+  }
 
   if (draftCount > 0) {
     stages.push({

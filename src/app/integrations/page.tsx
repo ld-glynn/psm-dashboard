@@ -1,0 +1,108 @@
+"use client";
+
+import { usePipelineData } from "@/lib/use-pipeline-data";
+import { IntegrationCard } from "@/components/IntegrationCard";
+import { IntegrationFlow } from "@/components/IntegrationFlow";
+import { sourceColors, integrationStatusColor } from "@/lib/colors";
+import { InfoTooltip } from "@/components/InfoTooltip";
+import { tooltips } from "@/lib/tooltip-content";
+import { Database, Phone, MessageSquare } from "lucide-react";
+
+const sourceIcons: Record<string, any> = {
+  salesforce: Database,
+  gong: Phone,
+  slack: MessageSquare,
+};
+
+export default function IntegrationsPage() {
+  const { data, integrations, ingestionRecords, toggleIntegration } = usePipelineData();
+
+  const totalStructured = ingestionRecords.filter((r) => r.structured).length;
+  const totalUnstructured = ingestionRecords.length - totalStructured;
+
+  return (
+    <div className="max-w-5xl mx-auto space-y-8">
+      <div>
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-white">Integration Sources</h1>
+          <InfoTooltip text={tooltips.integrationSource} />
+        </div>
+        <p className="text-sm text-white/40 mt-1">
+          External data feeds into the pipeline. {ingestionRecords.length} records
+          ingested, {totalStructured} structured into problems.
+        </p>
+      </div>
+
+      {/* Source cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {integrations.map((config) => (
+          <IntegrationCard
+            key={config.source}
+            config={config}
+            onToggle={toggleIntegration}
+          />
+        ))}
+      </div>
+
+      {/* Data flow visualization */}
+      <IntegrationFlow
+        integrations={integrations}
+        ingestionRecords={ingestionRecords}
+        totalProblems={data.catalog.length}
+      />
+
+      {/* Recent ingestion records */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-white/80">
+            Ingestion Records ({ingestionRecords.length})
+          </h2>
+          <div className="flex items-center gap-3 text-xs">
+            <span className="text-green-400">{totalStructured} structured</span>
+            <span className="text-white/30">{totalUnstructured} pending</span>
+          </div>
+        </div>
+        <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[#2a2a3e]">
+                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium w-8">Source</th>
+                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium">ID</th>
+                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium">Preview</th>
+                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium">Ingested</th>
+                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium">Status</th>
+                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium">Problem</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ingestionRecords.map((record) => {
+                const colors = sourceColors[record.source] || sourceColors.csv;
+                const Icon = sourceIcons[record.source] || Database;
+                return (
+                  <tr key={record.recordId} className="border-b border-[#2a2a3e]/50 hover:bg-white/[0.02]">
+                    <td className="py-2.5 px-4">
+                      <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center`}>
+                        <Icon size={12} className={colors.text} />
+                      </div>
+                    </td>
+                    <td className="py-2.5 px-4 text-xs text-white/30 font-mono">{record.recordId}</td>
+                    <td className="py-2.5 px-4 text-xs text-white/60 max-w-[300px] truncate">{record.rawTextPreview}</td>
+                    <td className="py-2.5 px-4 text-xs text-white/30">{new Date(record.ingestedAt).toLocaleDateString()}</td>
+                    <td className="py-2.5 px-4">
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded ${record.structured ? "bg-green-500/15 text-green-400" : "bg-gray-500/15 text-gray-400"}`}>
+                        {record.structured ? "Structured" : "Pending"}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-4 text-xs text-white/40 font-mono">
+                      {record.extractedProblemId || "—"}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}

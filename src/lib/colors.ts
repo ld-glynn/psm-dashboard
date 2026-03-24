@@ -43,6 +43,7 @@ export const stageColors: Record<string, { bg: string; border: string; text: str
   routes: { bg: "bg-blue-500/10", border: "border-blue-500/30", text: "text-blue-400", dot: "bg-blue-400" },
   solve: { bg: "bg-purple-500/10", border: "border-purple-500/30", text: "text-purple-400", dot: "bg-purple-400" },
   drafts: { bg: "bg-orange-500/10", border: "border-orange-500/30 border-dashed", text: "text-orange-400", dot: "bg-orange-400" },
+  sources: { bg: "bg-cyan-500/10", border: "border-cyan-500/30", text: "text-cyan-400", dot: "bg-cyan-400" },
 };
 
 export const reviewStatusStyle: Record<string, { border: string; badge: string; badgeText: string }> = {
@@ -62,6 +63,22 @@ export const hypOutcomeStyle: Record<string, { bg: string; text: string; label: 
   testing: { bg: "bg-blue-500/15", text: "text-blue-400", label: "Testing" },
   validated: { bg: "bg-green-500/15", text: "text-green-400", label: "Validated" },
   invalidated: { bg: "bg-red-500/15", text: "text-red-400", label: "Invalidated" },
+};
+
+export const sourceColors: Record<string, { bg: string; border: string; text: string; dot: string }> = {
+  salesforce: { bg: "bg-blue-500/10", border: "border-blue-500/30", text: "text-blue-400", dot: "bg-blue-400" },
+  gong: { bg: "bg-violet-500/10", border: "border-violet-500/30", text: "text-violet-400", dot: "bg-violet-400" },
+  slack: { bg: "bg-emerald-500/10", border: "border-emerald-500/30", text: "text-emerald-400", dot: "bg-emerald-400" },
+  csv: { bg: "bg-gray-500/10", border: "border-gray-500/30", text: "text-gray-400", dot: "bg-gray-400" },
+  manual: { bg: "bg-orange-500/10", border: "border-orange-500/30", text: "text-orange-400", dot: "bg-orange-400" },
+  ai_intake: { bg: "bg-pink-500/10", border: "border-pink-500/30", text: "text-pink-400", dot: "bg-pink-400" },
+};
+
+export const integrationStatusColor: Record<string, string> = {
+  connected: "bg-green-500/20 text-green-300",
+  disconnected: "bg-gray-500/20 text-gray-300",
+  error: "bg-red-500/20 text-red-300",
+  mock: "bg-yellow-500/20 text-yellow-300",
 };
 
 export const effortColor: Record<string, string> = {

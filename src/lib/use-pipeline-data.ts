@@ -18,10 +18,15 @@ import {
 } from "./cost-store";
 import { computeCostSummary, estimateCost, generateSimulatedCosts } from "./cost-utils";
 import { exportDraftsAsJSON, exportDraftsAsCSV, simulatePipelineRun } from "./pipeline-export";
+import {
+  getIntegrations, toggleIntegration as storeToggleIntegration,
+  getIngestionRecords, seedMockIntegrationData,
+} from "./integration-store";
 import type {
   DraftProblem, CatalogEntry, PipelineData, ReviewRecord, ReviewStatus, ReviewEntityType,
   SkillFeedback, SkillRating, HypothesisFeedback, HypothesisOutcome,
   PipelineRun, PipelineImportResult, StageCostEntry, CostBudget, CostSummary, PipelineStage,
+  IntegrationConfig, IntegrationSource, IngestionRecord,
 } from "./types";
 
 function draftToCatalogEntry(d: DraftProblem): CatalogEntry & { status: string } {
@@ -54,9 +59,12 @@ export function usePipelineData() {
   const [pipelineImports, setPipelineImports] = useState<PipelineImportResult[]>([]);
   const [costEntries, setCostEntries] = useState<StageCostEntry[]>([]);
   const [costBudget, setCostBudgetLocal] = useState<CostBudget>({ monthlyLimitUsd: 50, warningThresholdPct: 80 });
+  const [integrations, setIntegrationsState] = useState<IntegrationConfig[]>([]);
+  const [ingestionRecords, setIngestionRecordsState] = useState<IngestionRecord[]>([]);
   const [version, setVersion] = useState(0);
 
   useEffect(() => {
+    seedMockIntegrationData(); // no-op if already seeded
     setDrafts(getDrafts());
     setReviewsState(getReviews());
     setSkillFeedbackState(getSkillFeedback());
@@ -65,6 +73,8 @@ export function usePipelineData() {
     setPipelineImports(getPipelineImports());
     setCostEntries(getCostEntries());
     setCostBudgetLocal(getCostBudget());
+    setIntegrationsState(getIntegrations());
+    setIngestionRecordsState(getIngestionRecords());
   }, [version]);
 
   const bump = useCallback(() => setVersion((v) => v + 1), []);
@@ -247,6 +257,15 @@ export function usePipelineData() {
     bump();
   }, [bump]);
 
+  // --- Integration actions ---
+
+  const toggleIntegration = useCallback(
+    (source: IntegrationSource, enabled: boolean) => {
+      storeToggleIntegration(source, enabled);
+      bump();
+    }, [bump]
+  );
+
   return {
     data,
     drafts,
@@ -258,6 +277,8 @@ export function usePipelineData() {
     costEntries,
     costSummary,
     costBudget,
+    integrations,
+    ingestionRecords,
     // Draft actions
     addDraft, addBulkDrafts, removeDraft,
     // Review actions
@@ -268,5 +289,7 @@ export function usePipelineData() {
     exportAndRun, simulateRun, importResults, clearPipelineData,
     // Cost actions
     addCost, removeCost, simulateCosts, clearCosts, updateBudget,
+    // Integration actions
+    toggleIntegration,
   };
 }

@@ -99,12 +99,13 @@ interface BoardColumnProps {
   title: string;
   count: number;
   children: React.ReactNode;
+  fullWidth?: boolean;
 }
 
-export function BoardColumn({ stageKey, title, count, children }: BoardColumnProps) {
+export function BoardColumn({ stageKey, title, count, children, fullWidth }: BoardColumnProps) {
   const colors = stageColors[stageKey] || stageColors.catalog;
   return (
-    <div className="flex flex-col min-w-[300px] max-w-[340px]">
+    <div className={fullWidth ? "flex flex-col w-full" : "flex flex-col min-w-[300px] max-w-[340px]"}>
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className={`w-2 h-2 rounded-full ${colors.dot}`} />
         <h3 className="text-sm font-semibold text-white/80">{title}</h3>
