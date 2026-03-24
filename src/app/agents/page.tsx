@@ -228,6 +228,66 @@ export default function AgentsPage() {
         </div>
       </div>
 
+      {/* --- Tier 3: Skills --- */}
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-6 h-6 rounded bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+            <span className="text-[10px] font-bold text-cyan-400">T3</span>
+          </div>
+          <h2 className="text-lg font-semibold text-white/80">
+            Skills
+          </h2>
+          <span className="text-xs text-white/30">
+            {totalSkills} capabilities across {data.newHires.length} agents
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {data.newHires.flatMap((agent) =>
+            agent.skills.map((skill, i) => {
+              const hyp = hypMap[skill.hypothesis_id];
+              return (
+                <div
+                  key={`${agent.agent_id}-${i}`}
+                  className={`border rounded-xl p-4 ${skillTypeColors[skill.skill_type]}`}
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div
+                      className={`w-2 h-2 rounded-full flex-shrink-0 ${statusDot[skill.status]}`}
+                    />
+                    <span className="text-sm font-semibold">
+                      {skillTypeLabels[skill.skill_type]}
+                    </span>
+                    <span className="text-[10px] opacity-50">
+                      P{skill.priority}
+                    </span>
+                    <span className="text-[10px] opacity-40 ml-auto">
+                      {skill.status.replace("_", " ")}
+                    </span>
+                  </div>
+                  <div className="text-xs opacity-60 mb-2">
+                    Agent: {agent.name}
+                  </div>
+                  {hyp && (
+                    <div className="text-xs opacity-50 leading-relaxed">
+                      <span className="opacity-70">Hypothesis:</span>{" "}
+                      {hyp.statement.length > 120
+                        ? hyp.statement.slice(0, 120) + "..."
+                        : hyp.statement}
+                    </div>
+                  )}
+                  {hyp && (
+                    <div className="text-[10px] opacity-40 mt-1.5">
+                      Expected: {hyp.expected_outcome}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
       {/* Summary */}
       <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-5">
         <h2 className="text-sm font-semibold text-white/80 mb-3">
