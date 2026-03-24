@@ -1,0 +1,62 @@
+[
+  {
+    "agent_id": "agent-001",
+    "skill_type": "action_plan",
+    "hypothesis_id": "HYP-001",
+    "title": "30/60/90 Onboarding Program Implementation Plan",
+    "content": "Phase 1: Audit (Weeks 1-2)\n\nInterview the 3 most recent hires about their onboarding experience. Document the top 5 pain points and the undocumented systems they struggled with most.\n\nCreate a knowledge audit template and assign each team to document their top 3 tribal knowledge items. Focus on: deployment procedures, testing workflows, and architecture decisions.\n\nPhase 2: Build (Weeks 3-4)\n\nDesign a structured 30/60/90 day onboarding program:\n- Day 1-30: Environment setup guide (automated), architecture overview, first bug fix\n- Day 31-60: Paired feature work, on-call shadow, system deep-dives\n- Day 61-90: Independent feature delivery, knowledge contribution, mentor rotation\n\nCreate a mentor pairing rotation schedule. Each new hire gets a dedicated mentor for their first 90 days, rotating between 2-3 mentors to broaden exposure.\n\nPhase 3: Pilot & Measure (Weeks 5-8)\n\nRun the next hire through the program. Track:\n- Time to first PR merged\n- Time to first independent feature shipped\n- Number of questions asked in Slack vs. answered by docs\n- New hire satisfaction score at 30/60/90 days\n\nBaseline: current average is 3+ months to independence. Target: under 6 weeks.",
+    "next_steps": [
+      "Schedule knowledge audit kickoff with each team lead",
+      "Draft the 30/60/90 curriculum outline for review",
+      "Set up tracking dashboard for onboarding metrics",
+      "Identify first mentor rotation volunteers"
+    ],
+    "created_at": "2026-03-15T10:00:00Z",
+    "reviewed": false
+  },
+  {
+    "agent_id": "agent-001",
+    "skill_type": "recommend",
+    "hypothesis_id": "HYP-002",
+    "title": "Weekly Knowledge Capture Ritual Recommendation",
+    "content": "Recommendation: Implement a weekly 'Knowledge Drop' ritual\n\nEach Friday, one team member spends 30 minutes documenting a critical system, process, or decision that currently lives only in their head. The output is a short document (1-2 pages) added to a central knowledge base.\n\nWhy this works:\n- Low time investment (30 min/week/person on rotation)\n- Creates a growing library of institutional knowledge\n- Distributes the documentation burden across the team\n- Makes knowledge transfer continuous rather than crisis-driven\n\nImplementation:\n- Create a shared Notion/Confluence space with a template\n- Set up a weekly Slack reminder with a random team member tagged\n- Track completion rate and document quality in sprint retros\n- After 3 months, audit: how many single-person dependencies remain?\n\nExpected outcome: Within one quarter, reduce single-person knowledge dependencies by 50%. When someone goes on vacation or leaves, the team can continue operating without a multi-week knowledge transfer.",
+    "next_steps": [
+      "Create the Knowledge Drop document template",
+      "Set up the Slack reminder bot with team rotation",
+      "Present the ritual at next all-hands for buy-in",
+      "Track first month completion rate"
+    ],
+    "created_at": "2026-03-15T11:00:00Z",
+    "reviewed": false
+  },
+  {
+    "agent_id": "agent-002",
+    "skill_type": "action_plan",
+    "hypothesis_id": "HYP-003",
+    "title": "CI/CD Pipeline Reliability Improvement Plan",
+    "content": "Problem: Deploy pipeline fails on 60% of attempts. Engineering spends ~4 hours/week debugging deploys.\n\nRoot Cause Analysis:\n1. Flaky integration tests (primary) — 3 specific test suites intermittently fail due to timing issues and shared test state\n2. Docker build cache invalidation — builds randomly pull stale layers\n3. No deployment health checks — failures only detected after traffic is routed\n\nPhase 1: Quick Wins (Week 1)\n- Quarantine the 3 flakiest test suites (run them but don't block deploys)\n- Add retry logic to Docker builds with cache bust on failure\n- Estimated improvement: 60% fail rate → 30%\n\nPhase 2: Test Infrastructure (Weeks 2-3)\n- Rewrite quarantined tests with isolated state (no shared databases between tests)\n- Add test timing budgets — any test taking >10s gets flagged for review\n- Set up parallel test execution to reduce pipeline time from 25min to 10min\n\nPhase 3: Deploy Safety (Weeks 3-4)\n- Implement canary deploys (route 5% traffic first, monitor for 5min)\n- Add automated rollback on error rate spike (>1% 5xx responses)\n- Create deploy runbook for manual intervention\n\nSuccess Metric: Deploy success rate >95% sustained for 2 weeks.",
+    "next_steps": [
+      "Identify and tag the 3 flakiest test suites this week",
+      "Set up deploy success rate monitoring dashboard",
+      "Schedule test infrastructure refactor sprint",
+      "Write canary deploy RFC for team review"
+    ],
+    "created_at": "2026-03-16T09:00:00Z",
+    "reviewed": false
+  },
+  {
+    "agent_id": "agent-003",
+    "skill_type": "process_doc",
+    "hypothesis_id": "HYP-004",
+    "title": "Incident Response Runbook: Database Outages",
+    "content": "Incident Response Runbook — Database Outages\n\nSeverity: P0/P1\nOwner: On-call engineer + Database team lead\nEscalation: If not resolved in 30 minutes, page VP Engineering\n\nStep 1: Triage (0-5 minutes)\n- Check database dashboard: CPU, connections, replication lag\n- Check recent deploys: was anything shipped in the last 2 hours?\n- Check for known issues: is this a recurring pattern?\n\nStep 2: Immediate Mitigation (5-15 minutes)\n- If CPU >90%: identify and kill long-running queries (query log)\n- If connections exhausted: restart connection pooler (PgBouncer)\n- If replication lag >30s: pause non-critical read traffic, investigate primary\n\nStep 3: Communication (parallel)\n- Post in #incidents with: what's happening, who's investigating, ETA\n- Update status page if customer-facing impact\n- Notify affected team leads\n\nStep 4: Resolution\n- Apply fix (query optimization, config change, rollback deploy)\n- Monitor for 15 minutes to confirm stability\n- Update #incidents with resolution\n\nStep 5: Post-Incident\n- Write incident report within 24 hours\n- Schedule blameless post-mortem within 48 hours\n- Create tickets for follow-up actions\n- Update this runbook if the incident revealed a gap",
+    "next_steps": [
+      "Review runbook with database team for accuracy",
+      "Add runbook link to PagerDuty escalation policy",
+      "Schedule a tabletop exercise to practice the runbook",
+      "Create runbooks for the other top 4 failure modes"
+    ],
+    "created_at": "2026-03-16T14:00:00Z",
+    "reviewed": false
+  }
+]

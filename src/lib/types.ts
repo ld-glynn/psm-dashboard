@@ -262,6 +262,19 @@ export interface IngestionRecord {
   extractedProblemId: string | null;
 }
 
+// --- Skill Outputs (deliverables) ---
+
+export interface SkillOutput {
+  agent_id: string;
+  skill_type: SkillType;
+  hypothesis_id: string;
+  title: string;
+  content: string;
+  next_steps: string[];
+  created_at: string;
+  reviewed: boolean;
+}
+
 export interface PipelineData {
   catalog: CatalogEntry[];
   patterns: Pattern[];
@@ -269,4 +282,5 @@ export interface PipelineData {
   hypotheses: Hypothesis[];
   newHires: AgentNewHire[];
   evalResults: EvalResult[];
+  skillOutputs: SkillOutput[];
 }
