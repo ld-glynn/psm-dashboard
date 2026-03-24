@@ -99,6 +99,126 @@ export interface EvalResult {
   case_results: EvalCaseResult[];
 }
 
+export type DraftPipelineStatus = "draft" | "exported" | "processing" | "completed";
+
+export interface DraftProblem {
+  problem_id: string;
+  title: string;
+  description: string;
+  reported_by: string;
+  domain: string;
+  severity: "low" | "medium" | "high" | "critical";
+  tags: string[];
+  status: DraftPipelineStatus;
+  created_at: string;
+}
+
+// --- Pipeline Runs ---
+
+export interface PipelineRun {
+  runId: string;
+  draftIds: string[];
+  exportedAt: string;
+  status: DraftPipelineStatus;
+  completedAt: string | null;
+}
+
+export interface PipelineImportResult {
+  runId: string;
+  catalog: CatalogEntry[];
+  patterns: Pattern[];
+  hypotheses: Hypothesis[];
+  newHires: AgentNewHire[];
+  importedAt: string;
+}
+
+// --- Review Gates ---
+
+export type ReviewStatus = "unreviewed" | "approved" | "rejected";
+export type ReviewEntityType = "catalog" | "pattern" | "hypothesis" | "new_hire";
+
+export interface ReviewRecord {
+  entityId: string;
+  entityType: ReviewEntityType;
+  status: ReviewStatus;
+  edits: Record<string, any> | null;
+  reviewedAt: string | null;
+  reviewerNote: string | null;
+}
+
+// --- Feedback Loop ---
+
+export type SkillRating = "useful" | "not_useful" | "needs_revision";
+export type HypothesisOutcome = "untested" | "testing" | "validated" | "invalidated";
+
+export interface SkillFeedback {
+  agentId: string;
+  skillIndex: number;
+  rating: SkillRating;
+  note: string | null;
+  ratedAt: string;
+}
+
+export interface HypothesisFeedback {
+  hypothesisId: string;
+  outcome: HypothesisOutcome;
+  note: string | null;
+  updatedAt: string;
+}
+
+// --- Cost Tracking ---
+
+export type PipelineStage = "catalog" | "patterns" | "hypotheses" | "hire" | "skills";
+
+export interface StageCostEntry {
+  id: string;
+  stage: PipelineStage;
+  timestamp: string;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  calls: number;
+  costUsd: number;
+  note: string | null;
+}
+
+export interface CostBudget {
+  monthlyLimitUsd: number;
+  warningThresholdPct: number;
+}
+
+export interface CostSummary {
+  totalCostUsd: number;
+  totalInputTokens: number;
+  totalOutputTokens: number;
+  totalCalls: number;
+  byStage: Record<PipelineStage, { costUsd: number; inputTokens: number; outputTokens: number; calls: number }>;
+  budget: CostBudget;
+  overBudget: boolean;
+  atWarning: boolean;
+}
+
+// --- Feedback Analytics ---
+
+export interface AgentQualityScore {
+  agentId: string;
+  agentName: string;
+  totalSkills: number;
+  ratedSkills: number;
+  usefulCount: number;
+  notUsefulCount: number;
+  revisionCount: number;
+  qualityScore: number;
+}
+
+export interface SkillTypeTrend {
+  skillType: SkillType;
+  totalRated: number;
+  usefulPct: number;
+  notUsefulPct: number;
+  revisionPct: number;
+}
+
 export interface PipelineData {
   catalog: CatalogEntry[];
   patterns: Pattern[];

@@ -11,7 +11,7 @@ import {
   MarkerType,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { loadPipelineData } from "@/lib/data";
+import { usePipelineData } from "@/lib/use-pipeline-data";
 
 const nodeDefaults = {
   sourcePosition: Position.Right,
@@ -19,7 +19,7 @@ const nodeDefaults = {
 };
 
 export default function GraphPage() {
-  const data = useMemo(() => loadPipelineData(), []);
+  const { data } = usePipelineData();
 
   const nodes: Node[] = useMemo(() => {
     const n: Node[] = [];

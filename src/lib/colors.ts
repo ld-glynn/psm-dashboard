@@ -29,6 +29,10 @@ export const statusColor: Record<string, string> = {
   in_progress: "bg-blue-500/20 text-blue-300",
   complete: "bg-green-500/20 text-green-300",
   blocked: "bg-red-500/20 text-red-300",
+  draft: "bg-orange-500/20 text-orange-300",
+  exported: "bg-blue-500/20 text-blue-300",
+  processing: "bg-purple-500/20 text-purple-300",
+  completed: "bg-green-500/20 text-green-300",
 };
 
 export const stageColors: Record<string, { bg: string; border: string; text: string; dot: string }> = {
@@ -38,6 +42,26 @@ export const stageColors: Record<string, { bg: string; border: string; text: str
   hypotheses: { bg: "bg-green-500/10", border: "border-green-500/30", text: "text-green-400", dot: "bg-green-400" },
   routes: { bg: "bg-blue-500/10", border: "border-blue-500/30", text: "text-blue-400", dot: "bg-blue-400" },
   solve: { bg: "bg-purple-500/10", border: "border-purple-500/30", text: "text-purple-400", dot: "bg-purple-400" },
+  drafts: { bg: "bg-orange-500/10", border: "border-orange-500/30 border-dashed", text: "text-orange-400", dot: "bg-orange-400" },
+};
+
+export const reviewStatusStyle: Record<string, { border: string; badge: string; badgeText: string }> = {
+  unreviewed: { border: "border-[#2a2a3e]", badge: "", badgeText: "" },
+  approved: { border: "border-green-500/40", badge: "bg-green-500/15", badgeText: "text-green-400" },
+  rejected: { border: "border-red-500/40", badge: "bg-red-500/15", badgeText: "text-red-400" },
+};
+
+export const skillRatingStyle: Record<string, { bg: string; text: string; label: string }> = {
+  useful: { bg: "bg-green-500/15", text: "text-green-400", label: "Useful" },
+  not_useful: { bg: "bg-red-500/15", text: "text-red-400", label: "Not Useful" },
+  needs_revision: { bg: "bg-yellow-500/15", text: "text-yellow-400", label: "Needs Revision" },
+};
+
+export const hypOutcomeStyle: Record<string, { bg: string; text: string; label: string }> = {
+  untested: { bg: "bg-gray-500/10", text: "text-gray-400", label: "Untested" },
+  testing: { bg: "bg-blue-500/15", text: "text-blue-400", label: "Testing" },
+  validated: { bg: "bg-green-500/15", text: "text-green-400", label: "Validated" },
+  invalidated: { bg: "bg-red-500/15", text: "text-red-400", label: "Invalidated" },
 };
 
 export const effortColor: Record<string, string> = {

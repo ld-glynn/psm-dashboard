@@ -1,43 +1,41 @@
-import { PipelineData } from "@/lib/types";
+import type { PipelineData, SkillFeedback, CostSummary } from "@/lib/types";
 
-export function StatsGrid({ data }: { data: PipelineData }) {
+interface StatsGridProps {
+  data: PipelineData;
+  skillFeedback?: Record<string, SkillFeedback>;
+  costSummary?: CostSummary;
+}
+
+export function StatsGrid({ data, skillFeedback, costSummary }: StatsGridProps) {
   const avgConfidence =
     data.patterns.length > 0
-      ? data.patterns.reduce((sum, p) => sum + p.confidence, 0) /
-        data.patterns.length
+      ? data.patterns.reduce((sum, p) => sum + p.confidence, 0) / data.patterns.length
       : 0;
 
-  const domainCounts = data.catalog.reduce(
-    (acc, p) => {
-      acc[p.domain] = (acc[p.domain] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
-  const topDomain = Object.entries(domainCounts).sort(
-    (a, b) => b[1] - a[1]
-  )[0];
+  const domainCounts = data.catalog.reduce((acc, p) => {
+    acc[p.domain] = (acc[p.domain] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+  const topDomain = Object.entries(domainCounts).sort((a, b) => b[1] - a[1])[0];
 
-  const severityCounts = data.catalog.reduce(
-    (acc, p) => {
-      acc[p.severity] = (acc[p.severity] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
+  const severityCounts = data.catalog.reduce((acc, p) => {
+    acc[p.severity] = (acc[p.severity] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
-  const skillTypeCounts = data.newHires.reduce(
-    (acc, agent) => {
-      agent.skills.forEach((s) => {
-        acc[s.skill_type] = (acc[s.skill_type] || 0) + 1;
-      });
-      return acc;
-    },
-    {} as Record<string, number>
-  );
+  const skillTypeCounts = data.newHires.reduce((acc, agent) => {
+    agent.skills.forEach((s) => { acc[s.skill_type] = (acc[s.skill_type] || 0) + 1; });
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Feedback quality score
+  const fbEntries = skillFeedback ? Object.values(skillFeedback) : [];
+  const fbUseful = fbEntries.filter((f) => f.rating === "useful").length;
+  const fbTotal = fbEntries.length;
+  const qualityPct = fbTotal > 0 ? Math.round((fbUseful / fbTotal) * 100) : -1;
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
       <StatCard
         label="Top Domain"
         value={topDomain ? topDomain[0] : "—"}
@@ -55,32 +53,32 @@ export function StatsGrid({ data }: { data: PipelineData }) {
       />
       <StatCard
         label="Agent Skills"
-        value={Object.values(skillTypeCounts)
-          .reduce((a, b) => a + b, 0)
-          .toString()}
-        detail={Object.entries(skillTypeCounts)
-          .map(([k, v]) => `${v} ${k.replace("_", " ")}`)
-          .join(", ")}
+        value={Object.values(skillTypeCounts).reduce((a, b) => a + b, 0).toString()}
+        detail={Object.entries(skillTypeCounts).map(([k, v]) => `${v} ${k.replace("_", " ")}`).join(", ")}
+      />
+      <StatCard
+        label="Skill Quality"
+        value={qualityPct >= 0 ? `${qualityPct}%` : "—"}
+        detail={fbTotal > 0 ? `${fbTotal} rated, ${fbUseful} useful` : "No ratings yet"}
+        accent={qualityPct >= 70 ? "text-green-400" : qualityPct >= 40 ? "text-yellow-400" : qualityPct >= 0 ? "text-red-400" : undefined}
+      />
+      <StatCard
+        label="Pipeline Cost"
+        value={costSummary ? `$${costSummary.totalCostUsd.toFixed(2)}` : "—"}
+        detail={costSummary && costSummary.totalCalls > 0
+          ? `${costSummary.totalCalls} calls`
+          : "No cost data"}
+        accent={costSummary?.overBudget ? "text-red-400" : costSummary?.atWarning ? "text-yellow-400" : undefined}
       />
     </div>
   );
 }
 
-function StatCard({
-  label,
-  value,
-  detail,
-}: {
-  label: string;
-  value: string;
-  detail: string;
-}) {
+function StatCard({ label, value, detail, accent }: { label: string; value: string; detail: string; accent?: string }) {
   return (
     <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4">
-      <div className="text-xs text-white/40 uppercase tracking-wider">
-        {label}
-      </div>
-      <div className="text-2xl font-bold text-white mt-1">{value}</div>
+      <div className="text-xs text-white/40 uppercase tracking-wider">{label}</div>
+      <div className={`text-2xl font-bold mt-1 ${accent || "text-white"}`}>{value}</div>
       <div className="text-xs text-white/40 mt-1">{detail}</div>
     </div>
   );
