@@ -64,15 +64,19 @@ export default function AgentsPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {engineAgents.map((agent) => {
-            const colors =
-              stageColors[agent.stage] || stageColors.catalog;
+        {(() => {
+          const orchestrator = engineAgents.find((a) => a.id === "orchestrator");
+          const pipelineAgents = engineAgents.filter(
+            (a) => a.id !== "orchestrator" && a.id !== "hiring_manager"
+          );
+          const hiringManager = engineAgents.find((a) => a.id === "hiring_manager");
 
+          const renderAgentCard = (agent: typeof engineAgents[number], extra?: string) => {
+            const colors = stageColors[agent.stage] || stageColors.catalog;
             return (
               <div
                 key={agent.id}
-                className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4"
+                className={`bg-[#1a1a2e] border rounded-xl p-4 ${extra || "border-[#2a2a3e]"}`}
               >
                 <div className="flex items-center gap-3 mb-2">
                   <div
@@ -116,8 +120,70 @@ export default function AgentsPage() {
                 </div>
               </div>
             );
-          })}
-        </div>
+          };
+
+          return (
+            <div className="flex flex-col items-center gap-0">
+              {/* Orchestrator — top of hierarchy */}
+              {orchestrator && (
+                <div className="w-full max-w-md">
+                  {renderAgentCard(orchestrator, "border-white/20")}
+                </div>
+              )}
+
+              {/* Connector: Orchestrator → delegates */}
+              <div className="flex flex-col items-center">
+                <div className="w-px h-6 bg-white/15" />
+                <div className="text-[10px] text-white/25 px-3 py-1 rounded-full border border-white/10 bg-[#0d0d14]">
+                  delegates to
+                </div>
+                <div className="w-px h-6 bg-white/15" />
+              </div>
+
+              {/* Pipeline agents — sequential row */}
+              <div className="w-full flex flex-col gap-0">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {pipelineAgents.map((agent) => renderAgentCard(agent))}
+                </div>
+
+                {/* Connector: Pipeline → Hiring Manager */}
+                {hiringManager && (
+                  <>
+                    <div className="flex flex-col items-center">
+                      <div className="w-px h-6 bg-white/15" />
+                      <div className="flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-white/20">
+                          <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        <span className="text-[10px] text-white/25 px-3 py-1 rounded-full border border-purple-500/20 bg-[#0d0d14]">
+                          outputs feed into
+                        </span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-white/20">
+                          <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                      <div className="w-px h-6 bg-purple-500/20" />
+                    </div>
+
+                    {/* Hiring Manager — generates T2 agents */}
+                    <div className="w-full max-w-md mx-auto">
+                      {renderAgentCard(hiringManager, "border-purple-500/30")}
+                    </div>
+
+                    {/* Connector: Hiring Manager → T2 */}
+                    <div className="flex flex-col items-center">
+                      <div className="w-px h-6 bg-purple-500/20" />
+                      <div className="text-[10px] text-purple-300/40 px-3 py-1 rounded-full border border-purple-500/15 bg-[#0d0d14]">
+                        generates Agent New Hires
+                      </div>
+                      <div className="w-px h-4 bg-purple-500/15" />
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* --- Tier 2: Agent New Hires --- */}
@@ -242,49 +308,66 @@ export default function AgentsPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {data.newHires.flatMap((agent) =>
-            agent.skills.map((skill, i) => {
-              const hyp = hypMap[skill.hypothesis_id];
-              return (
-                <div
-                  key={`${agent.agent_id}-${i}`}
-                  className={`border rounded-xl p-4 ${skillTypeColors[skill.skill_type]}`}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div
-                      className={`w-2 h-2 rounded-full flex-shrink-0 ${statusDot[skill.status]}`}
-                    />
-                    <span className="text-sm font-semibold">
-                      {skillTypeLabels[skill.skill_type]}
-                    </span>
-                    <span className="text-[10px] opacity-50">
-                      P{skill.priority}
-                    </span>
-                    <span className="text-[10px] opacity-40 ml-auto">
-                      {skill.status.replace("_", " ")}
-                    </span>
-                  </div>
-                  <div className="text-xs opacity-60 mb-2">
-                    Agent: {agent.name}
-                  </div>
-                  {hyp && (
-                    <div className="text-xs opacity-50 leading-relaxed">
-                      <span className="opacity-70">Hypothesis:</span>{" "}
-                      {hyp.statement.length > 120
-                        ? hyp.statement.slice(0, 120) + "..."
-                        : hyp.statement}
-                    </div>
-                  )}
-                  {hyp && (
-                    <div className="text-[10px] opacity-40 mt-1.5">
-                      Expected: {hyp.expected_outcome}
-                    </div>
-                  )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {(["recommend", "action_plan", "process_doc", "investigate"] as const).map((skillType) => {
+            const usages = data.newHires.flatMap((agent) =>
+              agent.skills
+                .filter((s) => s.skill_type === skillType)
+                .map((s) => ({ agent, skill: s, hyp: hypMap[s.hypothesis_id] }))
+            );
+            if (usages.length === 0) return null;
+
+            return (
+              <div
+                key={skillType}
+                className={`border rounded-xl p-4 ${skillTypeColors[skillType]}`}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-base font-semibold">
+                    {skillTypeLabels[skillType]}
+                  </span>
+                  <span className="text-[10px] opacity-50 ml-auto">
+                    {usages.length} {usages.length === 1 ? "agent" : "agents"}
+                  </span>
                 </div>
-              );
-            })
-          )}
+
+                <div className="space-y-3">
+                  {usages.map(({ agent, skill, hyp }, i) => (
+                    <div
+                      key={`${agent.agent_id}-${i}`}
+                      className="bg-black/15 rounded-lg px-3 py-2.5"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-5 h-5 rounded bg-purple-500/15 flex items-center justify-center flex-shrink-0">
+                          <span className="text-[9px] font-bold text-purple-300">
+                            {agent.name[0]}
+                          </span>
+                        </div>
+                        <span className="text-xs font-medium opacity-80">
+                          {agent.name}
+                        </span>
+                        <div className="flex items-center gap-1.5 ml-auto">
+                          <div
+                            className={`w-1.5 h-1.5 rounded-full ${statusDot[skill.status]}`}
+                          />
+                          <span className="text-[10px] opacity-40">
+                            {skill.status.replace("_", " ")}
+                          </span>
+                        </div>
+                      </div>
+                      {hyp && (
+                        <div className="text-[11px] opacity-50 leading-relaxed mt-1">
+                          {hyp.statement.length > 100
+                            ? hyp.statement.slice(0, 100) + "..."
+                            : hyp.statement}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
