@@ -5,6 +5,7 @@ import patternsData from "../../public/data/patterns.json";
 import themesData from "../../public/data/themes.json";
 import hypothesesData from "../../public/data/hypotheses.json";
 import newHiresData from "../../public/data/new_hires.json";
+import evalResultsData from "../../public/data/eval_results.json";
 
 export function loadPipelineData(): PipelineData {
   return {
@@ -13,6 +14,7 @@ export function loadPipelineData(): PipelineData {
     themes: themesData as PipelineData["themes"],
     hypotheses: hypothesesData as PipelineData["hypotheses"],
     newHires: newHiresData as PipelineData["newHires"],
+    evalResults: evalResultsData as PipelineData["evalResults"],
   };
 }
 

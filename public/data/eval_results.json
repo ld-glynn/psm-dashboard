@@ -1,0 +1,118 @@
+[
+  {
+    "agent_id": "AGENT-001",
+    "agent_name": "Knowledge Architect",
+    "stage": "screening",
+    "passed": true,
+    "pass_rate": 1.0,
+    "avg_score": 0.95,
+    "hard_failures": 0,
+    "reason": "Passed all 2 screening cases",
+    "case_results": [
+      {
+        "case_id": "screening-AGENT-001-action_plan-1",
+        "passed": true,
+        "score": 0.92,
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "case_id": "screening-AGENT-001-process_doc-2",
+        "passed": true,
+        "score": 0.98,
+        "failures": [],
+        "warnings": ["Only referenced 2/3 input IDs"]
+      }
+    ]
+  },
+  {
+    "agent_id": "AGENT-002",
+    "agent_name": "Feedback Loop Designer",
+    "stage": "screening",
+    "passed": true,
+    "pass_rate": 1.0,
+    "avg_score": 0.88,
+    "hard_failures": 0,
+    "reason": "Passed all 2 screening cases",
+    "case_results": [
+      {
+        "case_id": "screening-AGENT-002-recommend-1",
+        "passed": true,
+        "score": 0.85,
+        "failures": [],
+        "warnings": ["Low keyword coverage: 2/5 domain terms found"]
+      },
+      {
+        "case_id": "screening-AGENT-002-process_doc-2",
+        "passed": true,
+        "score": 0.91,
+        "failures": [],
+        "warnings": []
+      }
+    ]
+  },
+  {
+    "agent_id": "AGENT-003",
+    "agent_name": "Incident Response Specialist",
+    "stage": "screening",
+    "passed": true,
+    "pass_rate": 1.0,
+    "avg_score": 0.91,
+    "hard_failures": 0,
+    "reason": "Passed all 2 screening cases",
+    "case_results": [
+      {
+        "case_id": "screening-AGENT-003-action_plan-1",
+        "passed": true,
+        "score": 0.94,
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "case_id": "screening-AGENT-003-recommend-2",
+        "passed": true,
+        "score": 0.88,
+        "failures": [],
+        "warnings": ["WEAK_NEXT_STEPS: Expected >= 1 next_steps, got 1"]
+      }
+    ]
+  },
+  {
+    "agent_id": "AGENT-004",
+    "agent_name": "Planning & Metrics Analyst",
+    "stage": "screening",
+    "passed": true,
+    "pass_rate": 1.0,
+    "avg_score": 0.82,
+    "hard_failures": 0,
+    "reason": "Passed all 1 screening cases",
+    "case_results": [
+      {
+        "case_id": "screening-AGENT-004-investigate-1",
+        "passed": true,
+        "score": 0.82,
+        "failures": [],
+        "warnings": ["SHORT_CONTENT: 210 chars (expected >= 250)", "Low keyword coverage: 1/4 domain terms found"]
+      }
+    ]
+  },
+  {
+    "agent_id": "AGENT-REJ-001",
+    "agent_name": "Process Automation Lead",
+    "stage": "screening",
+    "passed": false,
+    "pass_rate": 0.0,
+    "avg_score": 0.0,
+    "hard_failures": 1,
+    "reason": "Hard failures: 1 (must be 0)",
+    "case_results": [
+      {
+        "case_id": "screening-AGENT-REJ-001-action_plan-1",
+        "passed": false,
+        "score": 0.0,
+        "failures": ["HALLUCINATED_REF"],
+        "warnings": []
+      }
+    ]
+  }
+]

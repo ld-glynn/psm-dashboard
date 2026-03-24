@@ -40,6 +40,12 @@ export default function AgentsPage() {
     0
   );
 
+  const evalMap = Object.fromEntries(
+    data.evalResults.map((e) => [e.agent_id, e])
+  );
+  const passedEvals = data.evalResults.filter((e) => e.passed);
+  const failedEvals = data.evalResults.filter((e) => !e.passed);
+
   return (
     <div className="max-w-5xl mx-auto">
       <div className="mb-8">
@@ -186,6 +192,132 @@ export default function AgentsPage() {
         })()}
       </div>
 
+      {/* --- Screening Gate --- */}
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-6 h-6 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-emerald-400">
+              <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <h2 className="text-lg font-semibold text-white/80">
+            Screening Gate
+          </h2>
+          <span className="text-xs text-white/30">
+            {passedEvals.length} passed / {failedEvals.length} rejected of {data.evalResults.length} candidates
+          </span>
+        </div>
+
+        <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-5">
+          <div className="space-y-3">
+            {data.evalResults.map((evalResult) => (
+              <div
+                key={evalResult.agent_id}
+                className={`flex items-center gap-4 p-3 rounded-lg border ${
+                  evalResult.passed
+                    ? "border-emerald-500/15 bg-emerald-500/5"
+                    : "border-red-500/15 bg-red-500/5"
+                }`}
+              >
+                {/* Pass/Fail indicator */}
+                <div
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    evalResult.passed
+                      ? "bg-emerald-500/15 text-emerald-400"
+                      : "bg-red-500/15 text-red-400"
+                  }`}
+                >
+                  {evalResult.passed ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </div>
+
+                {/* Agent info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-white/90">
+                      {evalResult.agent_name}
+                    </span>
+                    <span className="text-[10px] text-white/30">
+                      {evalResult.agent_id}
+                    </span>
+                    {!evalResult.passed && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/15 text-red-300">
+                        rejected
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-white/40 mt-0.5">
+                    {evalResult.reason}
+                  </div>
+                </div>
+
+                {/* Score + cases */}
+                <div className="flex items-center gap-4 flex-shrink-0">
+                  <div className="text-right">
+                    <div className={`text-sm font-bold ${
+                      evalResult.avg_score >= 0.9
+                        ? "text-emerald-300"
+                        : evalResult.avg_score >= 0.7
+                        ? "text-yellow-300"
+                        : "text-red-300"
+                    }`}>
+                      {(evalResult.avg_score * 100).toFixed(0)}%
+                    </div>
+                    <div className="text-[10px] text-white/30">avg score</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-bold text-white/70">
+                      {evalResult.case_results.filter((c) => c.passed).length}/{evalResult.case_results.length}
+                    </div>
+                    <div className="text-[10px] text-white/30">cases</div>
+                  </div>
+                  {evalResult.hard_failures > 0 && (
+                    <div className="text-right">
+                      <div className="text-sm font-bold text-red-300">
+                        {evalResult.hard_failures}
+                      </div>
+                      <div className="text-[10px] text-red-300/50">hard fail</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Failure code legend */}
+          {failedEvals.length > 0 && (
+            <div className="mt-4 pt-3 border-t border-[#2a2a3e]">
+              <div className="text-[10px] uppercase tracking-wider text-white/25 mb-2">
+                Failure Codes
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {Array.from(
+                  new Set(
+                    failedEvals.flatMap((e) =>
+                      e.case_results.flatMap((c) => c.failures)
+                    )
+                  )
+                ).map((code) => (
+                  <span
+                    key={code}
+                    className="text-[10px] px-2 py-1 rounded bg-red-500/10 text-red-300/70 border border-red-500/15"
+                  >
+                    {code}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* --- Tier 2: Agent New Hires --- */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
@@ -232,6 +364,19 @@ export default function AgentsPage() {
                           {activeSkills} active
                         </span>
                       )}
+                      {(() => {
+                        const ev = evalMap[agent.agent_id];
+                        if (!ev) return null;
+                        return (
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                            ev.passed
+                              ? "bg-emerald-500/15 text-emerald-300"
+                              : "bg-red-500/15 text-red-300"
+                          }`}>
+                            {ev.passed ? "screened" : "failed"} {(ev.avg_score * 100).toFixed(0)}%
+                          </span>
+                        );
+                      })()}
                     </div>
                     <div className="text-xs text-white/40">{agent.title}</div>
                   </div>

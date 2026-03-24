@@ -77,10 +77,33 @@ export interface EngineAgent {
   itemsProcessed: number;
 }
 
+// --- Evaluation Framework ---
+
+export interface EvalCaseResult {
+  case_id: string;
+  passed: boolean;
+  score: number;
+  failures: string[];
+  warnings: string[];
+}
+
+export interface EvalResult {
+  agent_id: string;
+  agent_name: string;
+  stage: "screening" | "gold";
+  passed: boolean;
+  pass_rate: number;
+  avg_score: number;
+  hard_failures: number;
+  reason: string;
+  case_results: EvalCaseResult[];
+}
+
 export interface PipelineData {
   catalog: CatalogEntry[];
   patterns: Pattern[];
   themes: ThemeSummary[];
   hypotheses: Hypothesis[];
   newHires: AgentNewHire[];
+  evalResults: EvalResult[];
 }
