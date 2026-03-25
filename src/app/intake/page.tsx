@@ -15,7 +15,7 @@ type IntakeTab = "manual" | "csv" | "ai";
 
 export default function IntakePage() {
   const {
-    data, drafts, pipelineRuns, pipelineImports,
+    data, drafts, pipelineRuns, pipelineImports, serverAvailable,
     addDraft, addBulkDrafts, removeDraft,
     exportAndRun, simulateRun, importResults, clearPipelineData,
   } = usePipelineData();
@@ -100,7 +100,7 @@ export default function IntakePage() {
 
           {activeTab === "manual" && <ProblemIntakeForm onSubmit={addDraft} />}
           {activeTab === "csv" && <BulkImport onImport={addBulkDrafts} />}
-          {activeTab === "ai" && <AiIntake catalog={data.catalog} onAccept={handleAiAccept} />}
+          {activeTab === "ai" && <AiIntake catalog={data.catalog} serverAvailable={serverAvailable} onAccept={handleAiAccept} />}
         </div>
       </div>
 

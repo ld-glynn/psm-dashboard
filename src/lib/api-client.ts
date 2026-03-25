@@ -96,6 +96,26 @@ export async function fetchIntegrations(): Promise<{
   return fetchJSON("/api/integrations");
 }
 
+// --- Parse ---
+
+export interface ParseResult {
+  problems: Array<{
+    id: string;
+    title: string;
+    description: string;
+    reported_by: string;
+    domain: string | null;
+    tags: string | null;
+  }>;
+}
+
+export async function parseText(text: string): Promise<ParseResult> {
+  return fetchJSON("/api/parse", {
+    method: "POST",
+    body: JSON.stringify({ text }),
+  });
+}
+
 // --- Health check ---
 
 export async function checkServerAvailable(): Promise<boolean> {

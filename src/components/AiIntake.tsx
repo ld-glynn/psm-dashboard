@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sparkles, Check, X, Pencil, Link2 } from "lucide-react";
 import { parseUnstructuredInput, ParsedProblemSuggestion } from "@/lib/ai-intake-parser";
+import { parseText } from "@/lib/api-client";
 import type { CatalogEntry, DraftProblem, ProblemSource } from "@/lib/types";
 
 const SEVERITIES = ["critical", "high", "medium", "low"];
@@ -10,13 +11,14 @@ const DOMAINS = ["process", "tooling", "communication", "knowledge", "infrastruc
 
 interface AiIntakeProps {
   catalog: CatalogEntry[];
+  serverAvailable?: boolean;
   onAccept: (
     input: Omit<DraftProblem, "problem_id" | "status" | "created_at">,
     source?: ProblemSource
   ) => void;
 }
 
-export function AiIntake({ catalog, onAccept }: AiIntakeProps) {
+export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) {
   const [inputText, setInputText] = useState("");
   const [processing, setProcessing] = useState(false);
   const [suggestions, setSuggestions] = useState<ParsedProblemSuggestion[]>([]);
@@ -25,19 +27,60 @@ export function AiIntake({ catalog, onAccept }: AiIntakeProps) {
   const [accepted, setAccepted] = useState<Set<string>>(new Set());
   const [rejected, setRejected] = useState<Set<string>>(new Set());
 
-  function handleProcess() {
+  const [useAI, setUseAI] = useState(false);
+
+  async function handleProcess() {
     if (!inputText.trim()) return;
     setProcessing(true);
     setSuggestions([]);
     setAccepted(new Set());
     setRejected(new Set());
 
-    // Simulate processing delay
+    // Try API-powered parsing first if server is available
+    if (serverAvailable) {
+      try {
+        const result = await parseText(inputText);
+        const apiSuggestions: ParsedProblemSuggestion[] = result.problems.map((p, i) => ({
+          tempId: `AI-API-${Date.now()}-${i}`,
+          title: p.title,
+          description: p.description,
+          domain: p.domain || "other",
+          severity: "medium" as const,
+          tags: p.tags ? p.tags.split(",").map((t: string) => t.trim()) : [],
+          confidence: 0.85,
+          relatedProblemIds: findRelatedLocal(p.title + " " + p.description, catalog),
+        }));
+        setSuggestions(apiSuggestions);
+        setUseAI(true);
+        setProcessing(false);
+        return;
+      } catch {
+        // Fall through to local parsing
+      }
+    }
+
+    // Local fallback
     setTimeout(() => {
       const results = parseUnstructuredInput(inputText, catalog);
       setSuggestions(results);
+      setUseAI(false);
       setProcessing(false);
     }, 1200);
+  }
+
+  function findRelatedLocal(text: string, cat: CatalogEntry[]): string[] {
+    const lower = text.toLowerCase();
+    const words = new Set(lower.split(/\W+/).filter((w) => w.length > 3));
+    return cat
+      .map((entry) => {
+        const entryWords = new Set(`${entry.title} ${entry.description_normalized}`.toLowerCase().split(/\W+/).filter((w) => w.length > 3));
+        const overlap = Array.from(words).filter((w) => entryWords.has(w)).length;
+        return { id: entry.problem_id, overlap };
+      })
+      .filter((r) => r.overlap >= 2)
+      .sort((a, b) => b.overlap - a.overlap)
+      .slice(0, 3)
+      .map((r) => r.id);
   }
 
   function handleAccept(suggestion: ParsedProblemSuggestion) {
@@ -84,14 +127,24 @@ export function AiIntake({ catalog, onAccept }: AiIntakeProps) {
         />
       </div>
 
-      <button
-        onClick={handleProcess}
-        disabled={!inputText.trim() || processing}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-pink-600/80 text-white hover:bg-pink-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-      >
-        <Sparkles size={14} />
-        {processing ? "Processing..." : "Extract Problems"}
-      </button>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={handleProcess}
+          disabled={!inputText.trim() || processing}
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-pink-600/80 text-white hover:bg-pink-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        >
+          <Sparkles size={14} />
+          {processing ? "Processing..." : "Extract Problems"}
+        </button>
+        {serverAvailable ? (
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">Claude API</span>
+        ) : (
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/30">Local parsing</span>
+        )}
+        {suggestions.length > 0 && useAI && (
+          <span className="text-[10px] text-pink-400">Powered by Claude</span>
+        )}
+      </div>
 
       {/* Processing animation */}
       {processing && (

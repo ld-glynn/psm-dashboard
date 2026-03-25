@@ -6,6 +6,7 @@ import { getEngineAgents } from "@/lib/data";
 import { stageColors, skillRatingStyle } from "@/lib/colors";
 import { ThumbsUp, ThumbsDown, RotateCcw, MessageSquare, Download, ChevronDown, ChevronRight } from "lucide-react";
 import { computeAgentQualityScores, computeSkillTypeTrends, exportFeedbackAsJSON } from "@/lib/feedback-analytics";
+import { CapabilitiesPanel } from "@/components/CapabilitiesPanel";
 import type { SkillRating } from "@/lib/types";
 
 const skillTypeLabels: Record<string, string> = {
@@ -587,6 +588,11 @@ export default function AgentsPage() {
             );
           })}
         </div>
+      </div>
+
+      {/* Capability Inventory */}
+      <div className="mb-10">
+        <CapabilitiesPanel />
       </div>
 
       {/* Summary */}

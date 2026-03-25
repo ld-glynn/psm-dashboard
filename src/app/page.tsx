@@ -5,12 +5,17 @@ import { PipelineFlow } from "@/components/PipelineFlow";
 import { StatsGrid } from "@/components/StatsGrid";
 import { ThemeList } from "@/components/ThemeList";
 import { CostPanel } from "@/components/CostPanel";
+import { RunPipeline } from "@/components/RunPipeline";
+import { ActivityFeed } from "@/components/ActivityFeed";
+import { OutcomesPanel } from "@/components/OutcomesPanel";
 
 export default function Home() {
   const {
-    data, drafts, skillFeedback, ingestionRecords,
+    data, drafts, skillFeedback, hypFeedback, ingestionRecords,
     costSummary, costEntries, costBudget,
+    activityEvents, serverAvailable,
     addCost, removeCost, simulateCosts, clearCosts, updateBudget,
+    runPipelineAPI, syncSourcesAPI,
   } = usePipelineData();
 
   const draftCount = drafts.filter((d) => d.status === "draft").length;
@@ -28,18 +33,31 @@ export default function Home() {
         </p>
       </div>
 
+      <RunPipeline
+        serverAvailable={serverAvailable}
+        onRunPipeline={runPipelineAPI}
+        onSyncSources={syncSourcesAPI}
+      />
+
       <PipelineFlow data={data} draftCount={draftCount} ingestionCount={ingestionCount} costSummary={costSummary} />
       <StatsGrid data={data} skillFeedback={skillFeedback} costSummary={costSummary} />
-      <CostPanel
-        costSummary={costSummary}
-        costEntries={costEntries}
-        costBudget={costBudget}
-        onAddCost={addCost}
-        onRemoveCost={removeCost}
-        onSimulateCosts={simulateCosts}
-        onClearCosts={clearCosts}
-        onUpdateBudget={updateBudget}
-      />
+
+      <OutcomesPanel hypFeedback={hypFeedback} serverAvailable={serverAvailable} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CostPanel
+          costSummary={costSummary}
+          costEntries={costEntries}
+          costBudget={costBudget}
+          onAddCost={addCost}
+          onRemoveCost={removeCost}
+          onSimulateCosts={simulateCosts}
+          onClearCosts={clearCosts}
+          onUpdateBudget={updateBudget}
+        />
+        <ActivityFeed events={activityEvents} />
+      </div>
+
       <ThemeList data={data} />
     </div>
   );

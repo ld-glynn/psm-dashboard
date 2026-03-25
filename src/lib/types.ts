@@ -275,6 +275,60 @@ export interface SkillOutput {
   reviewed: boolean;
 }
 
+// --- Solvability ---
+
+export type SolvabilityStatus = "pass" | "flag" | "drop";
+
+export interface SolvabilityResult {
+  pattern_id: string;
+  status: SolvabilityStatus;
+  confidence: number;
+  reason: string;
+  capability_match: boolean;
+  signal_strength: number;
+  actionability: number;
+}
+
+export interface SolvabilityReport {
+  results: SolvabilityResult[];
+  total_patterns: number;
+  passed: number;
+  flagged: number;
+  dropped: number;
+}
+
+// --- Capability Inventory ---
+
+export interface SkillCapability {
+  skill_type: string;
+  description: string;
+  output_formats: string[];
+}
+
+export interface AgentCapability {
+  agent_type: string;
+  description: string;
+  domains: string[];
+  skills: string[];
+}
+
+export interface CapabilityInventory {
+  agent_types: AgentCapability[];
+  skill_types: SkillCapability[];
+  min_problems_per_pattern: number;
+  version: string;
+}
+
+// --- Outcome Summary ---
+
+export interface OutcomeSummary {
+  total: number;
+  validated: number;
+  invalidated: number;
+  validation_rate: number;
+  by_domain: Record<string, { validated: number; invalidated: number; total: number }>;
+}
+
 export interface PipelineData {
   catalog: CatalogEntry[];
   patterns: Pattern[];

@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { Check, X, Pencil, Undo2 } from "lucide-react";
 import { stageColors, reviewStatusStyle, hypOutcomeStyle } from "@/lib/colors";
-import type { ReviewStatus, HypothesisOutcome } from "@/lib/types";
+import { SourceBadges } from "@/components/SourceEditor";
+import { SourceEditor } from "@/components/SourceEditor";
+import type { ReviewStatus, HypothesisOutcome, ProblemSource } from "@/lib/types";
 
 // --- Shared helpers ---
 
@@ -120,13 +122,20 @@ export function BoardColumn({ stageKey, title, count, children, fullWidth }: Boa
 
 // --- ProblemCard ---
 
+interface SourceProps {
+  sources?: ProblemSource[];
+  onAddSource?: (source: ProblemSource) => void;
+  onRemoveSource?: (sourceRecordId: string) => void;
+}
+
 export function ProblemCard({
   id, title, severity, domain, tags, description, status,
   reviewStatus, onReview, onSaveEdits,
+  sources, onAddSource, onRemoveSource,
 }: {
   id: string; title: string; severity: string; domain: string;
   tags: string[]; description: string; status?: "draft" | "cataloged";
-} & ReviewProps) {
+} & ReviewProps & SourceProps) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editVals, setEditVals] = useState({ title, severity, domain, tags: tags.join(", "), description });
@@ -200,7 +209,14 @@ export function ProblemCard({
                   <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/30">{tag}</span>
                 ))}
               </div>
+              {!expanded && sources && sources.length > 0 && (
+                <SourceBadges sources={sources} />
+              )}
             </>
+          )}
+
+          {expanded && !isEditing && onAddSource && onRemoveSource && (
+            <SourceEditor sources={sources || []} onAdd={onAddSource} onRemove={onRemoveSource} />
           )}
 
           {expanded && !isEditing && (

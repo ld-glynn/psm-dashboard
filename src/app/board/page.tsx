@@ -26,7 +26,7 @@ const TABS: { key: TabMode; label: string; tooltipKey: keyof typeof tooltips }[]
 ];
 
 export default function BoardPage() {
-  const { data, reviews, hypFeedback, setReview, saveEdits, setHypOutcome } = usePipelineData();
+  const { data, reviews, hypFeedback, setReview, saveEdits, setHypOutcome, addSourceToProblem, removeSourceFromProblem } = usePipelineData();
   const [filter, setFilter] = useState<FilterMode>("all");
   const [activeTab, setActiveTab] = useState<TabMode>("all");
 
@@ -130,6 +130,9 @@ export default function BoardPage() {
                   reviewStatus={reviews[entry.problem_id]?.status || "unreviewed"}
                   onReview={(status) => setReview(entry.problem_id, "catalog", status)}
                   onSaveEdits={(edits) => saveEdits(entry.problem_id, "catalog", edits)}
+                  sources={(entry as any).sources || []}
+                  onAddSource={(source) => addSourceToProblem(entry.problem_id, source)}
+                  onRemoveSource={(sourceRecordId) => removeSourceFromProblem(entry.problem_id, sourceRecordId)}
                 />
               ))}
           </BoardColumn>
