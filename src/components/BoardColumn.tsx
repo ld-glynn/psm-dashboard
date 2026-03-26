@@ -5,6 +5,8 @@ import { Check, X, Pencil, Undo2 } from "lucide-react";
 import { stageColors, reviewStatusStyle, hypOutcomeStyle } from "@/lib/colors";
 import { SourceBadges } from "@/components/SourceEditor";
 import { SourceEditor } from "@/components/SourceEditor";
+import { InfoTooltip } from "@/components/InfoTooltip";
+import { tooltips } from "@/lib/tooltip-content";
 import type { ReviewStatus, HypothesisOutcome, ProblemSource } from "@/lib/types";
 
 // --- Shared helpers ---
@@ -104,13 +106,22 @@ interface BoardColumnProps {
   fullWidth?: boolean;
 }
 
+const columnTooltips: Record<string, string> = {
+  catalog: tooltips.problems,
+  patterns: tooltips.patterns,
+  hypotheses: tooltips.hypotheses,
+  routes: tooltips.agents,
+};
+
 export function BoardColumn({ stageKey, title, count, children, fullWidth }: BoardColumnProps) {
   const colors = stageColors[stageKey] || stageColors.catalog;
+  const tip = columnTooltips[stageKey];
   return (
     <div className={fullWidth ? "flex flex-col w-full" : "flex flex-col min-w-[300px] max-w-[340px]"}>
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className={`w-2 h-2 rounded-full ${colors.dot}`} />
         <h3 className="text-sm font-semibold text-white/80">{title}</h3>
+        {tip && <InfoTooltip text={tip} size={12} />}
         <span className="text-xs text-white/40 ml-auto">{count}</span>
       </div>
       <div className="flex flex-col gap-2 overflow-y-auto max-h-[calc(100vh-200px)] pr-1">

@@ -1,6 +1,8 @@
 "use client";
 
 import { Database, Phone, MessageSquare, ArrowRight, Cpu } from "lucide-react";
+import { InfoTooltip } from "@/components/InfoTooltip";
+import { tooltips } from "@/lib/tooltip-content";
 import { sourceColors } from "@/lib/colors";
 import type { IntegrationConfig, IngestionRecord } from "@/lib/types";
 
@@ -25,7 +27,7 @@ export function IntegrationFlow({
   return (
     <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-5">
       <div className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-4">
-        Data Flow
+        Data Flow <InfoTooltip text={tooltips.dataFlow} size={11} />
       </div>
       <div className="flex items-center gap-4 overflow-x-auto pb-2">
         {/* Source nodes */}

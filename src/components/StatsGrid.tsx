@@ -1,3 +1,5 @@
+import { InfoTooltip } from "@/components/InfoTooltip";
+import { tooltips } from "@/lib/tooltip-content";
 import type { PipelineData, SkillFeedback, CostSummary } from "@/lib/types";
 
 interface StatsGridProps {
@@ -40,27 +42,32 @@ export function StatsGrid({ data, skillFeedback, costSummary }: StatsGridProps) 
         label="Top Domain"
         value={topDomain ? topDomain[0] : "—"}
         detail={topDomain ? `${topDomain[1]} problems` : ""}
+        tooltip={tooltips.problemDomain}
       />
       <StatCard
         label="Critical / High"
         value={`${(severityCounts.critical || 0) + (severityCounts.high || 0)}`}
         detail={`of ${data.catalog.length} total`}
+        tooltip={tooltips.problemSeverity}
       />
       <StatCard
         label="Avg Pattern Confidence"
         value={`${(avgConfidence * 100).toFixed(0)}%`}
         detail={`across ${data.patterns.length} patterns`}
+        tooltip={tooltips.patternConfidence}
       />
       <StatCard
         label="Agent Skills"
         value={Object.values(skillTypeCounts).reduce((a, b) => a + b, 0).toString()}
         detail={Object.entries(skillTypeCounts).map(([k, v]) => `${v} ${k.replace("_", " ")}`).join(", ")}
+        tooltip={tooltips.agentSkills}
       />
       <StatCard
         label="Skill Quality"
         value={qualityPct >= 0 ? `${qualityPct}%` : "—"}
         detail={fbTotal > 0 ? `${fbTotal} rated, ${fbUseful} useful` : "No ratings yet"}
         accent={qualityPct >= 70 ? "text-green-400" : qualityPct >= 40 ? "text-yellow-400" : qualityPct >= 0 ? "text-red-400" : undefined}
+        tooltip={tooltips.skillQuality}
       />
       <StatCard
         label="Pipeline Cost"
@@ -69,15 +76,19 @@ export function StatsGrid({ data, skillFeedback, costSummary }: StatsGridProps) 
           ? `${costSummary.totalCalls} calls`
           : "No cost data"}
         accent={costSummary?.overBudget ? "text-red-400" : costSummary?.atWarning ? "text-yellow-400" : undefined}
+        tooltip={tooltips.costTracking}
       />
     </div>
   );
 }
 
-function StatCard({ label, value, detail, accent }: { label: string; value: string; detail: string; accent?: string }) {
+function StatCard({ label, value, detail, accent, tooltip }: { label: string; value: string; detail: string; accent?: string; tooltip?: string }) {
   return (
     <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4">
-      <div className="text-xs text-white/40 uppercase tracking-wider">{label}</div>
+      <div className="flex items-center gap-1.5 text-xs text-white/40 uppercase tracking-wider">
+        {label}
+        {tooltip && <InfoTooltip text={tooltip} size={11} />}
+      </div>
       <div className={`text-2xl font-bold mt-1 ${accent || "text-white"}`}>{value}</div>
       <div className="text-xs text-white/40 mt-1">{detail}</div>
     </div>

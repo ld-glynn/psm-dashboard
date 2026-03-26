@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePipelineData } from "@/lib/use-pipeline-data";
 import { InfoTooltip } from "@/components/InfoTooltip";
+import { tooltips } from "@/lib/tooltip-content";
 import { ChevronDown, ChevronRight, CheckCircle2 } from "lucide-react";
 
 const skillTypeLabels: Record<string, string> = {
@@ -91,7 +92,8 @@ export default function SkillsPage() {
 
       {/* Group-by selector */}
       <div className="flex items-center gap-1">
-        <span className="text-xs text-white/30 mr-2">Group by:</span>
+        <span className="text-xs text-white/30 mr-1">Group by:</span>
+        <InfoTooltip text={tooltips.skillGroupBy} size={11} />
         {(["agent", "type", "flat"] as const).map((g) => (
           <button
             key={g}

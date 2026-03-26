@@ -55,7 +55,7 @@ export default function IntegrationsPage() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-white/80">
-            Ingestion Records ({ingestionRecords.length})
+            Ingestion Records ({ingestionRecords.length}) <InfoTooltip text={tooltips.structuredStatus} size={11} />
           </h2>
           <div className="flex items-center gap-3 text-xs">
             <span className="text-green-400">{totalStructured} structured</span>

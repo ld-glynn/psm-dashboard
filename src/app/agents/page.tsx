@@ -7,6 +7,8 @@ import { stageColors, skillRatingStyle } from "@/lib/colors";
 import { ThumbsUp, ThumbsDown, RotateCcw, MessageSquare, Download, ChevronDown, ChevronRight } from "lucide-react";
 import { computeAgentQualityScores, computeSkillTypeTrends, exportFeedbackAsJSON } from "@/lib/feedback-analytics";
 import { CapabilitiesPanel } from "@/components/CapabilitiesPanel";
+import { InfoTooltip } from "@/components/InfoTooltip";
+import { tooltips } from "@/lib/tooltip-content";
 import type { SkillRating } from "@/lib/types";
 
 const skillTypeLabels: Record<string, string> = {
@@ -179,7 +181,7 @@ export default function AgentsPage() {
             className="flex items-center gap-2 mb-4"
           >
             {showAnalytics ? <ChevronDown size={14} className="text-white/40" /> : <ChevronRight size={14} className="text-white/40" />}
-            <h2 className="text-lg font-semibold text-white/80">Feedback Analytics</h2>
+            <h2 className="text-lg font-semibold text-white/80">Feedback Analytics</h2> <InfoTooltip text={tooltips.feedbackAnalytics} />
             <span className="text-xs text-white/30">{feedbackEntries.length} ratings</span>
           </button>
 
@@ -281,7 +283,7 @@ export default function AgentsPage() {
           <div className="w-6 h-6 rounded bg-white/5 border border-white/10 flex items-center justify-center">
             <span className="text-[10px] font-bold text-white/50">T1</span>
           </div>
-          <h2 className="text-lg font-semibold text-white/80">Engine Agents</h2>
+          <h2 className="text-lg font-semibold text-white/80">Engine Agents</h2> <InfoTooltip text={tooltips.engineAgents} />
           <span className="text-xs text-white/30">{engineAgents.length} agents — run the PSM pipeline</span>
         </div>
 
@@ -369,7 +371,7 @@ export default function AgentsPage() {
               <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <h2 className="text-lg font-semibold text-white/80">Screening Gate</h2>
+          <h2 className="text-lg font-semibold text-white/80">Screening Gate</h2> <InfoTooltip text={tooltips.screeningGate} />
           <span className="text-xs text-white/30">{passedEvals.length} passed / {failedEvals.length} rejected of {data.evalResults.length} candidates</span>
         </div>
 
@@ -433,7 +435,7 @@ export default function AgentsPage() {
           <div className="w-6 h-6 rounded bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
             <span className="text-[10px] font-bold text-purple-400">T2</span>
           </div>
-          <h2 className="text-lg font-semibold text-white/80">Agent New Hires</h2>
+          <h2 className="text-lg font-semibold text-white/80">Agent New Hires</h2> <InfoTooltip text={tooltips.agentNewHires} />
           <span className="text-xs text-white/30">{data.newHires.length} specialists — one per problem cluster</span>
         </div>
 
@@ -531,7 +533,7 @@ export default function AgentsPage() {
           <div className="w-6 h-6 rounded bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
             <span className="text-[10px] font-bold text-cyan-400">T3</span>
           </div>
-          <h2 className="text-lg font-semibold text-white/80">Skills</h2>
+          <h2 className="text-lg font-semibold text-white/80">Skills</h2> <InfoTooltip text={tooltips.agentSkills} />
           <span className="text-xs text-white/30">{totalSkills} capabilities across {data.newHires.length} agents</span>
         </div>
 

@@ -8,6 +8,8 @@ import { CostPanel } from "@/components/CostPanel";
 import { RunPipeline } from "@/components/RunPipeline";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { OutcomesPanel } from "@/components/OutcomesPanel";
+import { InfoTooltip } from "@/components/InfoTooltip";
+import { tooltips } from "@/lib/tooltip-content";
 
 export default function Home() {
   const {
@@ -24,7 +26,10 @@ export default function Home() {
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white">Problem Solution Mapping</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-white">Problem Solution Mapping</h1>
+          <InfoTooltip text={tooltips.pipelineStages} />
+        </div>
         <p className="text-sm text-white/40 mt-1">
           Pipeline overview — {data.catalog.length} problems
           {draftCount > 0 && (
