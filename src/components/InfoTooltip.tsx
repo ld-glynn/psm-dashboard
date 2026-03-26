@@ -21,13 +21,13 @@ export function InfoTooltip({ text, position = "top", size = 13 }: InfoTooltipPr
 
   return (
     <span
-      className="relative inline-flex items-center"
+      className="relative inline-flex items-center align-middle ml-1"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
       <Info
         size={size}
-        className="text-white/20 hover:text-white/40 transition-colors cursor-help"
+        className="text-white/20 hover:text-white/40 transition-colors cursor-help flex-shrink-0"
       />
       {show && (
         <div

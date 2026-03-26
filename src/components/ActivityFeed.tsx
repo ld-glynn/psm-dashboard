@@ -46,7 +46,7 @@ export function ActivityFeed({ events, maxVisible = 8 }: ActivityFeedProps) {
   return (
     <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider">Recent Activity</h3> <InfoTooltip text={tooltips.activityFeed} size={11} />
+        <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider inline">Recent Activity</h3><InfoTooltip text={tooltips.activityFeed} size={11} />
         <span className="text-[10px] text-white/20">{events.length} events</span>
       </div>
       <div className="space-y-2">

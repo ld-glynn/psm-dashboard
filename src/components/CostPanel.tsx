@@ -95,7 +95,7 @@ export function CostPanel({
   return (
     <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-5 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-white/80">Cost Tracking</h2> <InfoTooltip text={tooltips.costTracking} />
+        <h2 className="text-sm font-semibold text-white/80 inline">Cost Tracking</h2><InfoTooltip text={tooltips.costTracking} />
         <div className="flex items-center gap-2">
           <button onClick={onSimulateCosts} className="px-2 py-1 text-[10px] rounded bg-blue-600/60 text-white/80 hover:bg-blue-500/80 transition-colors">
             Simulate
