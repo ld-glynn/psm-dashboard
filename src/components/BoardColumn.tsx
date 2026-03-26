@@ -439,12 +439,13 @@ export function HypothesisCard({
 // --- NewHireCard ---
 
 export function NewHireCard({
-  id, name, title, persona, skills, assignedTo,
+  id, name, title, persona, skills, assignedTo, lifecycleState,
   reviewStatus, onReview, onSaveEdits, onEditModal,
 }: {
   id: string; name: string; title: string; persona: string;
   skills: { skill_type: string; status: string; priority: number }[];
   assignedTo: string | null;
+  lifecycleState?: string;
 } & ReviewProps) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -488,6 +489,16 @@ export function NewHireCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-white/90 truncate">{name}</span>
+            {lifecycleState && lifecycleState !== "created" && (
+              <span className={`text-[8px] px-1 py-0.5 rounded uppercase tracking-wide font-medium ${
+                lifecycleState === "deployed" ? "bg-green-500/15 text-green-400" :
+                lifecycleState === "proposed" ? "bg-yellow-500/15 text-yellow-400" :
+                lifecycleState === "active" ? "bg-cyan-500/15 text-cyan-400" :
+                lifecycleState === "paused" ? "bg-orange-500/15 text-orange-400" :
+                lifecycleState === "retired" ? "bg-red-500/15 text-red-400" :
+                "bg-white/5 text-white/40"
+              }`}>{lifecycleState}</span>
+            )}
             <ReviewBadge status={reviewStatus} />
           </div>
           <div className="text-[10px] text-white/30">{title}</div>

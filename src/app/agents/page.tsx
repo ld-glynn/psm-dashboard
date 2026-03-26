@@ -4,7 +4,8 @@ import { useState } from "react";
 import { usePipelineData } from "@/lib/use-pipeline-data";
 import { getEngineAgents } from "@/lib/data";
 import { stageColors, skillRatingStyle } from "@/lib/colors";
-import { ThumbsUp, ThumbsDown, RotateCcw, MessageSquare, Download, ChevronDown, ChevronRight } from "lucide-react";
+import { ThumbsUp, ThumbsDown, RotateCcw, MessageSquare, Download, ChevronDown, ChevronRight, Play, Pause, Power, Rocket, Clock } from "lucide-react";
+import { approveSpec, deployAgent, invokeAgent, pauseAgent, resumeAgent, retireAgent } from "@/lib/api-client";
 import { computeAgentQualityScores, computeSkillTypeTrends, exportFeedbackAsJSON } from "@/lib/feedback-analytics";
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { tooltips } from "@/lib/tooltip-content";
@@ -133,8 +134,9 @@ function SkillFeedbackUI({
 }
 
 export default function AgentsPage() {
-  const { data, skillFeedback, rateSkill } = usePipelineData();
+  const { data, skillFeedback, rateSkill, serverAvailable } = usePipelineData();
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [lifecycleFilter, setLifecycleFilter] = useState<string>("all");
   const engineAgents = getEngineAgents(data);
 
   const patternMap = Object.fromEntries(data.patterns.map((p) => [p.pattern_id, p]));
@@ -435,21 +437,71 @@ export default function AgentsPage() {
             <span className="text-[10px] font-bold text-purple-400">T2</span>
           </div>
           <h2 className="text-lg font-semibold text-white/80 inline">Agent New Hires</h2><InfoTooltip text={tooltips.agentNewHires} />
-          <span className="text-xs text-white/30">{data.newHires.length} specialists — one per problem cluster</span>
+          <span className="text-xs text-white/30">{data.newHires.length} specialists</span>
         </div>
 
-        <div className="space-y-4">
-          {data.newHires.map((agent) => {
-            const pattern = patternMap[agent.pattern_id];
-            const activeSkills = agent.skills.filter((s) => s.status === "in_progress").length;
+        {/* Lifecycle state summary + filter */}
+        {(() => {
+          const stateCounts: Record<string, number> = {};
+          for (const a of data.newHires) {
+            const s = a.lifecycle_state || "created";
+            stateCounts[s] = (stateCounts[s] || 0) + 1;
+          }
+          const stateStyles: Record<string, string> = {
+            created: "bg-gray-500/15 text-gray-300",
+            screened: "bg-blue-500/15 text-blue-300",
+            proposed: "bg-yellow-500/15 text-yellow-300",
+            approved: "bg-emerald-500/15 text-emerald-300",
+            deployed: "bg-green-500/15 text-green-300",
+            active: "bg-cyan-500/15 text-cyan-300",
+            paused: "bg-orange-500/15 text-orange-300",
+            retired: "bg-red-500/15 text-red-300",
+          };
+          return (
+            <div className="flex items-center gap-1.5 mb-4 flex-wrap">
+              <button onClick={() => setLifecycleFilter("all")} className={`px-2 py-1 text-[10px] rounded transition-colors ${lifecycleFilter === "all" ? "bg-white/10 text-white" : "text-white/30 hover:text-white/60"}`}>All ({data.newHires.length})</button>
+              {Object.entries(stateCounts).map(([state, count]) => (
+                <button key={state} onClick={() => setLifecycleFilter(state)} className={`px-2 py-1 text-[10px] rounded transition-colors ${lifecycleFilter === state ? stateStyles[state] : "text-white/30 hover:text-white/60"}`}>
+                  {state} ({count})
+                </button>
+              ))}
+            </div>
+          );
+        })()}
 
-            // Feedback summary for this agent
+        <div className="space-y-4">
+          {data.newHires
+            .filter((a) => lifecycleFilter === "all" || (a.lifecycle_state || "created") === lifecycleFilter)
+            .map((agent) => {
+            const pattern = patternMap[agent.pattern_id];
+            const state = agent.lifecycle_state || "created";
             const agentFeedback = agent.skills.map((_, i) => skillFeedback[`${agent.agent_id}:${i}`]).filter(Boolean);
             const agentUseful = agentFeedback.filter((f) => f.rating === "useful").length;
-            const agentBad = agentFeedback.filter((f) => f.rating === "not_useful").length;
+
+            const stateStyles: Record<string, string> = {
+              created: "border-gray-500/20",
+              screened: "border-blue-500/20",
+              proposed: "border-yellow-500/20",
+              approved: "border-emerald-500/20",
+              deployed: "border-green-500/30",
+              active: "border-cyan-500/30",
+              paused: "border-orange-500/30",
+              retired: "border-red-500/20 opacity-50",
+            };
+            const stateBadgeStyles: Record<string, string> = {
+              created: "bg-gray-500/15 text-gray-300",
+              screened: "bg-blue-500/15 text-blue-300",
+              proposed: "bg-yellow-500/15 text-yellow-300",
+              approved: "bg-emerald-500/15 text-emerald-300",
+              deployed: "bg-green-500/15 text-green-300",
+              active: "bg-cyan-500/15 text-cyan-300",
+              paused: "bg-orange-500/15 text-orange-300",
+              retired: "bg-red-500/15 text-red-300",
+            };
 
             return (
-              <div key={agent.agent_id} className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-5">
+              <div key={agent.agent_id} className={`bg-[#1a1a2e] border rounded-xl p-5 ${stateStyles[state] || "border-[#2a2a3e]"}`}>
+                {/* Header */}
                 <div className="flex items-start gap-4 mb-3">
                   <div className="w-11 h-11 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center flex-shrink-0">
                     <span className="text-lg font-bold text-purple-400">{agent.name[0]}</span>
@@ -457,64 +509,78 @@ export default function AgentsPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-white/90">{agent.name}</h3>
-                      <span className="text-xs text-white/30">{agent.agent_id}</span>
-                      {activeSkills > 0 && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-500/15 text-blue-300">{activeSkills} active</span>
-                      )}
-                      {(() => {
-                        const ev = evalMap[agent.agent_id];
-                        if (!ev) return null;
-                        return (
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${ev.passed ? "bg-emerald-500/15 text-emerald-300" : "bg-red-500/15 text-red-300"}`}>
-                            {ev.passed ? "screened" : "failed"} {(ev.avg_score * 100).toFixed(0)}%
-                          </span>
-                        );
-                      })()}
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wide font-medium ${stateBadgeStyles[state] || ""}`}>
+                        {state}
+                      </span>
+                      <span className="text-xs text-white/20">{agent.agent_id}</span>
                       {agentFeedback.length > 0 && (
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${agentBad > 0 ? "bg-red-500/15 text-red-300" : "bg-green-500/15 text-green-300"}`}>
-                          {agentUseful}/{agentFeedback.length} useful
-                        </span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-300">{agentUseful}/{agentFeedback.length} useful</span>
                       )}
                     </div>
                     <div className="text-xs text-white/40">{agent.title}</div>
                   </div>
-                  {agent.assigned_to_role && (
-                    <span className="text-[10px] px-2 py-1 rounded bg-white/5 text-white/40 flex-shrink-0">{agent.assigned_to_role}</span>
-                  )}
+
+                  {/* Lifecycle action buttons */}
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    {(state === "proposed" || state === "approved") && serverAvailable && (
+                      <button
+                        onClick={() => { if (state === "proposed" && agent.deployment_spec_id) approveSpec(agent.deployment_spec_id).then(() => window.location.reload()); else if (state === "approved") deployAgent(agent.agent_id).then(() => window.location.reload()); }}
+                        className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] rounded-md bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors border border-green-500/20"
+                      >
+                        <Rocket size={11} /> {state === "proposed" ? "Approve" : "Deploy"}
+                      </button>
+                    )}
+                    {state === "deployed" && serverAvailable && (
+                      <>
+                        <button onClick={() => invokeAgent(agent.agent_id).then(() => window.location.reload())} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors border border-blue-500/20">
+                          <Play size={11} /> Invoke
+                        </button>
+                        <button onClick={() => pauseAgent(agent.agent_id).then(() => window.location.reload())} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 transition-colors border border-orange-500/20">
+                          <Pause size={11} /> Pause
+                        </button>
+                      </>
+                    )}
+                    {state === "paused" && serverAvailable && (
+                      <button onClick={() => resumeAgent(agent.agent_id).then(() => window.location.reload())} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors border border-green-500/20">
+                        <Play size={11} /> Resume
+                      </button>
+                    )}
+                    {(state === "deployed" || state === "paused") && serverAvailable && (
+                      <button onClick={() => { if (confirm("Retire this agent?")) retireAgent(agent.agent_id).then(() => window.location.reload()); }} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors border border-red-500/20">
+                        <Power size={11} /> Retire
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <p className="text-xs text-white/40 leading-relaxed mb-3">{agent.persona}</p>
 
                 {pattern && (
                   <div className="text-xs px-2 py-1 rounded bg-yellow-500/8 border border-yellow-500/15 text-yellow-300/70 mb-3 inline-block">
-                    Solving: {pattern.name}
+                    Owns: {pattern.name} ({pattern.problem_ids.length} problems)
                   </div>
                 )}
 
-                {/* Tier 3: Skills with feedback */}
+                {/* Skills */}
                 <div className="mt-3 border-t border-[#2a2a3e] pt-3">
-                  <div className="text-[10px] uppercase tracking-wider text-white/25 mb-2">Skills — rate outputs</div>
+                  <div className="text-[10px] uppercase tracking-wider text-white/25 mb-2">Skills & Capabilities</div>
                   <div className="flex flex-wrap gap-2">
                     {agent.skills.map((skill, i) => {
                       const hyp = hypMap[skill.hypothesis_id];
                       const fb = skillFeedback[`${agent.agent_id}:${i}`];
+                      const execCount = skill.execution_count || 0;
                       return (
                         <div key={i} className={`text-xs px-2.5 py-1.5 rounded-lg border ${skillTypeColors[skill.skill_type]}`}>
                           <div className="flex items-center gap-2">
-                            <div className={`w-1.5 h-1.5 rounded-full ${statusDot[skill.status]}`} />
                             <span className="font-medium">{skillTypeLabels[skill.skill_type]}</span>
-                            <span className="text-[10px] opacity-50">P{skill.priority}</span>
+                            {execCount > 0 && (
+                              <span className="text-[9px] opacity-40 flex items-center gap-0.5"><Clock size={8} /> {execCount}x</span>
+                            )}
                           </div>
                           {hyp && (
                             <div className="text-[10px] opacity-50 mt-0.5 max-w-[280px] truncate">{hyp.expected_outcome}</div>
                           )}
-                          <SkillFeedbackUI
-                            agentId={agent.agent_id}
-                            skillIndex={i}
-                            currentRating={fb?.rating}
-                            currentNote={fb?.note}
-                            onRate={rateSkill}
-                          />
+                          <SkillFeedbackUI agentId={agent.agent_id} skillIndex={i} currentRating={fb?.rating} currentNote={fb?.note} onRate={rateSkill} />
                         </div>
                       );
                     })}

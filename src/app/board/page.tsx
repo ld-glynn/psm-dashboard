@@ -253,6 +253,7 @@ export default function BoardPage() {
                   persona={agent.persona}
                   skills={agent.skills}
                   assignedTo={agent.assigned_to_role}
+                  lifecycleState={agent.lifecycle_state}
                   reviewStatus={reviews[agent.agent_id]?.status || "unreviewed"}
                   onReview={(status) => setReview(agent.agent_id, "new_hire", status)}
                   onSaveEdits={(edits) => saveEdits(agent.agent_id, "new_hire", edits)}
