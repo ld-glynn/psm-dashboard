@@ -24,12 +24,17 @@ import {
 } from "./integration-store";
 import { getSources, addSource as storeAddSource, removeSource as storeRemoveSource } from "./source-store";
 import { getActivityEvents, addActivityEvent } from "./activity-store";
+import {
+  getManualPatterns, saveManualPattern, nextManualPatternId,
+  getManualHypotheses, saveManualHypothesis, nextManualHypothesisId,
+} from "./manual-entries-store";
 import { checkServerAvailable, triggerRun, triggerSync, fetchStageData } from "./api-client";
 import type {
   DraftProblem, CatalogEntry, PipelineData, ReviewRecord, ReviewStatus, ReviewEntityType,
   SkillFeedback, SkillRating, HypothesisFeedback, HypothesisOutcome,
   PipelineRun, PipelineImportResult, StageCostEntry, CostBudget, CostSummary, PipelineStage,
   IntegrationConfig, IntegrationSource, IngestionRecord, ProblemSource,
+  Pattern, Hypothesis,
 } from "./types";
 import type { ActivityEvent } from "./activity-store";
 
@@ -58,6 +63,8 @@ export function usePipelineData() {
   const [integrations, setIntegrationsState] = useState<IntegrationConfig[]>([]);
   const [ingestionRecords, setIngestionRecordsState] = useState<IngestionRecord[]>([]);
   const [problemSources, setProblemSources] = useState<Record<string, ProblemSource[]>>({});
+  const [manualPatterns, setManualPatterns] = useState<Pattern[]>([]);
+  const [manualHypotheses, setManualHypotheses] = useState<Hypothesis[]>([]);
   const [activityEvents, setActivityEvents] = useState<ActivityEvent[]>([]);
   const [serverAvailable, setServerAvailable] = useState(false);
   const [apiData, setApiData] = useState<PipelineData | null>(null);
@@ -76,6 +83,8 @@ export function usePipelineData() {
     setIntegrationsState(getIntegrations());
     setIngestionRecordsState(getIngestionRecords());
     setProblemSources(getSources());
+    setManualPatterns(getManualPatterns());
+    setManualHypotheses(getManualHypotheses());
     setActivityEvents(getActivityEvents());
   }, [version]);
 
@@ -132,11 +141,11 @@ export function usePipelineData() {
       const manualSources = problemSources[e.problem_id] || [];
       return { ...edited, sources: [...autoSources, ...manualSources] };
     });
-    const patterns = [...base.patterns, ...importedPatterns].map((p) => {
+    const patterns = [...base.patterns, ...importedPatterns, ...manualPatterns].map((p) => {
       const review = reviews[p.pattern_id];
       return review?.edits ? applyEdits(p, review.edits) : p;
     });
-    const hypotheses = [...base.hypotheses, ...importedHypotheses].map((h) => {
+    const hypotheses = [...base.hypotheses, ...importedHypotheses, ...manualHypotheses].map((h) => {
       const review = reviews[h.hypothesis_id];
       return review?.edits ? applyEdits(h, review.edits) : h;
     });
@@ -146,7 +155,7 @@ export function usePipelineData() {
     });
 
     return { ...base, catalog, patterns, hypotheses, newHires };
-  }, [drafts, reviews, pipelineImports, apiData, ingestionRecords, problemSources]);
+  }, [drafts, reviews, pipelineImports, apiData, ingestionRecords, problemSources, manualPatterns, manualHypotheses]);
 
   const costSummary = useMemo(() => computeCostSummary(costEntries, costBudget), [costEntries, costBudget]);
 
@@ -282,6 +291,23 @@ export function usePipelineData() {
     bump();
   }, [bump]);
 
+  // --- Manual entry actions ---
+  const createPattern = useCallback((input: Omit<Pattern, "pattern_id">) => {
+    const pattern: Pattern = { ...input, pattern_id: nextManualPatternId() };
+    saveManualPattern(pattern);
+    logActivity("draft", `Manual pattern created: ${pattern.name}`, `${pattern.problem_ids.length} problems linked`);
+    bump();
+    return pattern;
+  }, [bump]);
+
+  const createHypothesis = useCallback((input: Omit<Hypothesis, "hypothesis_id">) => {
+    const hypothesis: Hypothesis = { ...input, hypothesis_id: nextManualHypothesisId() };
+    saveManualHypothesis(hypothesis);
+    logActivity("draft", `Manual hypothesis created for ${hypothesis.pattern_id}`);
+    bump();
+    return hypothesis;
+  }, [bump]);
+
   return {
     data, drafts, reviews, skillFeedback, hypFeedback,
     pipelineRuns, pipelineImports,
@@ -304,5 +330,7 @@ export function usePipelineData() {
     toggleIntegration,
     // Source actions
     addSourceToProblem, removeSourceFromProblem,
+    // Manual entry actions
+    createPattern, createHypothesis,
   };
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Plus } from "lucide-react";
 import { usePipelineData } from "@/lib/use-pipeline-data";
 import {
   BoardColumn,
@@ -11,11 +12,15 @@ import {
 } from "@/components/BoardColumn";
 import { ReviewSummary } from "@/components/ReviewSummary";
 import { InfoTooltip } from "@/components/InfoTooltip";
+import { Modal } from "@/components/Modal";
+import { CreatePatternForm } from "@/components/CreatePatternForm";
+import { CreateHypothesisForm } from "@/components/CreateHypothesisForm";
 import { tooltips } from "@/lib/tooltip-content";
 import type { ReviewStatus } from "@/lib/types";
 
 type FilterMode = "all" | "unreviewed" | "approved" | "rejected";
 type TabMode = "all" | "catalog" | "patterns" | "hypotheses" | "routes";
+type CreateMode = null | "pattern" | "hypothesis";
 
 const TABS: { key: TabMode; label: string; tooltipKey: keyof typeof tooltips }[] = [
   { key: "all", label: "All Columns", tooltipKey: "pipelineStages" },
@@ -26,9 +31,15 @@ const TABS: { key: TabMode; label: string; tooltipKey: keyof typeof tooltips }[]
 ];
 
 export default function BoardPage() {
-  const { data, reviews, hypFeedback, setReview, saveEdits, setHypOutcome, addSourceToProblem, removeSourceFromProblem } = usePipelineData();
+  const {
+    data, reviews, hypFeedback,
+    setReview, saveEdits, setHypOutcome,
+    addSourceToProblem, removeSourceFromProblem,
+    createPattern, createHypothesis,
+  } = usePipelineData();
   const [filter, setFilter] = useState<FilterMode>("all");
   const [activeTab, setActiveTab] = useState<TabMode>("all");
+  const [createMode, setCreateMode] = useState<CreateMode>(null);
 
   // Count review statuses
   const allIds = [
@@ -66,14 +77,32 @@ export default function BoardPage() {
 
   return (
     <div className="max-w-full mx-auto">
-      <div className="mb-4">
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-white">Board View</h1>
-          <InfoTooltip text={tooltips.reviewStatus} />
+      <div className="mb-4 flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-white">Board View</h1>
+            <InfoTooltip text={tooltips.reviewStatus} />
+          </div>
+          <p className="text-sm text-white/40 mt-1">
+            Click cards to review — approve, reject, or edit inline
+          </p>
         </div>
-        <p className="text-sm text-white/40 mt-1">
-          Click cards to review — approve, reject, or edit inline
-        </p>
+
+        {/* Create buttons */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setCreateMode("pattern")}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 transition-colors border border-yellow-500/20"
+          >
+            <Plus size={12} /> Pattern
+          </button>
+          <button
+            onClick={() => setCreateMode("hypothesis")}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors border border-green-500/20"
+          >
+            <Plus size={12} /> Hypothesis
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -220,6 +249,38 @@ export default function BoardPage() {
           </BoardColumn>
         )}
       </div>
+
+      {/* Create Pattern Modal */}
+      <Modal
+        open={createMode === "pattern"}
+        onClose={() => setCreateMode(null)}
+        title="Create Pattern"
+      >
+        <CreatePatternForm
+          catalog={data.catalog}
+          onSubmit={(input) => {
+            createPattern(input);
+            setCreateMode(null);
+          }}
+          onCancel={() => setCreateMode(null)}
+        />
+      </Modal>
+
+      {/* Create Hypothesis Modal */}
+      <Modal
+        open={createMode === "hypothesis"}
+        onClose={() => setCreateMode(null)}
+        title="Create Hypothesis"
+      >
+        <CreateHypothesisForm
+          patterns={data.patterns}
+          onSubmit={(input) => {
+            createHypothesis(input);
+            setCreateMode(null);
+          }}
+          onCancel={() => setCreateMode(null)}
+        />
+      </Modal>
     </div>
   );
 }
