@@ -16,6 +16,7 @@ import { Modal } from "@/components/Modal";
 import { CreatePatternForm } from "@/components/CreatePatternForm";
 import { CreateHypothesisForm } from "@/components/CreateHypothesisForm";
 import { ProblemIntakeForm } from "@/components/ProblemIntakeForm";
+import { EditProblemModal, EditPatternModal, EditHypothesisModal, EditAgentModal } from "@/components/EditEntryModal";
 import { tooltips } from "@/lib/tooltip-content";
 import type { ReviewStatus } from "@/lib/types";
 
@@ -41,6 +42,7 @@ export default function BoardPage() {
   const [filter, setFilter] = useState<FilterMode>("all");
   const [activeTab, setActiveTab] = useState<TabMode>("all");
   const [createMode, setCreateMode] = useState<CreateMode>(null);
+  const [editTarget, setEditTarget] = useState<{ type: string; data: any } | null>(null);
 
   // Count review statuses
   const allIds = [
@@ -166,6 +168,7 @@ export default function BoardPage() {
                   reviewStatus={reviews[entry.problem_id]?.status || "unreviewed"}
                   onReview={(status) => setReview(entry.problem_id, "catalog", status)}
                   onSaveEdits={(edits) => saveEdits(entry.problem_id, "catalog", edits)}
+                  onEditModal={() => setEditTarget({ type: "problem", data: { id: entry.problem_id, title: entry.title, description: entry.description_normalized, severity: entry.severity, domain: entry.domain, tags: entry.tags } })}
                   sources={(entry as any).sources || []}
                   onAddSource={(source) => addSourceToProblem(entry.problem_id, source)}
                   onRemoveSource={(sourceRecordId) => removeSourceFromProblem(entry.problem_id, sourceRecordId)}
@@ -196,6 +199,7 @@ export default function BoardPage() {
                   reviewStatus={reviews[pat.pattern_id]?.status || "unreviewed"}
                   onReview={(status) => setReview(pat.pattern_id, "pattern", status)}
                   onSaveEdits={(edits) => saveEdits(pat.pattern_id, "pattern", edits)}
+                  onEditModal={() => setEditTarget({ type: "pattern", data: { id: pat.pattern_id, name: pat.name, description: pat.description, confidence: pat.confidence, domains: pat.domains_affected } })}
                 />
               ))}
           </BoardColumn>
@@ -222,6 +226,7 @@ export default function BoardPage() {
                   reviewStatus={reviews[hyp.hypothesis_id]?.status || "unreviewed"}
                   onReview={(status) => setReview(hyp.hypothesis_id, "hypothesis", status)}
                   onSaveEdits={(edits) => saveEdits(hyp.hypothesis_id, "hypothesis", edits)}
+                  onEditModal={() => setEditTarget({ type: "hypothesis", data: { id: hyp.hypothesis_id, statement: hyp.statement, effort: hyp.effort_estimate, confidence: hyp.confidence, testCriteria: hyp.test_criteria } })}
                   outcome={hypFeedback[hyp.hypothesis_id]?.outcome || "untested"}
                   onSetOutcome={(outcome) => setHypOutcome(hyp.hypothesis_id, outcome)}
                 />
@@ -251,6 +256,7 @@ export default function BoardPage() {
                   reviewStatus={reviews[agent.agent_id]?.status || "unreviewed"}
                   onReview={(status) => setReview(agent.agent_id, "new_hire", status)}
                   onSaveEdits={(edits) => saveEdits(agent.agent_id, "new_hire", edits)}
+                  onEditModal={() => setEditTarget({ type: "agent", data: { id: agent.agent_id, name: agent.name, title: agent.title, persona: agent.persona } })}
                 />
               ))}
           </BoardColumn>
@@ -305,6 +311,40 @@ export default function BoardPage() {
           onCancel={() => setCreateMode(null)}
         />
       </Modal>
+
+      {/* Edit Modals */}
+      {editTarget?.type === "problem" && (
+        <EditProblemModal
+          open={true}
+          onClose={() => setEditTarget(null)}
+          initial={editTarget.data}
+          onSave={(edits) => { saveEdits(editTarget.data.id, "catalog", edits); setEditTarget(null); }}
+        />
+      )}
+      {editTarget?.type === "pattern" && (
+        <EditPatternModal
+          open={true}
+          onClose={() => setEditTarget(null)}
+          initial={editTarget.data}
+          onSave={(edits) => { saveEdits(editTarget.data.id, "pattern", edits); setEditTarget(null); }}
+        />
+      )}
+      {editTarget?.type === "hypothesis" && (
+        <EditHypothesisModal
+          open={true}
+          onClose={() => setEditTarget(null)}
+          initial={editTarget.data}
+          onSave={(edits) => { saveEdits(editTarget.data.id, "hypothesis", edits); setEditTarget(null); }}
+        />
+      )}
+      {editTarget?.type === "agent" && (
+        <EditAgentModal
+          open={true}
+          onClose={() => setEditTarget(null)}
+          initial={editTarget.data}
+          onSave={(edits) => { saveEdits(editTarget.data.id, "new_hire", edits); setEditTarget(null); }}
+        />
+      )}
     </div>
   );
 }

@@ -21,6 +21,7 @@ interface ReviewProps {
   reviewStatus?: ReviewStatus;
   onReview?: (status: ReviewStatus) => void;
   onSaveEdits?: (edits: Record<string, any>) => void;
+  onEditModal?: () => void;
 }
 
 function ReviewBadge({ status }: { status?: ReviewStatus }) {
@@ -37,11 +38,13 @@ function ReviewButtons({
   reviewStatus,
   onReview,
   onEdit,
+  onEditModal,
   isEditing,
 }: {
   reviewStatus?: ReviewStatus;
   onReview?: (status: ReviewStatus) => void;
   onEdit?: () => void;
+  onEditModal?: () => void;
   isEditing: boolean;
 }) {
   if (!onReview) return null;
@@ -76,9 +79,9 @@ function ReviewButtons({
           </button>
         </>
       )}
-      {onEdit && !isEditing && (
+      {(onEditModal || onEdit) && !isEditing && (
         <button
-          onClick={onEdit}
+          onClick={onEditModal || onEdit}
           className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:text-white/70 hover:bg-white/10 transition-colors ml-auto"
         >
           <Pencil size={10} /> Edit
@@ -141,7 +144,7 @@ interface SourceProps {
 
 export function ProblemCard({
   id, title, severity, domain, tags, description, status,
-  reviewStatus, onReview, onSaveEdits,
+  reviewStatus, onReview, onSaveEdits, onEditModal,
   sources, onAddSource, onRemoveSource,
 }: {
   id: string; title: string; severity: string; domain: string;
@@ -231,7 +234,7 @@ export function ProblemCard({
           )}
 
           {expanded && !isEditing && (
-            <ReviewButtons reviewStatus={reviewStatus} onReview={onReview} onEdit={() => setIsEditing(true)} isEditing={isEditing} />
+            <ReviewButtons reviewStatus={reviewStatus} onReview={onReview} onEditModal={onEditModal} onEdit={() => setIsEditing(true)} isEditing={isEditing} />
           )}
         </div>
       </div>
@@ -243,7 +246,7 @@ export function ProblemCard({
 
 export function PatternCard({
   id, name, description, problemCount, confidence, domains,
-  reviewStatus, onReview, onSaveEdits,
+  reviewStatus, onReview, onSaveEdits, onEditModal,
 }: {
   id: string; name: string; description: string;
   problemCount: number; confidence: number; domains: string[];
@@ -302,7 +305,7 @@ export function PatternCard({
       )}
 
       {expanded && !isEditing && (
-        <ReviewButtons reviewStatus={reviewStatus} onReview={onReview} onEdit={() => setIsEditing(true)} isEditing={isEditing} />
+        <ReviewButtons reviewStatus={reviewStatus} onReview={onReview} onEditModal={onEditModal} onEdit={() => setIsEditing(true)} isEditing={isEditing} />
       )}
     </div>
   );
@@ -314,7 +317,7 @@ const OUTCOMES: HypothesisOutcome[] = ["untested", "testing", "validated", "inva
 
 export function HypothesisCard({
   id, statement, effort, confidence, testCriteria,
-  reviewStatus, onReview, onSaveEdits,
+  reviewStatus, onReview, onSaveEdits, onEditModal,
   outcome, onSetOutcome,
 }: {
   id: string; statement: string; effort: string;
@@ -427,7 +430,7 @@ export function HypothesisCard({
       )}
 
       {expanded && !isEditing && (
-        <ReviewButtons reviewStatus={reviewStatus} onReview={onReview} onEdit={() => setIsEditing(true)} isEditing={isEditing} />
+        <ReviewButtons reviewStatus={reviewStatus} onReview={onReview} onEditModal={onEditModal} onEdit={() => setIsEditing(true)} isEditing={isEditing} />
       )}
     </div>
   );
@@ -437,7 +440,7 @@ export function HypothesisCard({
 
 export function NewHireCard({
   id, name, title, persona, skills, assignedTo,
-  reviewStatus, onReview, onSaveEdits,
+  reviewStatus, onReview, onSaveEdits, onEditModal,
 }: {
   id: string; name: string; title: string; persona: string;
   skills: { skill_type: string; status: string; priority: number }[];
@@ -526,6 +529,7 @@ export function NewHireCard({
         <ReviewButtons
           reviewStatus={reviewStatus}
           onReview={onReview}
+          onEditModal={onEditModal}
           onEdit={() => setIsEditing(true)}
           isEditing={isEditing}
         />
