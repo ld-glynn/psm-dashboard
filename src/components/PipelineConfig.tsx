@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ChevronDown, ChevronRight, Save, RotateCcw } from "lucide-react";
 import { InfoTooltip } from "@/components/InfoTooltip";
+import { CapabilitiesPanel } from "@/components/CapabilitiesPanel";
 import { fetchPipelineConfig, updatePipelineConfig } from "@/lib/api-client";
 import type { PipelineConfigType } from "@/lib/types";
 
@@ -128,6 +129,9 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
               </div>
             </div>
           </div>
+
+          {/* Capability Inventory — feeds into Solvability Evaluator */}
+          <CapabilitiesPanel />
 
           {/* Hypothesis Gen */}
           <div className="bg-[#12121a] rounded-lg p-3">
