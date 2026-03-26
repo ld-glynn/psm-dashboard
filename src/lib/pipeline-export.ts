@@ -106,11 +106,13 @@ export function simulatePipelineRun(drafts: DraftProblem[], runId: string): Pipe
       pattern_id: pat.pattern_id,
       hypothesis_ids: [hypotheses[i].hypothesis_id],
       skills: [
-        { skill_type: "action_plan" as const, hypothesis_id: hypotheses[i].hypothesis_id, priority: 1, status: "pending" as const },
-        { skill_type: "recommend" as const, hypothesis_id: hypotheses[i].hypothesis_id, priority: 2, status: "pending" as const },
+        { skill_type: "action_plan" as const, hypothesis_id: hypotheses[i].hypothesis_id, priority: 1, status: "pending" as const, last_executed_at: null, execution_count: 0 },
+        { skill_type: "recommend" as const, hypothesis_id: hypotheses[i].hypothesis_id, priority: 2, status: "pending" as const, last_executed_at: null, execution_count: 0 },
       ],
       assigned_to_role: null,
       model: "claude-sonnet",
+      lifecycle_state: "proposed" as const,
+      deployment_spec_id: null,
     };
   });
 

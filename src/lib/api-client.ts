@@ -116,6 +116,47 @@ export async function parseText(text: string): Promise<ParseResult> {
   });
 }
 
+// --- Agent Lifecycle ---
+
+export async function approveSpec(specId: string): Promise<any> {
+  return fetchJSON(`/api/specs/${specId}/approve`, { method: "POST" });
+}
+
+export async function rejectSpec(specId: string, reason?: string): Promise<any> {
+  return fetchJSON(`/api/specs/${specId}/reject`, { method: "POST", body: JSON.stringify({ reason: reason || "" }) });
+}
+
+export async function deployAgent(agentId: string): Promise<any> {
+  return fetchJSON(`/api/agents/${agentId}/deploy`, { method: "POST" });
+}
+
+export async function invokeAgent(agentId: string, triggerType: string = "manual", detail?: string): Promise<any> {
+  return fetchJSON(`/api/agents/${agentId}/invoke`, {
+    method: "POST",
+    body: JSON.stringify({ trigger_type: triggerType, trigger_detail: detail || "Manual invocation" }),
+  });
+}
+
+export async function pauseAgent(agentId: string): Promise<any> {
+  return fetchJSON(`/api/agents/${agentId}/pause`, { method: "POST" });
+}
+
+export async function resumeAgent(agentId: string): Promise<any> {
+  return fetchJSON(`/api/agents/${agentId}/resume`, { method: "POST" });
+}
+
+export async function retireAgent(agentId: string, reason?: string): Promise<any> {
+  return fetchJSON(`/api/agents/${agentId}/retire`, { method: "POST", body: JSON.stringify({ reason: reason || "" }) });
+}
+
+export async function fetchWorkLog(agentId: string): Promise<any[]> {
+  return fetchJSON(`/api/agents/${agentId}/work-log`);
+}
+
+export async function fetchAllWorkLogs(): Promise<any[]> {
+  return fetchJSON("/api/work-logs");
+}
+
 // --- Run History ---
 
 export async function fetchRunHistory(): Promise<any[]> {

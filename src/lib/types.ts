@@ -61,6 +61,8 @@ export interface AgentSkill {
   hypothesis_id: string;
   priority: number;
   status: "pending" | "in_progress" | "complete";
+  last_executed_at?: string | null;
+  execution_count?: number;
 }
 
 export interface AgentNewHire {
@@ -73,6 +75,81 @@ export interface AgentNewHire {
   skills: AgentSkill[];
   assigned_to_role: string | null;
   model: string;
+  lifecycle_state?: AgentLifecycleState;
+  deployment_spec_id?: string | null;
+}
+
+// --- Agent Lifecycle ---
+
+export type AgentLifecycleState =
+  "created" | "screened" | "proposed" | "approved" | "deployed" | "active" | "paused" | "retired";
+
+export type TriggerType = "webhook" | "scheduled" | "manual" | "feedback" | "api_call";
+
+export interface TriggerSpec {
+  trigger_type: TriggerType;
+  name: string;
+  config: Record<string, any>;
+  enabled: boolean;
+}
+
+export type DeploymentTarget = "local" | "agent_sdk" | "aws_lambda" | "webhook_service" | "custom";
+
+export interface DeploymentConfig {
+  target: DeploymentTarget;
+  runtime_config: Record<string, any>;
+}
+
+export interface DeploymentSpec {
+  spec_id: string;
+  agent_id: string;
+  agent_name: string;
+  agent_title: string;
+  persona: string;
+  model: string;
+  pattern_id: string;
+  hypothesis_ids: string[];
+  skills: any[];
+  responsibilities: string[];
+  triggers: TriggerSpec[];
+  expected_outputs: string[];
+  assigned_to_role: string | null;
+  escalation_path: string | null;
+  deployment: DeploymentConfig;
+  state: AgentLifecycleState;
+  created_at: string;
+  approved_at: string | null;
+  deployed_at: string | null;
+  retired_at: string | null;
+  retirement_reason: string | null;
+  screening_passed: boolean;
+  screening_reason: string;
+}
+
+export interface WorkLogEntry {
+  entry_id: string;
+  agent_id: string;
+  spec_id: string;
+  trigger_type: TriggerType;
+  trigger_detail: string;
+  skill_type: SkillType;
+  hypothesis_id: string;
+  action_summary: string;
+  output_id: string | null;
+  started_at: string;
+  completed_at: string | null;
+  status: "running" | "completed" | "failed" | "skipped";
+  error_message: string | null;
+  invocation_number: number;
+}
+
+export interface WorkLog {
+  agent_id: string;
+  spec_id: string;
+  entries: WorkLogEntry[];
+  total_invocations: number;
+  last_invoked_at: string | null;
+  last_output_at: string | null;
 }
 
 // Tier 1: Engine agents (defined in code, not data)
