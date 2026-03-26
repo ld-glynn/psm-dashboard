@@ -116,6 +116,26 @@ export async function parseText(text: string): Promise<ParseResult> {
   });
 }
 
+// --- Run History ---
+
+export async function fetchRunHistory(): Promise<any[]> {
+  return fetchJSON("/api/runs");
+}
+
+export async function triggerRollback(runId: string): Promise<{ status: string; restored_from: string }> {
+  return fetchJSON(`/api/rollback/${runId}`, { method: "POST" });
+}
+
+// --- Pipeline Config ---
+
+export async function fetchPipelineConfig(): Promise<any> {
+  return fetchJSON("/api/config");
+}
+
+export async function updatePipelineConfig(config: Record<string, any>): Promise<any> {
+  return fetchJSON("/api/config", { method: "POST", body: JSON.stringify(config) });
+}
+
 // --- Health check ---
 
 export async function checkServerAvailable(): Promise<boolean> {

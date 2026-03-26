@@ -329,6 +329,57 @@ export interface OutcomeSummary {
   by_domain: Record<string, { validated: number; invalidated: number; total: number }>;
 }
 
+// --- Run History ---
+
+export interface RunHistoryRecord {
+  run_id: string;
+  timestamp: string;
+  stages_completed: string[];
+  stage_reached: string;
+  status: "running" | "success" | "partial" | "failed";
+  error_stage: string | null;
+  error_message: string | null;
+  snapshot_path: string;
+  summary: Record<string, any>;
+}
+
+// --- Pipeline Config ---
+
+export interface CatalogerConfig {
+  severity_threshold: "low" | "medium" | "high" | "critical";
+  domain_filter: string[] | null;
+}
+
+export interface PatternAnalyzerConfig {
+  min_cluster_size: number;
+  max_patterns: number;
+  clustering_strictness: number;
+}
+
+export interface SolvabilityConfigSettings {
+  min_signal_threshold: number;
+  actionability_threshold: number;
+}
+
+export interface HypothesisGenConfig {
+  max_hypotheses_per_pattern: number;
+  confidence_floor: number;
+  effort_preference: "low" | "medium" | "high" | "any";
+}
+
+export interface HiringManagerConfig {
+  max_agents: number;
+  preferred_skills: string[] | null;
+}
+
+export interface PipelineConfigType {
+  cataloger: CatalogerConfig;
+  pattern_analyzer: PatternAnalyzerConfig;
+  solvability: SolvabilityConfigSettings;
+  hypothesis_gen: HypothesisGenConfig;
+  hiring_manager: HiringManagerConfig;
+}
+
 export interface PipelineData {
   catalog: CatalogEntry[];
   patterns: Pattern[];
