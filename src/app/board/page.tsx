@@ -15,12 +15,13 @@ import { InfoTooltip } from "@/components/InfoTooltip";
 import { Modal } from "@/components/Modal";
 import { CreatePatternForm } from "@/components/CreatePatternForm";
 import { CreateHypothesisForm } from "@/components/CreateHypothesisForm";
+import { ProblemIntakeForm } from "@/components/ProblemIntakeForm";
 import { tooltips } from "@/lib/tooltip-content";
 import type { ReviewStatus } from "@/lib/types";
 
 type FilterMode = "all" | "unreviewed" | "approved" | "rejected";
 type TabMode = "all" | "catalog" | "patterns" | "hypotheses" | "routes";
-type CreateMode = null | "pattern" | "hypothesis";
+type CreateMode = null | "problem" | "pattern" | "hypothesis";
 
 const TABS: { key: TabMode; label: string; tooltipKey: keyof typeof tooltips }[] = [
   { key: "all", label: "All Columns", tooltipKey: "pipelineStages" },
@@ -35,7 +36,7 @@ export default function BoardPage() {
     data, reviews, hypFeedback,
     setReview, saveEdits, setHypOutcome,
     addSourceToProblem, removeSourceFromProblem,
-    createPattern, createHypothesis,
+    addDraft, createPattern, createHypothesis,
   } = usePipelineData();
   const [filter, setFilter] = useState<FilterMode>("all");
   const [activeTab, setActiveTab] = useState<TabMode>("all");
@@ -90,6 +91,12 @@ export default function BoardPage() {
 
         {/* Create buttons */}
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setCreateMode("problem")}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 transition-colors border border-orange-500/20"
+          >
+            <Plus size={12} /> Problem
+          </button>
           <button
             onClick={() => setCreateMode("pattern")}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 transition-colors border border-yellow-500/20"
@@ -249,6 +256,23 @@ export default function BoardPage() {
           </BoardColumn>
         )}
       </div>
+
+      {/* Create Problem Modal */}
+      <Modal
+        open={createMode === "problem"}
+        onClose={() => setCreateMode(null)}
+        title="Create Problem"
+      >
+        <p className="text-xs text-white/40 leading-relaxed mb-4">
+          Manually report a problem. It will be added as a draft and appear in the Problems column.
+        </p>
+        <ProblemIntakeForm
+          onSubmit={(input) => {
+            addDraft(input);
+            setCreateMode(null);
+          }}
+        />
+      </Modal>
 
       {/* Create Pattern Modal */}
       <Modal
