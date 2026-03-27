@@ -82,7 +82,7 @@ export function PipelineConfig({ serverAvailable, alwaysExpanded }: PipelineConf
       {showContent && (
         <div className="mt-4 space-y-4">
           {/* Cataloger */}
-          <div className="bg-muted rounded-lg p-3">
+          <div className="border border-border rounded-lg p-3">
             <div className="text-xs font-medium text-orange-600 dark:text-orange-400 mb-2">Cataloger</div>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -102,7 +102,7 @@ export function PipelineConfig({ serverAvailable, alwaysExpanded }: PipelineConf
           </div>
 
           {/* Pattern Analyzer */}
-          <div className="bg-muted rounded-lg p-3">
+          <div className="border border-border rounded-lg p-3">
             <div className="text-xs font-medium text-amber-600 dark:text-yellow-400 mb-2">Pattern Analyzer</div>
             <div className="grid grid-cols-3 gap-3">
               <div>
@@ -121,7 +121,7 @@ export function PipelineConfig({ serverAvailable, alwaysExpanded }: PipelineConf
           </div>
 
           {/* Solvability */}
-          <div className="bg-muted rounded-lg p-3">
+          <div className="border border-border rounded-lg p-3">
             <div className="text-xs font-medium text-cyan-600 dark:text-cyan-400 mb-2">Solvability Evaluator</div>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -139,7 +139,7 @@ export function PipelineConfig({ serverAvailable, alwaysExpanded }: PipelineConf
           <CapabilitiesPanel />
 
           {/* Hypothesis Gen */}
-          <div className="bg-muted rounded-lg p-3">
+          <div className="border border-border rounded-lg p-3">
             <div className="text-xs font-medium text-green-600 dark:text-green-400 mb-2">Hypothesis Generator</div>
             <div className="grid grid-cols-3 gap-3">
               <div>
@@ -163,7 +163,7 @@ export function PipelineConfig({ serverAvailable, alwaysExpanded }: PipelineConf
           </div>
 
           {/* Hiring Manager */}
-          <div className="bg-muted rounded-lg p-3">
+          <div className="border border-border rounded-lg p-3">
             <div className="text-xs font-medium text-purple-600 dark:text-purple-400 mb-2">Hiring Manager</div>
             <div className="grid grid-cols-2 gap-3">
               <div>

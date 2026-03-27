@@ -631,7 +631,7 @@ export default function AgentsPage() {
             if (usages.length === 0) return null;
 
             return (
-              <div key={skillType} className={`border rounded-xl p-4 ${skillTypeColors[skillType]}`}>
+              <div key={skillType} className="bg-card border-2 border-border rounded-xl p-4">
                 <div className="flex items-center gap-3 mb-3">
                   <span className="text-sm font-semibold">{skillTypeLabels[skillType]}</span>
                   <span className="text-[10px] opacity-50 ml-auto">{usages.length} {usages.length === 1 ? "agent" : "agents"}</span>
@@ -640,7 +640,7 @@ export default function AgentsPage() {
                   {usages.map(({ agent, skill, hyp, skillIndex }, i) => {
                     const fb = skillFeedback[`${agent.agent_id}:${skillIndex}`];
                     return (
-                      <div key={`${agent.agent_id}-${i}`} className="bg-black/15 rounded-lg px-3 py-2.5">
+                      <div key={`${agent.agent_id}-${i}`} className="bg-card border border-border rounded-lg px-3 py-2.5">
                         <div className="flex items-center gap-2 mb-1">
                           <div className="w-5 h-5 rounded bg-purple-100 dark:bg-purple-500/15 flex items-center justify-center flex-shrink-0">
                             <span className="text-[9px] font-bold text-purple-700 dark:text-purple-300">{agent.name[0]}</span>

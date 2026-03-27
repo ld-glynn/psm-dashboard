@@ -33,9 +33,9 @@ export default function GraphPage() {
         position: { x: colX.problems, y: i * spacing },
         data: { label: `${entry.problem_id}\n${entry.title}` },
         style: {
-          background: "#1a1a2e",
-          color: "#e4e4ef",
-          border: "1px solid #f97316",
+          background: "#fff7ed",
+          color: "#9a3412",
+          border: "2px solid #f97316",
           borderRadius: "8px",
           padding: "8px 12px",
           fontSize: "11px",
@@ -55,9 +55,9 @@ export default function GraphPage() {
           label: `${pat.pattern_id}\n${pat.name}\n${(pat.confidence * 100).toFixed(0)}%`,
         },
         style: {
-          background: "#1a1a2e",
-          color: "#e4e4ef",
-          border: "1px solid #eab308",
+          background: "#fffbeb",
+          color: "#92400e",
+          border: "2px solid #f59e0b",
           borderRadius: "8px",
           padding: "8px 12px",
           fontSize: "11px",
@@ -77,9 +77,9 @@ export default function GraphPage() {
           label: `${hyp.hypothesis_id}\n${hyp.effort_estimate} effort\n${(hyp.confidence * 100).toFixed(0)}%`,
         },
         style: {
-          background: "#1a1a2e",
-          color: "#e4e4ef",
-          border: "1px solid #22c55e",
+          background: "#f0fdf4",
+          color: "#166534",
+          border: "2px solid #22c55e",
           borderRadius: "8px",
           padding: "8px 12px",
           fontSize: "11px",
@@ -102,8 +102,8 @@ export default function GraphPage() {
           label: `${agent.name}\n${agent.skills.length} skills: ${skillList}`,
         },
         style: {
-          background: "#1a1a2e",
-          color: "#e4e4ef",
+          background: "#faf5ff",
+          color: "#6b21a8",
           border: "2px solid #a855f7",
           borderRadius: "12px",
           padding: "10px 14px",
@@ -181,7 +181,7 @@ export default function GraphPage() {
           maxZoom={1.5}
           proOptions={{ hideAttribution: true }}
         >
-          <Background color="#1a1a2e" gap={20} />
+          <Background color="#e5e7eb" gap={20} />
           <Controls
             className="!bg-card !border-border !rounded-lg [&>button]:!bg-card [&>button]:!border-border [&>button]:!text-muted-foreground [&>button:hover]:!bg-secondary"
           />

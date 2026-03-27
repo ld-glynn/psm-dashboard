@@ -144,8 +144,8 @@ export default function SkillsPage() {
                           <span className="text-[10px] text-muted-foreground/50">{new Date(output.created_at).toLocaleDateString()}</span>
                         </div>
 
-                        <div className="bg-muted rounded-lg p-4 mb-3">
-                          <pre className="text-xs text-secondary-foreground leading-relaxed whitespace-pre-wrap font-sans">{output.content}</pre>
+                        <div className="bg-card border border-border rounded-lg p-4 mb-3">
+                          <pre className="text-xs text-foreground leading-relaxed whitespace-pre-wrap font-sans">{output.content}</pre>
                         </div>
 
                         {output.next_steps.length > 0 && (
