@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Filter } from "lucide-react";
 import { usePipelineData } from "@/lib/use-pipeline-data";
 import {
   BoardColumn,
@@ -10,7 +10,7 @@ import {
   HypothesisCard,
   NewHireCard,
 } from "@/components/BoardColumn";
-import { ReviewSummary } from "@/components/ReviewSummary";
+// ReviewSummary removed — too much space
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { Modal } from "@/components/Modal";
 import { CreatePatternForm } from "@/components/CreatePatternForm";
@@ -43,6 +43,7 @@ export default function BoardPage() {
   const [activeTab, setActiveTab] = useState<TabMode>("all");
   const [createMode, setCreateMode] = useState<CreateMode>(null);
   const [editTarget, setEditTarget] = useState<{ type: string; data: any } | null>(null);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   // Count review statuses
   const allIds = [
@@ -63,20 +64,8 @@ export default function BoardPage() {
   }
 
   const isFullWidth = activeTab !== "all";
-
-  const filterBtn = (mode: FilterMode, label: string, count?: number) => (
-    <button
-      key={mode}
-      onClick={() => setFilter(mode)}
-      className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
-        filter === mode ? "bg-white/10 text-white" : "text-white/40 hover:text-white/70 hover:bg-white/5"
-      }`}
-    >
-      {label}{count !== undefined ? ` (${count})` : ""}
-    </button>
-  );
-
   const showColumn = (tab: TabMode) => activeTab === "all" || activeTab === tab;
+  const activeFilterCount = filter === "all" ? 0 : 1;
 
   return (
     <div className="max-w-full mx-auto">
@@ -114,7 +103,7 @@ export default function BoardPage() {
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs + filter */}
       <div className="flex items-center gap-1 mb-3 border-b border-[#2a2a3e] pb-3">
         {TABS.map((tab) => (
           <button
@@ -127,22 +116,43 @@ export default function BoardPage() {
             {tab.label}
           </button>
         ))}
-      </div>
 
-      {/* Filter bar */}
-      <div className="flex items-center gap-1 mb-3">
-        {filterBtn("all", "All")}
-        {filterBtn("unreviewed", "Needs Review", counts.unreviewed)}
-        {filterBtn("approved", "Approved", counts.approved)}
-        {filterBtn("rejected", "Rejected", counts.rejected)}
+        {/* Filter dropdown */}
+        <div className="relative ml-auto">
+          <button
+            onClick={() => setFilterOpen(!filterOpen)}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md transition-colors ${
+              filter !== "all" ? "bg-white/10 text-white" : "text-white/40 hover:text-white/70 hover:bg-white/5"
+            }`}
+          >
+            <Filter size={12} />
+            {filter !== "all" ? filter.replace("unreviewed", "Needs Review") : "Filter"}
+          </button>
+          {filterOpen && (
+            <div className="absolute right-0 top-full mt-1 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg shadow-xl z-50 py-1 min-w-[180px]">
+              {([
+                { key: "all" as FilterMode, label: "All items" },
+                { key: "unreviewed" as FilterMode, label: `Needs Review (${counts.unreviewed})` },
+                { key: "approved" as FilterMode, label: `Approved (${counts.approved})` },
+                { key: "rejected" as FilterMode, label: `Rejected (${counts.rejected})` },
+              ]).map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => { setFilter(opt.key); setFilterOpen(false); }}
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left hover:bg-white/5 transition-colors"
+                >
+                  <div className={`w-3 h-3 rounded border flex items-center justify-center ${
+                    filter === opt.key ? "border-blue-400 bg-blue-500/20" : "border-[#3a3a5e]"
+                  }`}>
+                    {filter === opt.key && <div className="w-1.5 h-1.5 rounded-sm bg-blue-400" />}
+                  </div>
+                  <span className={filter === opt.key ? "text-white" : "text-white/50"}>{opt.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Review summary */}
-      <ReviewSummary
-        reviews={reviews}
-        totalItems={allIds.length}
-        onFocusUnreviewed={() => { setFilter("unreviewed"); setActiveTab("all"); }}
-      />
 
       <div className={`flex gap-4 overflow-x-auto pb-4 ${isFullWidth ? "flex-col" : ""}`}>
         {/* Problems */}
