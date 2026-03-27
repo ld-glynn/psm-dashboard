@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Home, Database, PlusCircle, BarChart3, Columns3, GitBranch,
-  Users, Briefcase, HelpCircle, ChevronLeft, ChevronRight,
+  Users, Briefcase, HelpCircle, Search, ChevronLeft, ChevronRight,
 } from "lucide-react";
 
 const links = [
@@ -22,7 +22,7 @@ const bottomLinks = [
   { href: "/guide", label: "Guide", icon: HelpCircle },
 ];
 
-export function Nav({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onToggle: () => void; onSearch?: () => void }) {
   const pathname = usePathname();
 
   return (
@@ -81,6 +81,15 @@ export function Nav({ collapsed, onToggle }: { collapsed: boolean; onToggle: () 
             </Link>
           );
         })}
+
+        <button
+          onClick={onSearch}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
+          title={collapsed ? "Search (⌘K)" : undefined}
+        >
+          <Search size={18} className="flex-shrink-0" />
+          {!collapsed && <span>Search</span>}
+        </button>
 
         <button
           onClick={onToggle}
