@@ -14,7 +14,7 @@ export default function PipelinePage() {
     costSummary, costEntries, costBudget,
     serverAvailable,
     addCost, removeCost, simulateCosts, clearCosts, updateBudget,
-    runPipelineAPI, syncSourcesAPI,
+    runPipelineAPI, syncSourcesAPI, simulateRun,
   } = usePipelineData();
 
   const [showOutcomeDetails, setShowOutcomeDetails] = useState(false);
@@ -44,6 +44,10 @@ export default function PipelinePage() {
         serverAvailable={serverAvailable}
         onRunPipeline={runPipelineAPI}
         onSyncSources={syncSourcesAPI}
+        onSimulateRun={() => {
+          const draftIds = drafts.filter((d) => d.status === "draft").map((d) => d.problem_id);
+          if (draftIds.length > 0) simulateRun(draftIds);
+        }}
       />
 
       <PipelineFlow data={data} draftCount={draftCount} ingestionCount={ingestionCount} costSummary={costSummary} />

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { loadPipelineData } from "./data";
-import { getDrafts, saveDraft, saveDrafts, deleteDraft, nextDraftId, updateDraftStatus } from "./draft-store";
+import { getDrafts, saveDraft, saveDrafts, deleteDraft, nextDraftId, updateDraftStatus, seedMockDrafts } from "./draft-store";
 import { getReviews, setReview as storeSetReview, deleteReview as storeDeleteReview } from "./review-store";
 import {
   getSkillFeedback, setSkillFeedback as storeSetSkillFeedback,
@@ -73,6 +73,7 @@ export function usePipelineData() {
   const [version, setVersion] = useState(0);
 
   useEffect(() => {
+    seedMockDrafts();
     seedMockIntegrationData();
     seedMockHypothesisFeedback();
     seedMockPipelineRuns();

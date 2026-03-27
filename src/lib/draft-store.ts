@@ -44,6 +44,21 @@ export function updateDraftStatus(problemIds: string[], status: DraftPipelineSta
   localStorage.setItem(STORAGE_KEY, JSON.stringify(drafts));
 }
 
+export function seedMockDrafts(): void {
+  if (!isClient()) return;
+  if (getDrafts().length > 0) return;
+
+  const drafts: DraftProblem[] = [
+    { problem_id: "DRAFT-001", title: "New engineers take 3+ months to ship independently", description: "No structured onboarding path. New hires spend weeks figuring out the dev environment and tribal knowledge.", reported_by: "Sarah Chen", domain: "knowledge", severity: "high", tags: ["onboarding", "ramp_up"], status: "draft", created_at: "2026-03-08T09:00:00Z" },
+    { problem_id: "DRAFT-002", title: "Deploy pipeline fails 60% of the time", description: "Flaky integration tests and Docker cache issues cause most deploy attempts to fail. Engineering spends 4hrs/week debugging.", reported_by: "Mike Torres", domain: "infrastructure", severity: "critical", tags: ["ci_cd", "deploys"], status: "draft", created_at: "2026-03-08T09:05:00Z" },
+    { problem_id: "DRAFT-003", title: "Customer feedback never reaches engineering", description: "Product gets Gong insights but engineering only sees them at sprint planning, weeks later.", reported_by: "Lisa Park", domain: "communication", severity: "high", tags: ["feedback", "cross_team"], status: "draft", created_at: "2026-03-08T09:10:00Z" },
+    { problem_id: "DRAFT-004", title: "No runbooks for critical system failures", description: "Last outage took 4 hours because the on-call engineer had no documentation to follow.", reported_by: "Sarah Chen", domain: "infrastructure", severity: "critical", tags: ["incidents", "runbooks"], status: "draft", created_at: "2026-03-08T09:15:00Z" },
+    { problem_id: "DRAFT-005", title: "Sprint estimates are consistently 40-60% off", description: "No calibration against actuals. Team morale drops when every sprint overruns.", reported_by: "Mike Torres", domain: "process", severity: "medium", tags: ["estimation", "planning"], status: "draft", created_at: "2026-03-08T09:20:00Z" },
+  ];
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(drafts));
+}
+
 export function clearDrafts(): void {
   if (!isClient()) return;
   localStorage.removeItem(STORAGE_KEY);

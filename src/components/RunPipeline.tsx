@@ -11,9 +11,10 @@ interface RunPipelineProps {
   serverAvailable: boolean;
   onRunPipeline: (params: { stage?: string; withIntegrations?: boolean }) => Promise<void>;
   onSyncSources: () => Promise<void>;
+  onSimulateRun?: () => void;
 }
 
-export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: RunPipelineProps) {
+export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources, onSimulateRun }: RunPipelineProps) {
   const [running, setRunning] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [stage, setStage] = useState<string>("all");
@@ -21,6 +22,7 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
   const [lastResult, setLastResult] = useState<string | null>(null);
   const [historyKey, setHistoryKey] = useState(0);
   const [configOpen, setConfigOpen] = useState(false);
+  const [simulating, setSimulating] = useState(false);
 
   async function handleRun() {
     setRunning(true);
@@ -105,10 +107,30 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
             {running ? "Running..." : "Run Pipeline"}
           </button>
 
+          {onSimulateRun && (
+            <button
+              onClick={() => {
+                setSimulating(true);
+                setLastResult(null);
+                setTimeout(() => {
+                  onSimulateRun();
+                  setLastResult("Simulation complete — check Board for results");
+                  setSimulating(false);
+                  setHistoryKey((k) => k + 1);
+                }, 1500);
+              }}
+              disabled={simulating}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-amber-600 text-white hover:bg-amber-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              {simulating ? <Loader2 size={12} className="animate-spin" /> : <Play size={12} />}
+              {simulating ? "Simulating..." : "Simulate Run"}
+            </button>
+          )}
+
           <button
             onClick={handleSync}
             disabled={!serverAvailable || syncing}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             {syncing ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
             {syncing ? "Syncing..." : "Sync Sources"}
