@@ -7,6 +7,7 @@ import { getReviews, setReview as storeSetReview, deleteReview as storeDeleteRev
 import {
   getSkillFeedback, setSkillFeedback as storeSetSkillFeedback,
   getHypothesisFeedback, setHypothesisFeedback as storeSetHypFeedback,
+  seedMockHypothesisFeedback,
 } from "./feedback-store";
 import {
   getPipelineRuns, savePipelineRun, updatePipelineRun, nextRunId,
@@ -72,6 +73,7 @@ export function usePipelineData() {
 
   useEffect(() => {
     seedMockIntegrationData();
+    seedMockHypothesisFeedback();
     setDrafts(getDrafts());
     setReviewsState(getReviews());
     setSkillFeedbackState(getSkillFeedback());

@@ -63,3 +63,20 @@ export function deleteHypothesisFeedback(hypothesisId: string): void {
   delete all[hypothesisId];
   localStorage.setItem(HYP_KEY, JSON.stringify(all));
 }
+
+export function seedMockHypothesisFeedback(): void {
+  if (!isClient()) return;
+  if (Object.keys(getHypothesisFeedback()).length > 0) return; // already seeded
+
+  const mock: Record<string, HypothesisFeedback> = {
+    "HYP-001": { hypothesisId: "HYP-001", outcome: "validated", note: "30/60/90 program reduced ramp time to 5 weeks", updatedAt: "2026-03-20T10:00:00Z" },
+    "HYP-002": { hypothesisId: "HYP-002", outcome: "testing", note: "Weekly knowledge drops started, tracking completion rate", updatedAt: "2026-03-22T09:00:00Z" },
+    "HYP-003": { hypothesisId: "HYP-003", outcome: "validated", note: "Customer signal digest reduced missed feedback by 60%", updatedAt: "2026-03-18T14:00:00Z" },
+    "HYP-004": { hypothesisId: "HYP-004", outcome: "testing", note: "Decision log process piloting with product team", updatedAt: "2026-03-24T11:00:00Z" },
+    "HYP-005": { hypothesisId: "HYP-005", outcome: "invalidated", note: "Runbooks alone didn't reduce MTTR — needed on-call training too", updatedAt: "2026-03-19T16:00:00Z" },
+    "HYP-006": { hypothesisId: "HYP-006", outcome: "validated", note: "Triage rotation cut escalation response from 4hrs to 45min", updatedAt: "2026-03-21T08:00:00Z" },
+    "HYP-007": { hypothesisId: "HYP-007", outcome: "testing", note: "Tracking actuals vs estimates for 3 sprints", updatedAt: "2026-03-25T10:00:00Z" },
+  };
+
+  localStorage.setItem(HYP_KEY, JSON.stringify(mock));
+}
