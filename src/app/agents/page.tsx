@@ -4,7 +4,7 @@ import { useState } from "react";
 import { usePipelineData } from "@/lib/use-pipeline-data";
 import { getEngineAgents } from "@/lib/data";
 import { stageColors, skillRatingStyle } from "@/lib/colors";
-import { ThumbsUp, ThumbsDown, RotateCcw, MessageSquare, Download, ChevronDown, ChevronRight, Play, Pause, Power, Rocket, Clock } from "lucide-react";
+import { ThumbsUp, ThumbsDown, RotateCcw, MessageSquare, Download, ChevronDown, ChevronRight, Play, Pause, Power, Rocket, Clock, FileText, CheckCircle2 } from "lucide-react";
 import { approveSpec, deployAgent, invokeAgent, pauseAgent, resumeAgent, retireAgent } from "@/lib/api-client";
 import { computeAgentQualityScores, computeSkillTypeTrends, exportFeedbackAsJSON } from "@/lib/feedback-analytics";
 import { InfoTooltip } from "@/components/InfoTooltip";
@@ -138,10 +138,14 @@ export default function AgentsPage() {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [showInternals, setShowInternals] = useState(false);
   const [lifecycleFilter, setLifecycleFilter] = useState<string>("all");
+  const [expandedWork, setExpandedWork] = useState<Set<string>>(new Set());
   const engineAgents = getEngineAgents(data);
 
   const patternMap = Object.fromEntries(data.patterns.map((p) => [p.pattern_id, p]));
   const hypMap = Object.fromEntries(data.hypotheses.map((h) => [h.hypothesis_id, h]));
+  const outputs = data.skillOutputs || [];
+  const outputsByAgent: Record<string, typeof outputs> = {};
+  for (const o of outputs) { if (!outputsByAgent[o.agent_id]) outputsByAgent[o.agent_id] = []; outputsByAgent[o.agent_id].push(o); }
   const totalSkills = data.newHires.reduce((sum, a) => sum + a.skills.length, 0);
   const evalMap = Object.fromEntries(data.evalResults.map((e) => [e.agent_id, e]));
   const passedEvals = data.evalResults.filter((e) => e.passed);
@@ -602,6 +606,57 @@ export default function AgentsPage() {
                     })}
                   </div>
                 </div>
+
+                {/* Work outputs (expandable) */}
+                {(outputsByAgent[agent.agent_id]?.length || 0) > 0 && (
+                  <div className="mt-3 border-t border-border pt-3">
+                    <button
+                      onClick={() => setExpandedWork((prev) => { const next = new Set(prev); if (next.has(agent.agent_id)) next.delete(agent.agent_id); else next.add(agent.agent_id); return next; })}
+                      className="flex items-center gap-2 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {expandedWork.has(agent.agent_id) ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+                      <FileText size={11} />
+                      <span className="uppercase tracking-wider">Work Output ({outputsByAgent[agent.agent_id].length})</span>
+                    </button>
+
+                    {expandedWork.has(agent.agent_id) && (
+                      <div className="mt-2 space-y-3">
+                        {outputsByAgent[agent.agent_id].map((output, oi) => (
+                          <div key={oi} className="bg-card border border-border rounded-lg p-4">
+                            <div className="flex items-start justify-between gap-2 mb-2">
+                              <div>
+                                <div className="text-xs font-medium text-foreground">{output.title}</div>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className={`text-[10px] px-1.5 py-0.5 rounded border ${skillTypeColors[output.skill_type] || ""}`}>
+                                    {skillTypeLabels[output.skill_type] || output.skill_type}
+                                  </span>
+                                  {(output as any).invocation_number > 1 && (
+                                    <span className="text-[10px] text-muted-foreground flex items-center gap-0.5"><Clock size={9} /> #{(output as any).invocation_number}</span>
+                                  )}
+                                </div>
+                              </div>
+                              <span className="text-[10px] text-muted-foreground">{new Date(output.created_at).toLocaleDateString()}</span>
+                            </div>
+                            <div className="bg-card border border-border rounded p-3 mb-2">
+                              <pre className="text-xs text-foreground leading-relaxed whitespace-pre-wrap font-sans">{output.content}</pre>
+                            </div>
+                            {output.next_steps.length > 0 && (
+                              <div>
+                                <div className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Next Steps</div>
+                                {output.next_steps.map((step, si) => (
+                                  <div key={si} className="flex items-start gap-2 text-xs text-foreground">
+                                    <CheckCircle2 size={12} className="text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
+                                    {step}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}

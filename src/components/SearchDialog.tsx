@@ -19,8 +19,7 @@ const PAGES: SearchResult[] = [
   { type: "page", id: "pipeline", title: "Pipeline", subtitle: "Run and configure", href: "/pipeline" },
   { type: "page", id: "board", title: "Board", subtitle: "Review and approve", href: "/board" },
   { type: "page", id: "graph", title: "Graph", subtitle: "Relationship visualization", href: "/graph" },
-  { type: "page", id: "agents", title: "Agents", subtitle: "Agent roster and lifecycle", href: "/agents" },
-  { type: "page", id: "work", title: "Work", subtitle: "Agent deliverables", href: "/skills" },
+  { type: "page", id: "agents", title: "Agents", subtitle: "Agent roster, lifecycle, and work output", href: "/agents" },
   { type: "page", id: "guide", title: "Guide", subtitle: "How to use PSM", href: "/guide" },
 ];
 

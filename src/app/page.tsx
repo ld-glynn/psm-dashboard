@@ -106,12 +106,11 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick navigation */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         {[
           { href: "/integrations", icon: Database, label: "Sources", desc: `${ingestionRecords.length} records ingested` },
           { href: "/pipeline", icon: BarChart3, label: "Pipeline", desc: "Run & configure stages" },
           { href: "/board", icon: Columns3, label: "Board", desc: "Review & approve items" },
-          { href: "/skills", icon: Briefcase, label: "Agent Work", desc: `${totalOutputs} deliverables` },
         ].map((item) => {
           const Icon = item.icon;
           return (

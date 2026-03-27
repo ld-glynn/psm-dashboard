@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Home, Database, BarChart3, Columns3, GitBranch,
-  Users, Briefcase, HelpCircle, Search, Sun, Moon, ChevronLeft, ChevronRight,
+  Users, HelpCircle, Search, Sun, Moon, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -15,7 +15,6 @@ const links = [
   { href: "/board", label: "Board", icon: Columns3 },
   { href: "/graph", label: "Graph", icon: GitBranch },
   { href: "/agents", label: "Agents", icon: Users },
-  { href: "/skills", label: "Work", icon: Briefcase },
 ];
 
 const bottomLinks = [

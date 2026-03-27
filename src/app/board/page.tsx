@@ -8,7 +8,6 @@ import {
   ProblemCard,
   PatternCard,
   HypothesisCard,
-  NewHireCard,
 } from "@/components/BoardColumn";
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { SlideOver } from "@/components/SlideOver";
@@ -17,12 +16,12 @@ import { CreateHypothesisForm } from "@/components/CreateHypothesisForm";
 import { ProblemIntakeForm } from "@/components/ProblemIntakeForm";
 import { BulkImport } from "@/components/BulkImport";
 import { AiIntake } from "@/components/AiIntake";
-import { EditProblemModal, EditPatternModal, EditHypothesisModal, EditAgentModal } from "@/components/EditEntryModal";
+import { EditProblemModal, EditPatternModal, EditHypothesisModal } from "@/components/EditEntryModal";
 import { tooltips } from "@/lib/tooltip-content";
 import type { ReviewStatus } from "@/lib/types";
 
 type FilterMode = "all" | "unreviewed" | "approved" | "rejected";
-type TabMode = "all" | "catalog" | "patterns" | "hypotheses" | "routes";
+type TabMode = "all" | "catalog" | "patterns" | "hypotheses";
 type CreateMode = null | "problem" | "pattern" | "hypothesis";
 
 const TABS: { key: TabMode; label: string; tooltipKey: keyof typeof tooltips }[] = [
@@ -30,7 +29,6 @@ const TABS: { key: TabMode; label: string; tooltipKey: keyof typeof tooltips }[]
   { key: "catalog", label: "Problems", tooltipKey: "problems" },
   { key: "patterns", label: "Patterns", tooltipKey: "patterns" },
   { key: "hypotheses", label: "Hypotheses", tooltipKey: "hypotheses" },
-  { key: "routes", label: "Agents", tooltipKey: "agents" },
 ];
 
 export default function BoardPage() {
@@ -52,7 +50,6 @@ export default function BoardPage() {
     ...data.catalog.map((e) => e.problem_id),
     ...data.patterns.map((p) => p.pattern_id),
     ...data.hypotheses.map((h) => h.hypothesis_id),
-    ...data.newHires.map((a) => a.agent_id),
   ];
   const counts = { unreviewed: 0, approved: 0, rejected: 0 };
   for (const id of allIds) {
@@ -246,34 +243,6 @@ export default function BoardPage() {
           </BoardColumn>
         )}
 
-        {/* Agents */}
-        {showColumn("routes") && (
-          <BoardColumn
-            stageKey="routes"
-            title="Agent New Hires"
-            count={data.newHires.filter((a) => matchesFilter(a.agent_id)).length}
-            fullWidth={isFullWidth}
-          >
-            {data.newHires
-              .filter((a) => matchesFilter(a.agent_id))
-              .map((agent) => (
-                <NewHireCard
-                  key={agent.agent_id}
-                  id={agent.agent_id}
-                  name={agent.name}
-                  title={agent.title}
-                  persona={agent.persona}
-                  skills={agent.skills}
-                  assignedTo={agent.assigned_to_role}
-                  lifecycleState={agent.lifecycle_state}
-                  reviewStatus={reviews[agent.agent_id]?.status || "unreviewed"}
-                  onReview={(status) => setReview(agent.agent_id, "new_hire", status)}
-                  onSaveEdits={(edits) => saveEdits(agent.agent_id, "new_hire", edits)}
-                  onEditModal={() => setEditTarget({ type: "agent", data: { id: agent.agent_id, name: agent.name, title: agent.title, persona: agent.persona } })}
-                />
-              ))}
-          </BoardColumn>
-        )}
       </div>
 
       {/* Create Problem Slide-Over */}
@@ -343,14 +312,6 @@ export default function BoardPage() {
           onClose={() => setEditTarget(null)}
           initial={editTarget.data}
           onSave={(edits) => { saveEdits(editTarget.data.id, "hypothesis", edits); setEditTarget(null); }}
-        />
-      )}
-      {editTarget?.type === "agent" && (
-        <EditAgentModal
-          open={true}
-          onClose={() => setEditTarget(null)}
-          initial={editTarget.data}
-          onSave={(edits) => { saveEdits(editTarget.data.id, "new_hire", edits); setEditTarget(null); }}
         />
       )}
     </div>
