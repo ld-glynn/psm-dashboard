@@ -74,7 +74,7 @@ export default function BoardPage() {
       <div className="mb-4 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-boldtext-foreground">Board View</h1>
+            <h1 className="text-sm font-boldtext-foreground">Board View</h1>
             <InfoTooltip text={tooltips.reviewStatus} />
           </div>
           <p className="text-sm text-muted-foreground mt-1">

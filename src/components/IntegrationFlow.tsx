@@ -77,7 +77,7 @@ export function IntegrationFlow({
 
         {/* Pipeline */}
         <div className="bg-red-100 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-lg px-4 py-3 flex items-center gap-3">
-          <div className="text-2xl font-bold text-red-600 dark:text-red-400">{totalProblems}</div>
+          <div className="text-sm font-bold text-red-600 dark:text-red-400">{totalProblems}</div>
           <div>
             <div className="text-sm font-medium text-foreground">Pipeline</div>
             <div className="text-[10px] text-muted-foreground">total problems</div>

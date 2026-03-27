@@ -27,7 +27,7 @@ export default function IntegrationsPage() {
     <div className="space-y-8">
       <div>
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-boldtext-foreground">Integration Sources</h1>
+          <h1 className="text-sm font-boldtext-foreground">Integration Sources</h1>
           <InfoTooltip text={tooltips.integrationSource} />
         </div>
         <p className="text-sm text-muted-foreground mt-1">

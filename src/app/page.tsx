@@ -32,7 +32,7 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-boldtext-foreground">Dashboard</h1>
+        <h1 className="text-sm font-boldtext-foreground">Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Problem Solution Mapping — overview
           {serverAvailable && <span className="text-green-600 dark:text-green-400/60 ml-2">Server connected</span>}
@@ -43,7 +43,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((stat) => (
           <div key={stat.label} className="bg-card border border-border rounded-xl p-4">
-            <div className={`text-3xl font-bold ${stat.color}`}>{stat.value}</div>
+            <div className={`text-base font-bold ${stat.color}`}>{stat.value}</div>
             <div className="text-sm text-secondary-foreground mt-1">{stat.label}</div>
             <div className="text-xs text-muted-foreground mt-0.5">{stat.sub}</div>
           </div>

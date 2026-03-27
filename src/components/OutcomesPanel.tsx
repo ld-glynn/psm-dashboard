@@ -64,19 +64,19 @@ export function OutcomesPanel({ hypFeedback, serverAvailable }: OutcomesPanelPro
           {/* Summary stats */}
           <div className="grid grid-cols-4 gap-2">
             <div className="bg-muted rounded-lg p-2.5 text-center">
-              <div className="text-lg font-bold text-foreground">{summary.total + localTesting}</div>
+              <div className="text-sm font-bold text-foreground">{summary.total + localTesting}</div>
               <div className="text-[10px] text-muted-foreground">Tracked</div>
             </div>
             <div className="bg-muted rounded-lg p-2.5 text-center">
-              <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{localTesting}</div>
+              <div className="text-sm font-bold text-blue-600 dark:text-blue-400">{localTesting}</div>
               <div className="text-[10px] text-muted-foreground">Testing</div>
             </div>
             <div className="bg-muted rounded-lg p-2.5 text-center">
-              <div className="text-lg font-bold text-green-600 dark:text-green-400">{summary.validated}</div>
+              <div className="text-sm font-bold text-green-600 dark:text-green-400">{summary.validated}</div>
               <div className="text-[10px] text-muted-foreground">Validated</div>
             </div>
             <div className="bg-muted rounded-lg p-2.5 text-center">
-              <div className="text-lg font-bold text-red-600 dark:text-red-400">{summary.invalidated}</div>
+              <div className="text-sm font-bold text-red-600 dark:text-red-400">{summary.invalidated}</div>
               <div className="text-[10px] text-muted-foreground">Invalidated</div>
             </div>
           </div>

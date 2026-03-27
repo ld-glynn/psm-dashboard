@@ -61,7 +61,7 @@ export default function SkillsPage() {
     <div className="space-y-6">
       <div>
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-boldtext-foreground">Agent Work</h1>
+          <h1 className="text-sm font-boldtext-foreground">Agent Work</h1>
           <InfoTooltip text="Deliverables produced by deployed agents. Each output is linked to a specific invocation — agents accumulate work over time as they're triggered." />
           <span className="text-xs text-muted-foreground ml-2">{outputs.length} deliverable{outputs.length !== 1 ? "s" : ""}</span>
         </div>
@@ -121,7 +121,7 @@ export default function SkillsPage() {
                       <div key={outputKey} className="p-5 border-b border-border/50 last:border-b-0">
                         <div className="flex items-start gap-3 mb-3">
                           <div className="flex-1">
-                            <h3 className="text-base font-semibold text-foreground">{output.title}</h3>
+                            <h3 className="text-sm font-semibold text-foreground">{output.title}</h3>
                             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                               <span className={`text-[10px] px-1.5 py-0.5 rounded border ${skillTypeColors[output.skill_type] || ""}`}>
                                 {skillTypeLabels[output.skill_type] || output.skill_type}

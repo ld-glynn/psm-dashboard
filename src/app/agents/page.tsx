@@ -160,7 +160,7 @@ export default function AgentsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-boldtext-foreground">Agent Roster</h1>
+        <h1 className="text-sm font-boldtext-foreground">Agent Roster</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Three tiers: Engine agents run the PSM process, New Hires solve
           specific problem clusters, Skills are their capabilities
@@ -196,7 +196,7 @@ export default function AgentsPage() {
             className="flex items-center gap-2 mb-4"
           >
             {showAnalytics ? <ChevronDown size={14} className="text-muted-foreground" /> : <ChevronRight size={14} className="text-muted-foreground" />}
-            <h2 className="text-lg font-semibold text-foreground inline">Feedback Analytics</h2><InfoTooltip text={tooltips.feedbackAnalytics} />
+            <h2 className="text-sm font-semibold text-foreground inline">Feedback Analytics</h2><InfoTooltip text={tooltips.feedbackAnalytics} />
             <span className="text-xs text-muted-foreground">{feedbackEntries.length} ratings</span>
           </button>
 
@@ -298,7 +298,7 @@ export default function AgentsPage() {
           <div className="w-6 h-6 rounded bg-accent border border-white/10 flex items-center justify-center">
             <span className="text-[10px] font-bold text-muted-foreground">T1</span>
           </div>
-          <h2 className="text-lg font-semibold text-foreground inline">Engine Agents</h2><InfoTooltip text={tooltips.engineAgents} />
+          <h2 className="text-sm font-semibold text-foreground inline">Engine Agents</h2><InfoTooltip text={tooltips.engineAgents} />
           <span className="text-xs text-muted-foreground">{engineAgents.length} agents — run the PSM pipeline</span>
         </div>
 
@@ -386,7 +386,7 @@ export default function AgentsPage() {
               <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <h2 className="text-lg font-semibold text-foreground inline">Screening Gate</h2><InfoTooltip text={tooltips.screeningGate} />
+          <h2 className="text-sm font-semibold text-foreground inline">Screening Gate</h2><InfoTooltip text={tooltips.screeningGate} />
           <span className="text-xs text-muted-foreground">{passedEvals.length} passed / {failedEvals.length} rejected of {data.evalResults.length} candidates</span>
         </div>
 
@@ -452,7 +452,7 @@ export default function AgentsPage() {
           <div className="w-6 h-6 rounded bg-purple-100 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 flex items-center justify-center">
             <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400">T2</span>
           </div>
-          <h2 className="text-lg font-semibold text-foreground inline">Agent New Hires</h2><InfoTooltip text={tooltips.agentNewHires} />
+          <h2 className="text-sm font-semibold text-foreground inline">Agent New Hires</h2><InfoTooltip text={tooltips.agentNewHires} />
           <span className="text-xs text-muted-foreground">{data.newHires.length} specialists</span>
         </div>
 
@@ -520,7 +520,7 @@ export default function AgentsPage() {
                 {/* Header */}
                 <div className="flex items-start gap-4 mb-3">
                   <div className="w-11 h-11 rounded-lg bg-purple-100 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-lg font-bold text-purple-600 dark:text-purple-400">{agent.name[0]}</span>
+                    <span className="text-sm font-bold text-purple-600 dark:text-purple-400">{agent.name[0]}</span>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -614,7 +614,7 @@ export default function AgentsPage() {
           <div className="w-6 h-6 rounded bg-cyan-100 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20 flex items-center justify-center">
             <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400">T3</span>
           </div>
-          <h2 className="text-lg font-semibold text-foreground inline">Skills</h2><InfoTooltip text={tooltips.agentSkills} />
+          <h2 className="text-sm font-semibold text-foreground inline">Skills</h2><InfoTooltip text={tooltips.agentSkills} />
           <span className="text-xs text-muted-foreground">{totalSkills} capabilities across {data.newHires.length} agents</span>
         </div>
 
@@ -633,7 +633,7 @@ export default function AgentsPage() {
             return (
               <div key={skillType} className={`border rounded-xl p-4 ${skillTypeColors[skillType]}`}>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-base font-semibold">{skillTypeLabels[skillType]}</span>
+                  <span className="text-sm font-semibold">{skillTypeLabels[skillType]}</span>
                   <span className="text-[10px] opacity-50 ml-auto">{usages.length} {usages.length === 1 ? "agent" : "agents"}</span>
                 </div>
                 <div className="space-y-3">

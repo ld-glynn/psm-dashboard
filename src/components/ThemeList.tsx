@@ -7,7 +7,7 @@ export function ThemeList({ data }: { data: PipelineData }) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold text-foreground">Themes</h2>
+      <h2 className="text-sm font-semibold text-foreground">Themes</h2>
       {data.themes
         .sort((a, b) => b.priority_score - a.priority_score)
         .map((theme) => (

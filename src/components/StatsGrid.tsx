@@ -89,7 +89,7 @@ function StatCard({ label, value, detail, accent, tooltip }: { label: string; va
         {label}
         {tooltip && <InfoTooltip text={tooltip} size={11} />}
       </div>
-      <div className={`text-2xl font-bold mt-1 ${accent || "text-foreground"}`}>{value}</div>
+      <div className={`text-sm font-bold mt-1 ${accent || "text-foreground"}`}>{value}</div>
       <div className="text-xs text-muted-foreground mt-1">{detail}</div>
     </div>
   );
