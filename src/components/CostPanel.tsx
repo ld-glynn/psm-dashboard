@@ -90,20 +90,20 @@ export function CostPanel({
     setShowBudget(false);
   }
 
-  const inputClass = "w-full bg-[#12121a] border border-[#2a2a3e] rounded px-2 py-1 text-xs text-white/90 focus:outline-none focus:border-[#4a4a6e]";
+  const inputClass = "w-full bg-muted border border-border rounded px-2 py-1 text-xs text-foreground focus:outline-none focus:border-ring";
 
   return (
-    <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-5 space-y-4">
+    <div className="bg-card border border-border rounded-xl p-5 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-white/80 inline">Cost Tracking</h2><InfoTooltip text={tooltips.costTracking} />
+        <h2 className="text-sm font-semibold text-foreground inline">Cost Tracking</h2><InfoTooltip text={tooltips.costTracking} />
         <div className="flex items-center gap-2">
-          <button onClick={onSimulateCosts} className="px-2 py-1 text-[10px] rounded bg-blue-600/60 text-white/80 hover:bg-blue-500/80 transition-colors">
+          <button onClick={onSimulateCosts} className="px-2 py-1 text-[10px] rounded bg-blue-600/60 text-foreground hover:bg-blue-500/80 transition-colors">
             Simulate
           </button>
-          <button onClick={() => setShowManual(!showManual)} className="px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:bg-white/10 transition-colors">
+          <button onClick={() => setShowManual(!showManual)} className="px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent transition-colors">
             + Manual
           </button>
-          <button onClick={() => setShowBudget(!showBudget)} className="px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:bg-white/10 transition-colors">
+          <button onClick={() => setShowBudget(!showBudget)} className="px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent transition-colors">
             Budget
           </button>
           {costEntries.length > 0 && (
@@ -117,14 +117,14 @@ export function CostPanel({
       {/* Budget bar */}
       <div>
         <div className="flex items-center justify-between text-xs mb-1">
-          <span className={costSummary.overBudget ? "text-red-400" : costSummary.atWarning ? "text-yellow-400" : "text-white/50"}>
+          <span className={costSummary.overBudget ? "text-red-400" : costSummary.atWarning ? "text-yellow-400" : "text-muted-foreground"}>
             {formatUsd(costSummary.totalCostUsd)} / {formatUsd(costBudget.monthlyLimitUsd)}
           </span>
-          <span className="text-white/30">
+          <span className="text-muted-foreground">
             {costSummary.totalCalls} calls · {formatTokens(costSummary.totalInputTokens + costSummary.totalOutputTokens)} tokens
           </span>
         </div>
-        <div className="w-full h-2 bg-[#12121a] rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
           <div className={`h-full rounded-full transition-all ${barColor}`} style={{ width: `${pct}%` }} />
         </div>
       </div>
@@ -138,8 +138,8 @@ export function CostPanel({
             return (
               <div key={key} className={`${colors.bg} ${colors.border} border rounded-lg p-2.5 text-center`}>
                 <div className={`text-sm font-bold ${colors.text}`}>{formatUsd(s.costUsd)}</div>
-                <div className="text-[10px] text-white/50 mt-0.5">{label}</div>
-                <div className="text-[10px] text-white/30">{s.calls} calls</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5">{label}</div>
+                <div className="text-[10px] text-muted-foreground">{s.calls} calls</div>
               </div>
             );
           })}
@@ -148,33 +148,33 @@ export function CostPanel({
 
       {/* Budget form */}
       {showBudget && (
-        <div className="bg-[#12121a] rounded-lg p-3 space-y-2">
+        <div className="bg-muted rounded-lg p-3 space-y-2">
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[10px] text-white/40">Monthly limit ($)</label>
+              <label className="text-[10px] text-muted-foreground">Monthly limit ($)</label>
               <input className={inputClass} type="number" value={budgetForm.limit} onChange={(e) => setBudgetForm((v) => ({ ...v, limit: e.target.value }))} />
             </div>
             <div>
-              <label className="text-[10px] text-white/40">Warning at (%)</label>
+              <label className="text-[10px] text-muted-foreground">Warning at (%)</label>
               <input className={inputClass} type="number" value={budgetForm.warning} onChange={(e) => setBudgetForm((v) => ({ ...v, warning: e.target.value }))} />
             </div>
           </div>
-          <button onClick={handleBudgetSave} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-white hover:bg-blue-500">Save</button>
+          <button onClick={handleBudgetSave} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-foreground hover:bg-blue-500">Save</button>
         </div>
       )}
 
       {/* Manual entry form */}
       {showManual && (
-        <div className="bg-[#12121a] rounded-lg p-3 space-y-2">
+        <div className="bg-muted rounded-lg p-3 space-y-2">
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[10px] text-white/40">Stage</label>
+              <label className="text-[10px] text-muted-foreground">Stage</label>
               <select className={inputClass} value={manualForm.stage} onChange={(e) => setManualForm((v) => ({ ...v, stage: e.target.value as PipelineStage }))}>
                 {STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
               </select>
             </div>
             <div>
-              <label className="text-[10px] text-white/40">Model</label>
+              <label className="text-[10px] text-muted-foreground">Model</label>
               <select className={inputClass} value={manualForm.model} onChange={(e) => setManualForm((v) => ({ ...v, model: e.target.value }))}>
                 {MODELS.map((m) => <option key={m} value={m}>{m}</option>)}
               </select>
@@ -182,20 +182,20 @@ export function CostPanel({
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="text-[10px] text-white/40">Input tokens</label>
+              <label className="text-[10px] text-muted-foreground">Input tokens</label>
               <input className={inputClass} type="number" value={manualForm.inputTokens} onChange={(e) => setManualForm((v) => ({ ...v, inputTokens: e.target.value }))} placeholder="0" />
             </div>
             <div>
-              <label className="text-[10px] text-white/40">Output tokens</label>
+              <label className="text-[10px] text-muted-foreground">Output tokens</label>
               <input className={inputClass} type="number" value={manualForm.outputTokens} onChange={(e) => setManualForm((v) => ({ ...v, outputTokens: e.target.value }))} placeholder="0" />
             </div>
             <div>
-              <label className="text-[10px] text-white/40">Calls</label>
+              <label className="text-[10px] text-muted-foreground">Calls</label>
               <input className={inputClass} type="number" value={manualForm.calls} onChange={(e) => setManualForm((v) => ({ ...v, calls: e.target.value }))} placeholder="1" />
             </div>
           </div>
           <input className={inputClass} value={manualForm.note} onChange={(e) => setManualForm((v) => ({ ...v, note: e.target.value }))} placeholder="Note (optional)" />
-          <button onClick={handleManualAdd} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-white hover:bg-blue-500">Add Entry</button>
+          <button onClick={handleManualAdd} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-foreground hover:bg-blue-500">Add Entry</button>
         </div>
       )}
 
@@ -204,7 +204,7 @@ export function CostPanel({
         <div>
           <button
             onClick={() => setShowLog(!showLog)}
-            className="flex items-center gap-1 text-xs text-white/40 hover:text-white/60 transition-colors"
+            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-muted-foreground transition-colors"
           >
             {showLog ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
             Cost Log ({costEntries.length} entries)
@@ -213,31 +213,31 @@ export function CostPanel({
             <div className="mt-2 overflow-x-auto">
               <table className="w-full text-[10px]">
                 <thead>
-                  <tr className="border-b border-[#2a2a3e]">
-                    <th className="text-left py-1.5 px-2 text-white/30">Time</th>
-                    <th className="text-left py-1.5 px-2 text-white/30">Stage</th>
-                    <th className="text-left py-1.5 px-2 text-white/30">Model</th>
-                    <th className="text-right py-1.5 px-2 text-white/30">In</th>
-                    <th className="text-right py-1.5 px-2 text-white/30">Out</th>
-                    <th className="text-right py-1.5 px-2 text-white/30">Calls</th>
-                    <th className="text-right py-1.5 px-2 text-white/30">Cost</th>
-                    <th className="text-left py-1.5 px-2 text-white/30">Note</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-1.5 px-2 text-muted-foreground">Time</th>
+                    <th className="text-left py-1.5 px-2 text-muted-foreground">Stage</th>
+                    <th className="text-left py-1.5 px-2 text-muted-foreground">Model</th>
+                    <th className="text-right py-1.5 px-2 text-muted-foreground">In</th>
+                    <th className="text-right py-1.5 px-2 text-muted-foreground">Out</th>
+                    <th className="text-right py-1.5 px-2 text-muted-foreground">Calls</th>
+                    <th className="text-right py-1.5 px-2 text-muted-foreground">Cost</th>
+                    <th className="text-left py-1.5 px-2 text-muted-foreground">Note</th>
                     <th className="w-6"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {costEntries.map((e) => (
-                    <tr key={e.id} className="border-b border-[#2a2a3e]/30">
-                      <td className="py-1.5 px-2 text-white/30">{new Date(e.timestamp).toLocaleTimeString()}</td>
-                      <td className="py-1.5 px-2 text-white/50 capitalize">{e.stage}</td>
-                      <td className="py-1.5 px-2 text-white/40">{e.model}</td>
-                      <td className="py-1.5 px-2 text-right text-white/40">{formatTokens(e.inputTokens)}</td>
-                      <td className="py-1.5 px-2 text-right text-white/40">{formatTokens(e.outputTokens)}</td>
-                      <td className="py-1.5 px-2 text-right text-white/40">{e.calls}</td>
-                      <td className="py-1.5 px-2 text-right text-white/70">{formatUsd(e.costUsd)}</td>
-                      <td className="py-1.5 px-2 text-white/30 truncate max-w-[120px]">{e.note}</td>
+                    <tr key={e.id} className="border-b border-border/30">
+                      <td className="py-1.5 px-2 text-muted-foreground">{new Date(e.timestamp).toLocaleTimeString()}</td>
+                      <td className="py-1.5 px-2 text-muted-foreground capitalize">{e.stage}</td>
+                      <td className="py-1.5 px-2 text-muted-foreground">{e.model}</td>
+                      <td className="py-1.5 px-2 text-right text-muted-foreground">{formatTokens(e.inputTokens)}</td>
+                      <td className="py-1.5 px-2 text-right text-muted-foreground">{formatTokens(e.outputTokens)}</td>
+                      <td className="py-1.5 px-2 text-right text-muted-foreground">{e.calls}</td>
+                      <td className="py-1.5 px-2 text-right text-secondary-foreground">{formatUsd(e.costUsd)}</td>
+                      <td className="py-1.5 px-2 text-muted-foreground truncate max-w-[120px]">{e.note}</td>
                       <td className="py-1.5 px-1">
-                        <button onClick={() => onRemoveCost(e.id)} className="text-white/20 hover:text-red-400"><Trash2 size={10} /></button>
+                        <button onClick={() => onRemoveCost(e.id)} className="text-muted-foreground/50 hover:text-red-400"><Trash2 size={10} /></button>
                       </td>
                     </tr>
                   ))}

@@ -22,7 +22,7 @@ export function ReviewSummary({ reviews, totalItems, onFocusUnreviewed }: Review
   const pctUnreviewed = totalItems > 0 ? (unreviewedCount / totalItems) * 100 : 0;
 
   return (
-    <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg px-4 py-3 mb-4">
+    <div className="bg-card border border-border rounded-lg px-4 py-3 mb-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
           {unreviewedCount > 0 && (
@@ -31,7 +31,7 @@ export function ReviewSummary({ reviews, totalItems, onFocusUnreviewed }: Review
               <span className="text-xs font-medium">{unreviewedCount} items need review</span>
             </div>
           )}
-          <div className="flex items-center gap-3 text-[10px] text-white/40">
+          <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
             <span>{approvedCount} approved</span>
             <span>{rejectedCount} rejected</span>
             <span>{totalItems} total</span>
@@ -47,7 +47,7 @@ export function ReviewSummary({ reviews, totalItems, onFocusUnreviewed }: Review
         )}
       </div>
       {/* Progress bar */}
-      <div className="w-full h-1.5 bg-[#12121a] rounded-full overflow-hidden flex">
+      <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden flex">
         <div className="h-full bg-green-500 transition-all" style={{ width: `${pctApproved}%` }} />
         <div className="h-full bg-red-500 transition-all" style={{ width: `${pctRejected}%` }} />
         <div className="h-full bg-orange-500/30 transition-all" style={{ width: `${pctUnreviewed}%` }} />

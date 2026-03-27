@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Home, Database, BarChart3, Columns3, GitBranch,
-  Users, Briefcase, HelpCircle, Search, ChevronLeft, ChevronRight,
+  Users, Briefcase, HelpCircle, Search, Sun, Moon, ChevronLeft, ChevronRight,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 
 const links = [
   { href: "/", label: "Dashboard", icon: Home },
@@ -23,16 +24,17 @@ const bottomLinks = [
 
 export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onToggle: () => void; onSearch?: () => void }) {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
 
   return (
-    <nav className={`fixed left-0 top-0 h-screen bg-[#0d0d14] border-r border-[#2a2a3e] flex flex-col z-50 transition-all duration-200 ${collapsed ? "w-16" : "w-52"}`}>
+    <nav className={`fixed left-0 top-0 h-screen bg-sidebar border-r border-border flex flex-col z-50 transition-all duration-200 ${collapsed ? "w-16" : "w-52"}`}>
       {/* Logo */}
-      <div className={`flex items-center h-14 px-4 border-b border-[#2a2a3e] ${collapsed ? "justify-center" : "gap-3"}`}>
+      <div className={`flex items-center h-14 px-4 border-b border-border ${collapsed ? "justify-center" : "gap-3"}`}>
         <div className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/25 flex items-center justify-center flex-shrink-0">
           <span className="text-[10px] font-bold text-blue-400">P</span>
         </div>
         {!collapsed && (
-          <span className="text-sm font-semibold tracking-wider text-white/90">PSM</span>
+          <span className="text-sm font-semibold tracking-wider text-foreground">PSM</span>
         )}
       </div>
 
@@ -47,8 +49,8 @@ export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onT
               href={link.href}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 isActive
-                  ? "bg-white/10 text-white"
-                  : "text-white/40 hover:text-white/80 hover:bg-white/5"
+                  ? "bg-accent text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
               } ${collapsed ? "justify-center px-0" : ""}`}
               title={collapsed ? link.label : undefined}
             >
@@ -60,7 +62,7 @@ export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onT
       </div>
 
       {/* Bottom links */}
-      <div className="py-3 px-2 border-t border-[#2a2a3e] space-y-0.5">
+      <div className="py-3 px-2 border-t border-border space-y-0.5">
         {bottomLinks.map((link) => {
           const Icon = link.icon;
           const isActive = pathname === link.href;
@@ -70,8 +72,8 @@ export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onT
               href={link.href}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 isActive
-                  ? "bg-white/10 text-white"
-                  : "text-white/40 hover:text-white/80 hover:bg-white/5"
+                  ? "bg-accent text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
               } ${collapsed ? "justify-center px-0" : ""}`}
               title={collapsed ? link.label : undefined}
             >
@@ -83,7 +85,7 @@ export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onT
 
         <button
           onClick={onSearch}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-muted-foreground hover:bg-accent transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
           title={collapsed ? "Search (⌘K)" : undefined}
         >
           <Search size={18} className="flex-shrink-0" />
@@ -91,8 +93,17 @@ export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onT
         </button>
 
         <button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-muted-foreground hover:bg-accent transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
+          title={collapsed ? (theme === "dark" ? "Light mode" : "Dark mode") : undefined}
+        >
+          {theme === "dark" ? <Sun size={18} className="flex-shrink-0" /> : <Moon size={18} className="flex-shrink-0" />}
+          {!collapsed && <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>}
+        </button>
+
+        <button
           onClick={onToggle}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/20 hover:text-white/40 hover:bg-white/5 transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           {!collapsed && <span>Collapse</span>}

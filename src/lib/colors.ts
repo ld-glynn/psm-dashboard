@@ -47,7 +47,7 @@ export const stageColors: Record<string, { bg: string; border: string; text: str
 };
 
 export const reviewStatusStyle: Record<string, { border: string; badge: string; badgeText: string }> = {
-  unreviewed: { border: "border-[#2a2a3e]", badge: "", badgeText: "" },
+  unreviewed: { border: "border-border", badge: "", badgeText: "" },
   approved: { border: "border-green-500/40", badge: "bg-green-500/15", badgeText: "text-green-400" },
   rejected: { border: "border-red-500/40", badge: "bg-red-500/15", badgeText: "text-red-400" },
 };

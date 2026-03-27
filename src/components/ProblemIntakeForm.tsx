@@ -59,8 +59,8 @@ export function ProblemIntakeForm({ onSubmit }: ProblemIntakeFormProps) {
   }
 
   const inputClass =
-    "w-full bg-[#12121a] border border-[#2a2a3e] rounded-md px-3 py-2 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-[#4a4a6e] transition-colors";
-  const labelClass = "block text-xs font-medium text-white/50 mb-1.5";
+    "w-full bg-muted border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
+  const labelClass = "block text-xs font-medium text-muted-foreground mb-1.5";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -145,7 +145,7 @@ export function ProblemIntakeForm({ onSubmit }: ProblemIntakeFormProps) {
         <button
           type="submit"
           disabled={!title.trim() || !description.trim()}
-          className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
           Add Problem
         </button>

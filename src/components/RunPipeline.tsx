@@ -51,7 +51,7 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
     }
   }
 
-  const selectClass = "bg-[#12121a] border border-[#2a2a3e] rounded px-2 py-1.5 text-xs text-white/80 focus:outline-none focus:border-[#4a4a6e]";
+  const selectClass = "bg-muted border border-border rounded px-2 py-1.5 text-xs text-foreground focus:outline-none focus:border-ring";
 
   return (
     <div className="space-y-4">
@@ -59,9 +59,9 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
       <PipelineConfig serverAvailable={serverAvailable} />
 
       {/* Run controls */}
-      <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4">
+      <div className="bg-card border border-border rounded-xl p-4">
         <div className="flex items-center gap-2 mb-3">
-          <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider">Run Pipeline</h3>
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Run Pipeline</h3>
           <InfoTooltip text="Execute the PSM pipeline to process problems through all stages. Requires the API server to be running (uvicorn psm.server:app). Each run creates a snapshot for rollback." />
           {serverAvailable ? (
             <span className="text-[9px] px-1.5 py-0.5 rounded bg-green-500/15 text-green-400 ml-auto">Server Connected</span>
@@ -86,13 +86,13 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
             <option value="execute">Full + Execute</option>
           </select>
 
-          <label className="flex items-center gap-1.5 text-xs text-white/40">
+          <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <input
               type="checkbox"
               checked={withIntegrations}
               onChange={(e) => setWithIntegrations(e.target.checked)}
               disabled={!serverAvailable || running}
-              className="rounded border-[#2a2a3e] bg-[#12121a]"
+              className="rounded border-border bg-muted"
             />
             Include integrations
           </label>
@@ -100,7 +100,7 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
           <button
             onClick={handleRun}
             disabled={!serverAvailable || running}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             {running ? <Loader2 size={12} className="animate-spin" /> : <Play size={12} />}
             {running ? "Running..." : "Run Pipeline"}
@@ -109,7 +109,7 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
           <button
             onClick={handleSync}
             disabled={!serverAvailable || syncing}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-[#2a2a3e] text-white/70 hover:bg-[#3a3a5e] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             {syncing ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
             {syncing ? "Syncing..." : "Sync Sources"}

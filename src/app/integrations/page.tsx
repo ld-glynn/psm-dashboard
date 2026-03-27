@@ -27,10 +27,10 @@ export default function IntegrationsPage() {
     <div className="space-y-8">
       <div>
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-white">Integration Sources</h1>
+          <h1 className="text-2xl font-boldtext-foreground">Integration Sources</h1>
           <InfoTooltip text={tooltips.integrationSource} />
         </div>
-        <p className="text-sm text-white/40 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           External data feeds into the pipeline. {ingestionRecords.length} records
           ingested, {totalStructured} structured into problems.
         </p>
@@ -50,24 +50,24 @@ export default function IntegrationsPage() {
       {/* Recent ingestion records */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-white/80">
+          <h2 className="text-sm font-semibold text-foreground">
             Ingestion Records ({ingestionRecords.length}) <InfoTooltip text={tooltips.structuredStatus} size={11} />
           </h2>
           <div className="flex items-center gap-3 text-xs">
             <span className="text-green-400">{totalStructured} structured</span>
-            <span className="text-white/30">{totalUnstructured} pending</span>
+            <span className="text-muted-foreground">{totalUnstructured} pending</span>
           </div>
         </div>
-        <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg overflow-hidden">
+        <div className="bg-card border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#2a2a3e]">
-                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium w-8">Source</th>
-                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium">ID</th>
-                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium">Preview</th>
-                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium">Ingested</th>
-                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium">Status</th>
-                <th className="text-left py-2.5 px-4 text-xs text-white/40 font-medium">Problem</th>
+              <tr className="border-b border-border">
+                <th className="text-left py-2.5 px-4 text-xs text-muted-foreground font-medium w-8">Source</th>
+                <th className="text-left py-2.5 px-4 text-xs text-muted-foreground font-medium">ID</th>
+                <th className="text-left py-2.5 px-4 text-xs text-muted-foreground font-medium">Preview</th>
+                <th className="text-left py-2.5 px-4 text-xs text-muted-foreground font-medium">Ingested</th>
+                <th className="text-left py-2.5 px-4 text-xs text-muted-foreground font-medium">Status</th>
+                <th className="text-left py-2.5 px-4 text-xs text-muted-foreground font-medium">Problem</th>
               </tr>
             </thead>
             <tbody>
@@ -75,21 +75,21 @@ export default function IntegrationsPage() {
                 const colors = sourceColors[record.source] || sourceColors.csv;
                 const Icon = sourceIcons[record.source] || Database;
                 return (
-                  <tr key={record.recordId} className="border-b border-[#2a2a3e]/50 hover:bg-white/[0.02]">
+                  <tr key={record.recordId} className="border-b border-border/50 hover:bg-accent/20">
                     <td className="py-2.5 px-4">
                       <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center`}>
                         <Icon size={12} className={colors.text} />
                       </div>
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-white/30 font-mono">{record.recordId}</td>
-                    <td className="py-2.5 px-4 text-xs text-white/60 max-w-[300px] truncate">{record.rawTextPreview}</td>
-                    <td className="py-2.5 px-4 text-xs text-white/30">{new Date(record.ingestedAt).toLocaleDateString()}</td>
+                    <td className="py-2.5 px-4 text-xs text-muted-foreground font-mono">{record.recordId}</td>
+                    <td className="py-2.5 px-4 text-xs text-muted-foreground max-w-[300px] truncate">{record.rawTextPreview}</td>
+                    <td className="py-2.5 px-4 text-xs text-muted-foreground">{new Date(record.ingestedAt).toLocaleDateString()}</td>
                     <td className="py-2.5 px-4">
                       <span className={`text-[10px] px-1.5 py-0.5 rounded ${record.structured ? "bg-green-500/15 text-green-400" : "bg-gray-500/15 text-gray-400"}`}>
                         {record.structured ? "Structured" : "Pending"}
                       </span>
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-white/40 font-mono">
+                    <td className="py-2.5 px-4 text-xs text-muted-foreground font-mono">
                       {record.extractedProblemId || "—"}
                     </td>
                   </tr>

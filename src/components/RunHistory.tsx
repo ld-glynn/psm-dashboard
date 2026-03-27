@@ -58,27 +58,27 @@ export function RunHistory({ serverAvailable, onRollback }: RunHistoryProps) {
   }
 
   if (!serverAvailable) return null;
-  if (loading) return <div className="text-xs text-white/30">Loading run history...</div>;
+  if (loading) return <div className="text-xs text-muted-foreground">Loading run history...</div>;
   if (runs.length === 0) return null;
 
   return (
     <div className="mt-3">
-      <div className="text-[10px] text-white/30 uppercase tracking-wide mb-2">Run History ({runs.length})</div>
+      <div className="text-[10px] text-muted-foreground uppercase tracking-wide mb-2">Run History ({runs.length})</div>
       <div className="space-y-1.5 max-h-[200px] overflow-y-auto">
         {[...runs].reverse().slice(0, 10).map((run) => {
           const cfg = statusConfig[run.status] || statusConfig.failed;
           const Icon = cfg.icon;
           return (
-            <div key={run.run_id} className="flex items-center gap-2 bg-[#12121a] rounded-lg px-3 py-2">
+            <div key={run.run_id} className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2">
               <div className={`w-6 h-6 rounded flex items-center justify-center flex-shrink-0 ${cfg.color}`}>
                 <Icon size={12} className={run.status === "running" ? "animate-spin" : ""} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-white/70 font-mono">{run.run_id}</span>
+                  <span className="text-xs text-secondary-foreground font-mono">{run.run_id}</span>
                   <span className={`text-[9px] px-1 py-0.5 rounded ${cfg.color}`}>{cfg.label}</span>
                 </div>
-                <div className="text-[10px] text-white/30">
+                <div className="text-[10px] text-muted-foreground">
                   {run.stages_completed.length} stages · {timeAgo(run.timestamp)}
                   {run.error_stage && <span className="text-red-400"> · failed at {run.error_stage}</span>}
                 </div>
@@ -86,7 +86,7 @@ export function RunHistory({ serverAvailable, onRollback }: RunHistoryProps) {
               <button
                 onClick={() => handleRollback(run.run_id)}
                 disabled={rollingBack === run.run_id}
-                className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-white/5 text-white/30 hover:text-white/60 hover:bg-white/10 transition-colors disabled:opacity-30"
+                className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:text-muted-foreground hover:bg-accent transition-colors disabled:opacity-30"
                 title="Rollback to this snapshot"
               >
                 <RotateCcw size={10} /> Rollback

@@ -37,11 +37,11 @@ export function SlideOver({ open, onClose, title, children, width = "max-w-lg" }
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Panel */}
-      <div className={`absolute right-0 top-0 h-full ${width} w-full bg-[#12121a] border-l border-[#2a2a3e] shadow-2xl flex flex-col animate-slide-in`}>
+      <div className={`absolute right-0 top-0 h-full ${width} w-full bg-muted border-l border-border shadow-2xl flex flex-col animate-slide-in`}>
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#2a2a3e] flex-shrink-0">
-          <h2 className="text-sm font-semibold text-white/90">{title}</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white/70 transition-colors">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border flex-shrink-0">
+          <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-secondary-foreground transition-colors">
             <X size={16} />
           </button>
         </div>

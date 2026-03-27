@@ -164,13 +164,13 @@ export default function GraphPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Relationship Graph</h1>
-        <p className="text-sm text-white/40 mt-1">
+        <h1 className="text-2xl font-boldtext-foreground">Relationship Graph</h1>
+        <p className="text-sm text-muted-foreground mt-1">
           Problems → Patterns → Hypotheses → Agent New Hires
         </p>
       </div>
       <div
-        className="bg-[#0d0d14] border border-[#2a2a3e] rounded-xl overflow-hidden"
+        className="bg-sidebar border border-border rounded-xl overflow-hidden"
         style={{ height: "calc(100vh - 180px)" }}
       >
         <ReactFlow
@@ -183,7 +183,7 @@ export default function GraphPage() {
         >
           <Background color="#1a1a2e" gap={20} />
           <Controls
-            className="!bg-[#1a1a2e] !border-[#2a2a3e] !rounded-lg [&>button]:!bg-[#1a1a2e] [&>button]:!border-[#2a2a3e] [&>button]:!text-white/60 [&>button:hover]:!bg-[#2a2a3e]"
+            className="!bg-card !border-border !rounded-lg [&>button]:!bg-card [&>button]:!border-border [&>button]:!text-muted-foreground [&>button:hover]:!bg-secondary"
           />
         </ReactFlow>
       </div>

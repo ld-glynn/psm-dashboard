@@ -25,8 +25,8 @@ export function IntegrationFlow({
   const enabledSources = integrations.filter((i) => i.enabled);
 
   return (
-    <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4">
-      <div className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">
+    <div className="bg-card border border-border rounded-xl p-4">
+      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
         <span className="inline">Data Flow</span><InfoTooltip text={tooltips.dataFlow} size={11} />
       </div>
 
@@ -47,7 +47,7 @@ export function IntegrationFlow({
                   <div className={`text-xs font-medium ${colors.text}`}>
                     {config.source.charAt(0).toUpperCase() + config.source.slice(1)}
                   </div>
-                  <div className="text-[10px] text-white/30">{count} records</div>
+                  <div className="text-[10px] text-muted-foreground">{count} records</div>
                 </div>
               </div>
             );
@@ -56,8 +56,8 @@ export function IntegrationFlow({
 
         {/* Arrow */}
         <div className="flex flex-col items-center gap-0.5">
-          <ArrowRight size={18} className="text-white/20" />
-          <span className="text-[9px] text-white/20">{ingestionRecords.length}</span>
+          <ArrowRight size={18} className="text-muted-foreground/50" />
+          <span className="text-[9px] text-muted-foreground/50">{ingestionRecords.length}</span>
         </div>
 
         {/* Structurer */}
@@ -65,22 +65,22 @@ export function IntegrationFlow({
           <Cpu size={18} className="text-cyan-400 flex-shrink-0" />
           <div>
             <div className="text-sm font-medium text-cyan-400">Structurer</div>
-            <div className="text-[10px] text-white/40">{structuredCount} processed</div>
+            <div className="text-[10px] text-muted-foreground">{structuredCount} processed</div>
           </div>
         </div>
 
         {/* Arrow */}
         <div className="flex flex-col items-center gap-0.5">
-          <ArrowRight size={18} className="text-white/20" />
-          <span className="text-[9px] text-white/20">{structuredCount}</span>
+          <ArrowRight size={18} className="text-muted-foreground/50" />
+          <span className="text-[9px] text-muted-foreground/50">{structuredCount}</span>
         </div>
 
         {/* Pipeline */}
         <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 flex items-center gap-3">
           <div className="text-2xl font-bold text-red-400">{totalProblems}</div>
           <div>
-            <div className="text-sm font-medium text-white/80">Pipeline</div>
-            <div className="text-[10px] text-white/40">total problems</div>
+            <div className="text-sm font-medium text-foreground">Pipeline</div>
+            <div className="text-[10px] text-muted-foreground">total problems</div>
           </div>
         </div>
       </div>

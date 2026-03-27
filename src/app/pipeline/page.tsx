@@ -22,8 +22,8 @@ export default function PipelinePage() {
     <div className="space-y-6">
 
       <div>
-        <h1 className="text-2xl font-bold text-white">Pipeline</h1>
-        <p className="text-sm text-white/40 mt-1">Run, configure, and monitor the processing pipeline.</p>
+        <h1 className="text-2xl font-boldtext-foreground">Pipeline</h1>
+        <p className="text-sm text-muted-foreground mt-1">Run, configure, and monitor the processing pipeline.</p>
       </div>
 
       <RunPipeline

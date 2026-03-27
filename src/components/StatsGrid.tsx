@@ -84,13 +84,13 @@ export function StatsGrid({ data, skillFeedback, costSummary }: StatsGridProps) 
 
 function StatCard({ label, value, detail, accent, tooltip }: { label: string; value: string; detail: string; accent?: string; tooltip?: string }) {
   return (
-    <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4">
-      <div className="flex items-center gap-1.5 text-xs text-white/40 uppercase tracking-wider">
+    <div className="bg-card border border-border rounded-xl p-4">
+      <div className="flex items-center gap-1.5 text-xs text-muted-foreground uppercase tracking-wider">
         {label}
         {tooltip && <InfoTooltip text={tooltip} size={11} />}
       </div>
-      <div className={`text-2xl font-bold mt-1 ${accent || "text-white"}`}>{value}</div>
-      <div className="text-xs text-white/40 mt-1">{detail}</div>
+      <div className={`text-2xl font-bold mt-1 ${accent || "text-foreground"}`}>{value}</div>
+      <div className="text-xs text-muted-foreground mt-1">{detail}</div>
     </div>
   );
 }

@@ -137,13 +137,13 @@ export function BulkImport({ onImport }: BulkImportProps) {
   ).length || 0;
 
   const inputClass =
-    "w-full bg-[#12121a] border border-[#2a2a3e] rounded-md px-3 py-2 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-[#4a4a6e] transition-colors";
+    "w-full bg-muted border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
 
   return (
     <div className="space-y-4">
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <label className="block text-xs font-medium text-white/50">
+          <label className="block text-xs font-medium text-muted-foreground">
             Paste CSV or upload a file
           </label>
           <button
@@ -178,7 +178,7 @@ export function BulkImport({ onImport }: BulkImportProps) {
           type="button"
           onClick={handleParse}
           disabled={!csvText.trim()}
-          className="px-4 py-2 text-sm font-medium rounded-md bg-[#2a2a3e] text-white/80 hover:bg-[#3a3a5e] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-2 text-sm font-medium rounded-md bg-secondary text-foreground hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
           Preview
         </button>
@@ -186,7 +186,7 @@ export function BulkImport({ onImport }: BulkImportProps) {
           <button
             type="button"
             onClick={handleImport}
-            className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 transition-colors"
+            className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors"
           >
             Import {validCount} problem{validCount !== 1 ? "s" : ""}
           </button>
@@ -212,22 +212,22 @@ export function BulkImport({ onImport }: BulkImportProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
-              <tr className="border-b border-[#2a2a3e]">
-                <th className="text-left py-2 px-2 text-white/40 font-medium">Title</th>
-                <th className="text-left py-2 px-2 text-white/40 font-medium">Domain</th>
-                <th className="text-left py-2 px-2 text-white/40 font-medium">Severity</th>
-                <th className="text-left py-2 px-2 text-white/40 font-medium">Tags</th>
+              <tr className="border-b border-border">
+                <th className="text-left py-2 px-2 text-muted-foreground font-medium">Title</th>
+                <th className="text-left py-2 px-2 text-muted-foreground font-medium">Domain</th>
+                <th className="text-left py-2 px-2 text-muted-foreground font-medium">Severity</th>
+                <th className="text-left py-2 px-2 text-muted-foreground font-medium">Tags</th>
               </tr>
             </thead>
             <tbody>
               {parsed
                 .filter((r) => r.data.title && r.errors.filter((e) => e.includes("missing")).length === 0)
                 .map((r, i) => (
-                  <tr key={i} className="border-b border-[#2a2a3e]/50">
-                    <td className="py-2 px-2 text-white/80">{r.data.title}</td>
-                    <td className="py-2 px-2 text-white/50">{r.data.domain}</td>
-                    <td className="py-2 px-2 text-white/50">{r.data.severity}</td>
-                    <td className="py-2 px-2 text-white/40">{r.data.tags.join(", ")}</td>
+                  <tr key={i} className="border-b border-border/50">
+                    <td className="py-2 px-2 text-foreground">{r.data.title}</td>
+                    <td className="py-2 px-2 text-muted-foreground">{r.data.domain}</td>
+                    <td className="py-2 px-2 text-muted-foreground">{r.data.severity}</td>
+                    <td className="py-2 px-2 text-muted-foreground">{r.data.tags.join(", ")}</td>
                   </tr>
                 ))}
             </tbody>

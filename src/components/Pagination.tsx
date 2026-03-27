@@ -15,14 +15,14 @@ export function Pagination({ total, pageSize, page, onPageChange }: PaginationPr
 
   return (
     <div className="flex items-center justify-between pt-3 px-1">
-      <span className="text-[10px] text-white/30">
+      <span className="text-[10px] text-muted-foreground">
         {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, total)} of {total}
       </span>
       <div className="flex items-center gap-1">
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
-          className="p-1 rounded hover:bg-white/5 text-white/30 disabled:opacity-20 disabled:cursor-not-allowed"
+          className="p-1 rounded hover:bg-accent text-muted-foreground disabled:opacity-20 disabled:cursor-not-allowed"
         >
           <ChevronLeft size={14} />
         </button>
@@ -42,7 +42,7 @@ export function Pagination({ total, pageSize, page, onPageChange }: PaginationPr
               key={pageNum}
               onClick={() => onPageChange(pageNum)}
               className={`w-6 h-6 text-[10px] rounded transition-colors ${
-                pageNum === page ? "bg-white/10 text-white" : "text-white/30 hover:bg-white/5"
+                pageNum === page ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent"
               }`}
             >
               {pageNum}
@@ -52,7 +52,7 @@ export function Pagination({ total, pageSize, page, onPageChange }: PaginationPr
         <button
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
-          className="p-1 rounded hover:bg-white/5 text-white/30 disabled:opacity-20 disabled:cursor-not-allowed"
+          className="p-1 rounded hover:bg-accent text-muted-foreground disabled:opacity-20 disabled:cursor-not-allowed"
         >
           <ChevronRight size={14} />
         </button>

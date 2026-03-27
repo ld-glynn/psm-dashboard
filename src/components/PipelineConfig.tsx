@@ -63,21 +63,21 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
     setSaved(false);
   }
 
-  const inputClass = "w-full bg-[#12121a] border border-[#2a2a3e] rounded px-2 py-1.5 text-xs text-white/80 focus:outline-none focus:border-[#4a4a6e]";
-  const labelClass = "text-[10px] text-white/40 mb-1 block";
+  const inputClass = "w-full bg-muted border border-border rounded px-2 py-1.5 text-xs text-foreground focus:outline-none focus:border-ring";
+  const labelClass = "text-[10px] text-muted-foreground mb-1 block";
 
   return (
-    <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4">
+    <div className="bg-card border border-border rounded-xl p-4">
       <button onClick={() => setExpanded(!expanded)} className="w-full flex items-center gap-2">
-        {expanded ? <ChevronDown size={14} className="text-white/40" /> : <ChevronRight size={14} className="text-white/40" />}
-        <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider">Pipeline Configuration</h3>
+        {expanded ? <ChevronDown size={14} className="text-muted-foreground" /> : <ChevronRight size={14} className="text-muted-foreground" />}
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Pipeline Configuration</h3>
         <InfoTooltip text="Configure how each pipeline stage behaves. These settings are injected as instructions to the AI agents." />
       </button>
 
       {expanded && (
         <div className="mt-4 space-y-4">
           {/* Cataloger */}
-          <div className="bg-[#12121a] rounded-lg p-3">
+          <div className="bg-muted rounded-lg p-3">
             <div className="text-xs font-medium text-orange-400 mb-2">Cataloger</div>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -97,7 +97,7 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
           </div>
 
           {/* Pattern Analyzer */}
-          <div className="bg-[#12121a] rounded-lg p-3">
+          <div className="bg-muted rounded-lg p-3">
             <div className="text-xs font-medium text-yellow-400 mb-2">Pattern Analyzer</div>
             <div className="grid grid-cols-3 gap-3">
               <div>
@@ -116,7 +116,7 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
           </div>
 
           {/* Solvability */}
-          <div className="bg-[#12121a] rounded-lg p-3">
+          <div className="bg-muted rounded-lg p-3">
             <div className="text-xs font-medium text-cyan-400 mb-2">Solvability Evaluator</div>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -134,7 +134,7 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
           <CapabilitiesPanel />
 
           {/* Hypothesis Gen */}
-          <div className="bg-[#12121a] rounded-lg p-3">
+          <div className="bg-muted rounded-lg p-3">
             <div className="text-xs font-medium text-green-400 mb-2">Hypothesis Generator</div>
             <div className="grid grid-cols-3 gap-3">
               <div>
@@ -158,7 +158,7 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
           </div>
 
           {/* Hiring Manager */}
-          <div className="bg-[#12121a] rounded-lg p-3">
+          <div className="bg-muted rounded-lg p-3">
             <div className="text-xs font-medium text-purple-400 mb-2">Hiring Manager</div>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -174,10 +174,10 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
 
           {/* Actions */}
           <div className="flex items-center gap-2 pt-2">
-            <button onClick={handleSave} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 transition-colors">
+            <button onClick={handleSave} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">
               <Save size={12} /> Save Config
             </button>
-            <button onClick={handleReset} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-white/5 text-white/40 hover:bg-white/10 transition-colors">
+            <button onClick={handleReset} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">
               <RotateCcw size={12} /> Reset Defaults
             </button>
             {saved && <span className="text-xs text-green-400">Saved!</span>}

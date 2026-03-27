@@ -2,18 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-card: #1a1a2e;
-  --border: #2a2a3e;
-  --text-primary: #e4e4ef;
-  --text-secondary: #8888a0;
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+    --primary: 240 10% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 10%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 10% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 240 5% 65%;
+    --sidebar: 0 0% 98%;
+    --sidebar-foreground: 240 10% 10%;
+    --sidebar-border: 240 6% 90%;
+    --sidebar-accent: 240 5% 96%;
+    --sidebar-accent-foreground: 240 10% 10%;
+  }
+
+  .dark {
+    --background: 240 20% 4%;
+    --foreground: 240 10% 93%;
+    --card: 240 20% 9%;
+    --card-foreground: 240 10% 93%;
+    --popover: 240 20% 9%;
+    --popover-foreground: 240 10% 93%;
+    --primary: 240 10% 93%;
+    --primary-foreground: 240 20% 9%;
+    --secondary: 240 15% 15%;
+    --secondary-foreground: 240 10% 93%;
+    --muted: 240 15% 15%;
+    --muted-foreground: 240 5% 55%;
+    --accent: 240 15% 15%;
+    --accent-foreground: 240 10% 93%;
+    --destructive: 0 62% 55%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 15% 20%;
+    --input: 240 15% 20%;
+    --ring: 240 5% 40%;
+    --sidebar: 240 20% 5%;
+    --sidebar-foreground: 240 10% 93%;
+    --sidebar-border: 240 15% 20%;
+    --sidebar-accent: 240 15% 15%;
+    --sidebar-accent-foreground: 240 10% 93%;
+  }
 }
 
-body {
-  background: var(--bg-primary);
-  color: var(--text-primary);
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 /* Custom scrollbar */
@@ -25,9 +76,9 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: hsl(var(--muted-foreground) / 0.3);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: hsl(var(--muted-foreground) / 0.5);
 }
