@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { usePipelineData } from "@/lib/use-pipeline-data";
-import { getEngineAgents } from "@/lib/data";
-import { stageColors, skillRatingStyle } from "@/lib/colors";
 import { ThumbsUp, ThumbsDown, RotateCcw, MessageSquare, Download, ChevronDown, ChevronRight, Play, Pause, Power, Rocket, Clock, FileText, CheckCircle2 } from "lucide-react";
+import { skillRatingStyle } from "@/lib/colors";
 import { approveSpec, deployAgent, invokeAgent, pauseAgent, resumeAgent, retireAgent } from "@/lib/api-client";
-import { computeAgentQualityScores, computeSkillTypeTrends, exportFeedbackAsJSON } from "@/lib/feedback-analytics";
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { tooltips } from "@/lib/tooltip-content";
 import type { SkillRating } from "@/lib/types";
@@ -135,11 +134,8 @@ function SkillFeedbackUI({
 
 export default function AgentsPage() {
   const { data, skillFeedback, rateSkill, serverAvailable } = usePipelineData();
-  const [showAnalytics, setShowAnalytics] = useState(false);
-  const [showInternals, setShowInternals] = useState(false);
   const [lifecycleFilter, setLifecycleFilter] = useState<string>("all");
   const [expandedWork, setExpandedWork] = useState<Set<string>>(new Set());
-  const engineAgents = getEngineAgents(data);
 
   const patternMap = Object.fromEntries(data.patterns.map((p) => [p.pattern_id, p]));
   const hypMap = Object.fromEntries(data.hypotheses.map((h) => [h.hypothesis_id, h]));
@@ -148,8 +144,6 @@ export default function AgentsPage() {
   for (const o of outputs) { if (!outputsByAgent[o.agent_id]) outputsByAgent[o.agent_id] = []; outputsByAgent[o.agent_id].push(o); }
   const totalSkills = data.newHires.reduce((sum, a) => sum + a.skills.length, 0);
   const evalMap = Object.fromEntries(data.evalResults.map((e) => [e.agent_id, e]));
-  const passedEvals = data.evalResults.filter((e) => e.passed);
-  const failedEvals = data.evalResults.filter((e) => !e.passed);
 
   // Feedback summary
   const feedbackEntries = Object.values(skillFeedback);
@@ -158,8 +152,6 @@ export default function AgentsPage() {
   const revisionCount = feedbackEntries.filter((f) => f.rating === "needs_revision").length;
 
   // Analytics
-  const qualityScores = computeAgentQualityScores(data.newHires, skillFeedback);
-  const skillTrends = computeSkillTypeTrends(data.newHires, skillFeedback);
 
   return (
     <div>
@@ -179,276 +171,16 @@ export default function AgentsPage() {
         )}
       </div>
 
-      {/* --- Pipeline Internals (collapsed by default) --- */}
-      <div className="mb-6">
-        <button
-          onClick={() => setShowInternals(!showInternals)}
-          className="flex items-center gap-2 text-xs text-muted-foreground hover:text-muted-foreground transition-colors"
-        >
-          {showInternals ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
-          Pipeline Internals (Engine Agents, Screening, Analytics)
-        </button>
+      {/* Engine Agents reference */}
+      <div className="mb-6 flex items-center gap-3">
+        <div className="w-6 h-6 rounded bg-secondary flex items-center justify-center">
+          <span className="text-[10px] font-bold text-secondary-foreground">T1</span>
+        </div>
+        <span className="text-xs text-foreground">Engine Agents</span>
+        <span className="text-[10px] text-muted-foreground">—</span>
+        <Link href="/guide" className="text-[10px] text-blue-600 dark:text-blue-400 hover:underline">Learn how the pipeline works in the Guide</Link>
       </div>
 
-      {showInternals && <>
-
-      {/* --- Feedback Analytics --- */}
-      {feedbackEntries.length > 0 && (
-        <div className="mb-10">
-          <button
-            onClick={() => setShowAnalytics(!showAnalytics)}
-            className="flex items-center gap-2 mb-4"
-          >
-            {showAnalytics ? <ChevronDown size={14} className="text-muted-foreground" /> : <ChevronRight size={14} className="text-muted-foreground" />}
-            <h2 className="text-sm font-semibold text-foreground inline">Feedback Analytics</h2><InfoTooltip text={tooltips.feedbackAnalytics} />
-            <span className="text-xs text-muted-foreground">{feedbackEntries.length} ratings</span>
-          </button>
-
-          {showAnalytics && (
-            <div className="space-y-4">
-              {/* Export */}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => exportFeedbackAsJSON(data.newHires, skillFeedback)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-accent transition-colors"
-                >
-                  <Download size={12} /> Export as Gold Dataset (JSON)
-                </button>
-              </div>
-
-              {/* Quality scores table */}
-              <div className="bg-card border border-border rounded-xl p-4">
-                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Agent Quality Scores</div>
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left py-2 px-2 text-muted-foreground">Agent</th>
-                      <th className="text-center py-2 px-2 text-muted-foreground">Skills</th>
-                      <th className="text-center py-2 px-2 text-muted-foreground">Rated</th>
-                      <th className="text-center py-2 px-2 text-green-600 dark:text-green-400/60">Useful</th>
-                      <th className="text-center py-2 px-2 text-red-600 dark:text-red-400/60">Not Useful</th>
-                      <th className="text-center py-2 px-2 text-amber-600 dark:text-yellow-400/60">Revision</th>
-                      <th className="text-right py-2 px-2 text-muted-foreground">Score</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {qualityScores
-                      .filter((s) => s.ratedSkills > 0)
-                      .sort((a, b) => b.qualityScore - a.qualityScore)
-                      .map((score) => (
-                        <tr key={score.agentId} className="border-b border-border/30">
-                          <td className="py-2 px-2 text-foreground">{score.agentName}</td>
-                          <td className="py-2 px-2 text-center text-muted-foreground">{score.totalSkills}</td>
-                          <td className="py-2 px-2 text-center text-muted-foreground">{score.ratedSkills}</td>
-                          <td className="py-2 px-2 text-center text-green-600 dark:text-green-400">{score.usefulCount}</td>
-                          <td className="py-2 px-2 text-center text-red-600 dark:text-red-400">{score.notUsefulCount}</td>
-                          <td className="py-2 px-2 text-center text-amber-600 dark:text-yellow-400">{score.revisionCount}</td>
-                          <td className="py-2 px-2 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                                <div
-                                  className={`h-full rounded-full ${score.qualityScore >= 70 ? "bg-green-500" : score.qualityScore >= 40 ? "bg-yellow-500" : "bg-red-500"}`}
-                                  style={{ width: `${score.qualityScore}%` }}
-                                />
-                              </div>
-                              <span className={`font-bold ${score.qualityScore >= 70 ? "text-green-600 dark:text-green-400" : score.qualityScore >= 40 ? "text-amber-600 dark:text-yellow-400" : "text-red-600 dark:text-red-400"}`}>
-                                {score.qualityScore}%
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Skill type trends */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {skillTrends.filter((t) => t.totalRated > 0).map((trend) => (
-                  <div key={trend.skillType} className={`border rounded-lg p-3 ${skillTypeColors[trend.skillType]}`}>
-                    <div className="text-xs font-semibold mb-2">{skillTypeLabels[trend.skillType]}</div>
-                    <div className="text-[10px] text-muted-foreground mb-1">{trend.totalRated} rated</div>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <div className="w-full h-1 bg-black/20 rounded-full overflow-hidden">
-                          <div className="h-full bg-green-400 rounded-full" style={{ width: `${trend.usefulPct}%` }} />
-                        </div>
-                        <span className="text-[10px] text-green-600 dark:text-green-400 w-8 text-right">{trend.usefulPct}%</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-full h-1 bg-black/20 rounded-full overflow-hidden">
-                          <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${trend.revisionPct}%` }} />
-                        </div>
-                        <span className="text-[10px] text-amber-600 dark:text-yellow-400 w-8 text-right">{trend.revisionPct}%</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-full h-1 bg-black/20 rounded-full overflow-hidden">
-                          <div className="h-full bg-red-400 rounded-full" style={{ width: `${trend.notUsefulPct}%` }} />
-                        </div>
-                        <span className="text-[10px] text-red-600 dark:text-red-400 w-8 text-right">{trend.notUsefulPct}%</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* --- Tier 1: Engine Agents --- */}
-      <div className="mb-10">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-6 h-6 rounded bg-accent border border-white/10 flex items-center justify-center">
-            <span className="text-[10px] font-bold text-muted-foreground">T1</span>
-          </div>
-          <h2 className="text-sm font-semibold text-foreground inline">Engine Agents</h2><InfoTooltip text={tooltips.engineAgents} />
-          <span className="text-xs text-muted-foreground">{engineAgents.length} agents — run the PSM pipeline</span>
-        </div>
-
-        {(() => {
-          const orchestrator = engineAgents.find((a) => a.id === "orchestrator");
-          const pipelineAgents = engineAgents.filter((a) => a.id !== "orchestrator" && a.id !== "hiring_manager");
-          const hiringManager = engineAgents.find((a) => a.id === "hiring_manager");
-
-          const renderAgentCard = (agent: typeof engineAgents[number], extra?: string) => {
-            const colors = stageColors[agent.stage] || stageColors.catalog;
-            return (
-              <div key={agent.id} className={`bg-card border rounded-xl p-4 ${extra || "border-border"}`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className={`w-9 h-9 rounded-lg ${colors.bg} ${colors.border} border flex items-center justify-center`}>
-                    <span className={`text-sm font-bold ${colors.text}`}>{agent.name[0]}</span>
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold text-foreground">{agent.name}</div>
-                    <div className="text-[10px] text-muted-foreground">{agent.title}</div>
-                  </div>
-                </div>
-                <p className="text-xs text-muted-foreground mb-3">{agent.description}</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5">
-                    <div className={`w-1.5 h-1.5 rounded-full ${statusDot[agent.status]}`} />
-                    <span className="text-[10px] text-muted-foreground">{agent.status}</span>
-                  </div>
-                  <span className="text-[10px] text-muted-foreground">{agent.itemsProcessed} items</span>
-                  {agent.stage !== "all" && (
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded ${colors.bg} ${colors.text}`}>{agent.stage}</span>
-                  )}
-                </div>
-              </div>
-            );
-          };
-
-          return (
-            <div className="flex flex-col items-center gap-0">
-              {orchestrator && (
-                <div className="w-full max-w-md">{renderAgentCard(orchestrator, "border-white/20")}</div>
-              )}
-              <div className="flex flex-col items-center">
-                <div className="w-px h-6 bg-white/15" />
-                <div className="text-[10px] text-muted-foreground/60 px-3 py-1 rounded-full border border-white/10 bg-sidebar">delegates to</div>
-                <div className="w-px h-6 bg-white/15" />
-              </div>
-              <div className="w-full flex flex-col gap-0">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {pipelineAgents.map((agent) => renderAgentCard(agent))}
-                </div>
-                {hiringManager && (
-                  <>
-                    <div className="flex flex-col items-center">
-                      <div className="w-px h-6 bg-white/15" />
-                      <div className="flex items-center gap-2">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-muted-foreground/50">
-                          <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                        <span className="text-[10px] text-muted-foreground/60 px-3 py-1 rounded-full border border-purple-200 dark:border-purple-500/20 bg-sidebar">outputs feed into</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-muted-foreground/50">
-                          <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </div>
-                      <div className="w-px h-6 bg-purple-100 dark:bg-purple-500/20" />
-                    </div>
-                    <div className="w-full max-w-md mx-auto">{renderAgentCard(hiringManager, "border-purple-200 dark:border-purple-500/30")}</div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-px h-6 bg-purple-100 dark:bg-purple-500/20" />
-                      <div className="text-[10px] text-purple-700 dark:text-purple-300/40 px-3 py-1 rounded-full border border-purple-200 dark:border-purple-500/15 bg-sidebar">generates Agent New Hires</div>
-                      <div className="w-px h-4 bg-purple-100 dark:bg-purple-500/15" />
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          );
-        })()}
-      </div>
-
-      {/* --- Screening Gate --- */}
-      <div className="mb-10">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-6 h-6 rounded bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 flex items-center justify-center">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-emerald-600 dark:text-emerald-400">
-              <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <h2 className="text-sm font-semibold text-foreground inline">Screening Gate</h2><InfoTooltip text={tooltips.screeningGate} />
-          <span className="text-xs text-muted-foreground">{passedEvals.length} passed / {failedEvals.length} rejected of {data.evalResults.length} candidates</span>
-        </div>
-
-        <div className="bg-card border border-border rounded-xl p-5">
-          <div className="space-y-3">
-            {data.evalResults.map((evalResult) => (
-              <div
-                key={evalResult.agent_id}
-                className={`flex items-center gap-4 p-3 rounded-lg border ${evalResult.passed ? "border-emerald-200 dark:border-emerald-500/15 bg-emerald-50 dark:bg-emerald-500/5" : "border-red-200 dark:border-red-500/15 bg-red-50 dark:bg-red-500/5"}`}
-              >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${evalResult.passed ? "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400" : "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-400"}`}>
-                  {evalResult.passed ? (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-foreground">{evalResult.agent_name}</span>
-                    <span className="text-[10px] text-muted-foreground">{evalResult.agent_id}</span>
-                    {!evalResult.passed && <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-300">rejected</span>}
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-0.5">{evalResult.reason}</div>
-                </div>
-                <div className="flex items-center gap-4 flex-shrink-0">
-                  <div className="text-right">
-                    <div className={`text-sm font-bold ${evalResult.avg_score >= 0.9 ? "text-emerald-700 dark:text-emerald-300" : evalResult.avg_score >= 0.7 ? "text-amber-700 dark:text-yellow-300" : "text-red-700 dark:text-red-300"}`}>{(evalResult.avg_score * 100).toFixed(0)}%</div>
-                    <div className="text-[10px] text-muted-foreground">avg score</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm font-bold text-secondary-foreground">{evalResult.case_results.filter((c) => c.passed).length}/{evalResult.case_results.length}</div>
-                    <div className="text-[10px] text-muted-foreground">cases</div>
-                  </div>
-                  {evalResult.hard_failures > 0 && (
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-red-700 dark:text-red-300">{evalResult.hard_failures}</div>
-                      <div className="text-[10px] text-red-700 dark:text-red-300/50">hard fail</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-          {failedEvals.length > 0 && (
-            <div className="mt-4 pt-3 border-t border-border">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground/60 mb-2">Failure Codes</div>
-              <div className="flex flex-wrap gap-2">
-                {Array.from(new Set(failedEvals.flatMap((e) => e.case_results.flatMap((c) => c.failures)))).map((code) => (
-                  <span key={code} className="text-[10px] px-2 py-1 rounded bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-300/70 border border-red-200 dark:border-red-500/15">{code}</span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      </>}
 
       {/* --- Tier 2: Agent New Hires --- */}
       <div className="mb-10">
@@ -731,11 +463,7 @@ export default function AgentsPage() {
       {/* Summary */}
       <div className="bg-card border border-border rounded-xl p-5">
         <h2 className="text-sm font-semibold text-foreground mb-3">Agent Summary</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-          <div>
-            <span className="text-muted-foreground">Tier 1 — Engine:</span>{" "}
-            <span className="text-foreground">{engineAgents.length}</span>
-          </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs">
           <div>
             <span className="text-muted-foreground">Tier 2 — New Hires:</span>{" "}
             <span className="text-foreground">{data.newHires.length}</span>
