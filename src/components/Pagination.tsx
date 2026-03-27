@@ -22,7 +22,7 @@ export function Pagination({ total, pageSize, page, onPageChange }: PaginationPr
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
-          className="p-1 rounded hover:bg-accent text-muted-foreground disabled:opacity-20 disabled:cursor-not-allowed"
+          className="p-1 rounded hover:bg-secondary text-secondary-foreground disabled:opacity-20 disabled:cursor-not-allowed"
         >
           <ChevronLeft size={14} />
         </button>
@@ -52,7 +52,7 @@ export function Pagination({ total, pageSize, page, onPageChange }: PaginationPr
         <button
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
-          className="p-1 rounded hover:bg-accent text-muted-foreground disabled:opacity-20 disabled:cursor-not-allowed"
+          className="p-1 rounded hover:bg-secondary text-secondary-foreground disabled:opacity-20 disabled:cursor-not-allowed"
         >
           <ChevronRight size={14} />
         </button>

@@ -139,7 +139,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
         {serverAvailable ? (
           <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400">Claude API</span>
         ) : (
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">Local parsing</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">Local parsing</span>
         )}
         {suggestions.length > 0 && useAI && (
           <span className="text-[10px] text-pink-600 dark:text-pink-400">Powered by Claude</span>
@@ -189,8 +189,8 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-pink-100 dark:bg-pink-500/15 text-pink-600 dark:text-pink-400">
                         {Math.round(s.confidence * 100)}% confidence
                       </span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{s.domain}</span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{s.severity}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{s.domain}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{s.severity}</span>
                     </div>
                   </div>
 
@@ -199,7 +199,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
                       <button onClick={() => handleAccept(s)} className="p-1.5 rounded bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:bg-green-500/20" title="Accept">
                         <Check size={12} />
                       </button>
-                      <button onClick={() => startEdit(s)} className="p-1.5 rounded bg-accent text-muted-foreground hover:bg-accent" title="Edit">
+                      <button onClick={() => startEdit(s)} className="p-1.5 rounded bg-secondary text-secondary-foreground hover:bg-accent" title="Edit">
                         <Pencil size={12} />
                       </button>
                       <button onClick={() => setRejected((prev) => new Set(prev).add(s.tempId))} className="p-1.5 rounded bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:bg-red-500/20" title="Reject">
@@ -227,7 +227,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
                     </div>
                     <div className="flex gap-2">
                       <button onClick={() => handleAccept(s)} className="px-2 py-1 text-[10px] rounded bg-green-600 text-foreground hover:bg-green-500">Accept</button>
-                      <button onClick={() => setEditingId(null)} className="px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground">Cancel</button>
+                      <button onClick={() => setEditingId(null)} className="px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground">Cancel</button>
                     </div>
                   </div>
                 ) : (

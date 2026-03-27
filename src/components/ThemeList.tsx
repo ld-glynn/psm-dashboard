@@ -17,7 +17,7 @@ export function ThemeList({ data }: { data: PipelineData }) {
           >
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-semibold text-foreground">{theme.name}</h3>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-accent text-muted-foreground">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
                 Priority {theme.priority_score.toFixed(1)}
               </span>
             </div>

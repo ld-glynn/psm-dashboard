@@ -69,7 +69,7 @@ export function EditProblemModal({ open, onClose, initial, onSave }: EditProblem
         </div>
         <div className="flex gap-3 pt-2 border-t border-border">
           <button onClick={handleSave} className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-accent transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>
@@ -112,7 +112,7 @@ export function EditPatternModal({ open, onClose, initial, onSave }: EditPattern
         </div>
         <div className="flex gap-3 pt-2 border-t border-border">
           <button onClick={handleSave} className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-accent transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>
@@ -171,7 +171,7 @@ export function EditHypothesisModal({ open, onClose, initial, onSave }: EditHypo
         </div>
         <div className="flex gap-3 pt-2 border-t border-border">
           <button onClick={handleSave} className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-accent transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>
@@ -216,7 +216,7 @@ export function EditAgentModal({ open, onClose, initial, onSave }: EditAgentProp
         </div>
         <div className="flex gap-3 pt-2 border-t border-border">
           <button onClick={handleSave} className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-accent transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>

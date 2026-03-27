@@ -153,7 +153,7 @@ export function CreateHypothesisForm({ patterns, onSubmit, onCancel }: CreateHyp
         <button type="submit" disabled={!isValid} className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
           Create Hypothesis
         </button>
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">
+        <button type="button" onClick={onCancel} className="px-4 py-2 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-accent transition-colors">
           Cancel
         </button>
         <span className="text-[10px] text-muted-foreground/50 ml-auto">Source: manual</span>

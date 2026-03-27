@@ -100,10 +100,10 @@ export function CostPanel({
           <button onClick={onSimulateCosts} className="px-2 py-1 text-[10px] rounded bg-blue-600/60 text-foreground hover:bg-blue-50 dark:bg-blue-500/80 transition-colors">
             Simulate
           </button>
-          <button onClick={() => setShowManual(!showManual)} className="px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent transition-colors">
+          <button onClick={() => setShowManual(!showManual)} className="px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:bg-accent transition-colors">
             + Manual
           </button>
-          <button onClick={() => setShowBudget(!showBudget)} className="px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent transition-colors">
+          <button onClick={() => setShowBudget(!showBudget)} className="px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:bg-accent transition-colors">
             Budget
           </button>
           {costEntries.length > 0 && (

@@ -84,15 +84,15 @@ export function IntegrationCard({ config, onToggle }: IntegrationCardProps) {
 
       {/* Quick actions */}
       <div className="flex items-center gap-2 mb-2">
-        <button className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent transition-colors">
+        <button className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:bg-accent transition-colors">
           <RefreshCw size={10} /> Sync Now
         </button>
-        <button className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent transition-colors">
+        <button className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:bg-accent transition-colors">
           <Plug size={10} /> Test Connection
         </button>
         <button
           onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent transition-colors ml-auto"
+          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:bg-accent transition-colors ml-auto"
         >
           {expanded ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
           Settings

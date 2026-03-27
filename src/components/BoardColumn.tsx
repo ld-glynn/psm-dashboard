@@ -59,7 +59,7 @@ function ReviewButtons({
       {isReviewed ? (
         <button
           onClick={() => onReview("unreviewed")}
-          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:text-secondary-foreground hover:bg-accent transition-colors"
+          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:text-secondary-foreground hover:bg-accent transition-colors"
         >
           <Undo2 size={10} /> Undo
         </button>
@@ -82,7 +82,7 @@ function ReviewButtons({
       {(onEditModal || onEdit) && !isEditing && (
         <button
           onClick={onEditModal || onEdit}
-          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:text-secondary-foreground hover:bg-accent transition-colors ml-auto"
+          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:text-secondary-foreground hover:bg-accent transition-colors ml-auto"
         >
           <Pencil size={10} /> Edit
         </button>
@@ -208,7 +208,7 @@ export function ProblemCard({
               <input className={inputClass} value={editVals.tags} onChange={(e) => setEditVals((v) => ({ ...v, tags: e.target.value }))} placeholder="Tags (comma-separated)" />
               <div className="flex gap-2">
                 <button onClick={handleSave} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-foreground hover:bg-blue-500">Save</button>
-                <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent">Cancel</button>
+                <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:bg-accent">Cancel</button>
               </div>
             </div>
           ) : (
@@ -218,9 +218,9 @@ export function ProblemCard({
                 <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>
               )}
               <div className="flex flex-wrap gap-1 mt-2">
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{domain}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{domain}</span>
                 {tags.slice(0, 3).map((tag) => (
-                  <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{tag}</span>
+                  <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{tag}</span>
                 ))}
               </div>
               {!expanded && sources && sources.length > 0 && (
@@ -283,7 +283,7 @@ export function PatternCard({
           <textarea className={`${inputClass} min-h-[60px] resize-y`} value={editVals.description} onChange={(e) => setEditVals((v) => ({ ...v, description: e.target.value }))} />
           <div className="flex gap-2">
             <button onClick={handleSave} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-foreground hover:bg-blue-500">Save</button>
-            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent">Cancel</button>
+            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:bg-accent">Cancel</button>
           </div>
         </div>
       ) : (
@@ -294,11 +294,11 @@ export function PatternCard({
           )}
           <div className="flex items-center gap-2 mt-2">
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-500/10 text-amber-700 dark:text-yellow-300">{problemCount} problems</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{(confidence * 100).toFixed(0)}% confidence</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{(confidence * 100).toFixed(0)}% confidence</span>
           </div>
           <div className="flex flex-wrap gap-1 mt-1.5">
             {domains.map((d) => (
-              <span key={d} className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{d}</span>
+              <span key={d} className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{d}</span>
             ))}
           </div>
         </>
@@ -379,7 +379,7 @@ export function HypothesisCard({
           </div>
           <div className="flex gap-2">
             <button onClick={handleSave} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-foreground hover:bg-blue-500">Save</button>
-            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent">Cancel</button>
+            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:bg-accent">Cancel</button>
           </div>
         </div>
       ) : (
@@ -397,7 +397,7 @@ export function HypothesisCard({
           )}
           <div className="flex items-center gap-2 mt-2">
             <span className={`text-[10px] px-1.5 py-0.5 rounded ${effortColors[effort] || ""}`}>{effort} effort</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{(confidence * 100).toFixed(0)}%</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{(confidence * 100).toFixed(0)}%</span>
           </div>
         </>
       )}
@@ -419,7 +419,7 @@ export function HypothesisCard({
                 className={`text-[10px] px-1.5 py-0.5 rounded transition-colors ${
                   isActive
                     ? `${style.bg} ${style.text}`
-                    : "bg-accent text-muted-foreground hover:text-muted-foreground hover:bg-accent"
+                    : "bg-secondary text-secondary-foreground hover:text-muted-foreground hover:bg-accent"
                 }`}
               >
                 {style.label}
@@ -496,7 +496,7 @@ export function NewHireCard({
                 lifecycleState === "active" ? "bg-cyan-100 dark:bg-cyan-500/15 text-cyan-600 dark:text-cyan-400" :
                 lifecycleState === "paused" ? "bg-orange-100 dark:bg-orange-500/15 text-orange-600 dark:text-orange-400" :
                 lifecycleState === "retired" ? "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-400" :
-                "bg-accent text-muted-foreground"
+                "bg-secondary text-secondary-foreground"
               }`}>{lifecycleState}</span>
             )}
             <ReviewBadge status={reviewStatus} />
@@ -514,7 +514,7 @@ export function NewHireCard({
           <textarea className={`${inputClass} min-h-[60px] resize-y`} value={editVals.persona} onChange={(e) => setEditVals((v) => ({ ...v, persona: e.target.value }))} placeholder="Persona description" />
           <div className="flex gap-2">
             <button onClick={handleSave} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-foreground hover:bg-blue-500">Save</button>
-            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent">Cancel</button>
+            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:bg-accent">Cancel</button>
           </div>
         </div>
       ) : (

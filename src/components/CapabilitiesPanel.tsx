@@ -68,7 +68,7 @@ export function CapabilitiesPanel() {
                   <div className="text-[10px] text-muted-foreground mt-0.5">{at.description}</div>
                   <div className="flex flex-wrap gap-1 mt-1.5">
                     {at.domains.map((d) => (
-                      <span key={d} className="text-[9px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{d}</span>
+                      <span key={d} className="text-[9px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{d}</span>
                     ))}
                   </div>
                   <div className="flex flex-wrap gap-1 mt-1">
@@ -93,7 +93,7 @@ export function CapabilitiesPanel() {
                   <div className="text-[10px] text-muted-foreground mt-0.5">{st.description}</div>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {st.output_formats.map((f) => (
-                      <span key={f} className="text-[9px] px-1 py-0.5 rounded bg-accent text-muted-foreground/50">{f.replace(/_/g, " ")}</span>
+                      <span key={f} className="text-[9px] px-1 py-0.5 rounded bg-secondary text-secondary-foreground/50">{f.replace(/_/g, " ")}</span>
                     ))}
                   </div>
                 </div>

@@ -86,7 +86,7 @@ export function RunHistory({ serverAvailable, onRollback }: RunHistoryProps) {
               <button
                 onClick={() => handleRollback(run.run_id)}
                 disabled={rollingBack === run.run_id}
-                className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:text-muted-foreground hover:bg-accent transition-colors disabled:opacity-30"
+                className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-secondary text-secondary-foreground hover:text-muted-foreground hover:bg-accent transition-colors disabled:opacity-30"
                 title="Rollback to this snapshot"
               >
                 <RotateCcw size={10} /> Rollback

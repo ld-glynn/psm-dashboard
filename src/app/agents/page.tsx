@@ -114,7 +114,7 @@ function SkillFeedbackUI({
             e.stopPropagation();
             setShowNote(!showNote);
           }}
-          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-accent text-muted-foreground hover:text-muted-foreground transition-colors ml-auto"
+          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-secondary text-secondary-foreground hover:text-muted-foreground transition-colors ml-auto"
           title="Add note"
         >
           <MessageSquare size={9} />

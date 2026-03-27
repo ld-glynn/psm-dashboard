@@ -182,7 +182,7 @@ export function PipelineConfig({ serverAvailable, alwaysExpanded }: PipelineConf
             <button onClick={handleSave} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">
               <Save size={12} /> Save Config
             </button>
-            <button onClick={handleReset} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">
+            <button onClick={handleReset} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-accent transition-colors">
               <RotateCcw size={12} /> Reset Defaults
             </button>
             {saved && <span className="text-xs text-green-600 dark:text-green-400">Saved!</span>}
