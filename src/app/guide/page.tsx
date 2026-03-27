@@ -240,13 +240,13 @@ export default function GuidePage() {
     <div className="max-w-4xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">How To Use PSM</h1>
-        <p className="text-sm text-white/40 mt-1">
+        <p className="text-sm text-[var(--text-muted)] mt-1">
           A step-by-step guide to getting the most out of Problem Solution Mapping.
         </p>
         <div className="flex items-center gap-2 mt-3">
-          <button onClick={expandAll} className="text-xs text-white/30 hover:text-white/60 transition-colors">Expand all</button>
-          <span className="text-white/10">|</span>
-          <button onClick={collapseAll} className="text-xs text-white/30 hover:text-white/60 transition-colors">Collapse all</button>
+          <button onClick={expandAll} className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors">Expand all</button>
+          <span className="text-[var(--text-faint)]">|</span>
+          <button onClick={collapseAll} className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors">Collapse all</button>
         </div>
       </div>
 
@@ -255,7 +255,7 @@ export default function GuidePage() {
         const isExpanded = expandedSections.has(section.id);
 
         return (
-          <div key={section.id} className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl overflow-hidden">
+          <div key={section.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
             <button
               onClick={() => toggleSection(section.id)}
               className="w-full flex items-center gap-3 p-4 hover:bg-white/[0.02] transition-colors text-left"
@@ -264,27 +264,27 @@ export default function GuidePage() {
                 <Icon size={16} className="text-blue-400" />
               </div>
               <div className="flex-1">
-                <div className="text-sm font-semibold text-white/90">{section.title}</div>
-                <div className="text-xs text-white/40">{section.subtitle}</div>
+                <div className="text-sm font-semibold text-[var(--text-primary)]">{section.title}</div>
+                <div className="text-xs text-[var(--text-muted)]">{section.subtitle}</div>
               </div>
               {isExpanded ? (
-                <ChevronDown size={16} className="text-white/30" />
+                <ChevronDown size={16} className="text-[var(--text-muted)]" />
               ) : (
-                <ChevronRight size={16} className="text-white/30" />
+                <ChevronRight size={16} className="text-[var(--text-muted)]" />
               )}
             </button>
 
             {isExpanded && (
               <div className="px-4 pb-4 space-y-3">
                 {section.steps.map((step, i) => (
-                  <div key={i} className="bg-[#12121a] rounded-lg p-3.5">
+                  <div key={i} className="bg-[var(--bg-input)] rounded-lg p-3.5">
                     <div className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[10px] font-bold text-white/40">{i + 1}</span>
+                      <div className="w-5 h-5 rounded-full bg-[var(--text-faint)] flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-[10px] font-bold text-[var(--text-muted)]">{i + 1}</span>
                       </div>
                       <div className="flex-1">
-                        <div className="text-xs font-medium text-white/80 mb-1">{step.title}</div>
-                        <div className="text-xs text-white/50 leading-relaxed">{step.description}</div>
+                        <div className="text-xs font-medium text-[var(--text-primary)] mb-1">{step.title}</div>
+                        <div className="text-xs text-[var(--text-secondary)] leading-relaxed">{step.description}</div>
                         {step.tip && (
                           <div className="mt-2 flex items-start gap-1.5 text-[11px] text-blue-300/70 bg-blue-500/5 rounded px-2.5 py-1.5">
                             <Info size={11} className="flex-shrink-0 mt-0.5" />

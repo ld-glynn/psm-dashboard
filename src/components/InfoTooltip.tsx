@@ -27,13 +27,13 @@ export function InfoTooltip({ text, position = "top", size = 13 }: InfoTooltipPr
     >
       <Info
         size={size}
-        className="text-white/20 hover:text-white/40 transition-colors cursor-help flex-shrink-0"
+        className="text-[var(--text-faint)] hover:text-[var(--text-muted)] transition-colors cursor-help flex-shrink-0"
       />
       {show && (
         <div
           className={`absolute z-50 ${positionClasses[position]} pointer-events-none`}
         >
-          <div className="bg-[#2a2a3e] border border-[#3a3a5e] text-white/80 text-[11px] leading-relaxed px-3 py-2 rounded-lg shadow-xl min-w-[200px] max-w-[320px] whitespace-normal">
+          <div className="bg-[var(--bg-card)] border border-[var(--border-hover)] text-[var(--text-primary)] text-[11px] leading-relaxed px-3 py-2 rounded-lg shadow-xl min-w-[200px] max-w-[320px] whitespace-normal">
             {text}
           </div>
         </div>

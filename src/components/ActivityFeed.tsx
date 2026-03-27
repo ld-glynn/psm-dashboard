@@ -20,7 +20,7 @@ const typeColors: Record<string, string> = {
   review: "text-green-400 bg-green-500/10",
   draft: "text-orange-400 bg-orange-500/10",
   intake: "text-pink-400 bg-pink-500/10",
-  system: "text-white/40 bg-white/5",
+  system: "text-[var(--text-muted)] bg-[var(--text-faint)]",
 };
 
 function timeAgo(dateStr: string): string {
@@ -44,10 +44,10 @@ export function ActivityFeed({ events, maxVisible = 8 }: ActivityFeedProps) {
   const visible = events.slice(0, maxVisible);
 
   return (
-    <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider inline">Recent Activity</h3><InfoTooltip text={tooltips.activityFeed} size={11} />
-        <span className="text-[10px] text-white/20">{events.length} events</span>
+        <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider inline">Recent Activity</h3><InfoTooltip text={tooltips.activityFeed} size={11} />
+        <span className="text-[10px] text-[var(--text-faint)]">{events.length} events</span>
       </div>
       <div className="space-y-2">
         {visible.map((event) => {
@@ -59,12 +59,12 @@ export function ActivityFeed({ events, maxVisible = 8 }: ActivityFeedProps) {
                 <Icon size={12} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-xs text-white/70">{event.message}</div>
+                <div className="text-xs text-[var(--text-secondary)]">{event.message}</div>
                 {event.detail && (
-                  <div className="text-[10px] text-white/30 mt-0.5">{event.detail}</div>
+                  <div className="text-[10px] text-[var(--text-muted)] mt-0.5">{event.detail}</div>
                 )}
               </div>
-              <span className="text-[10px] text-white/20 flex-shrink-0">{timeAgo(event.timestamp)}</span>
+              <span className="text-[10px] text-[var(--text-faint)] flex-shrink-0">{timeAgo(event.timestamp)}</span>
             </div>
           );
         })}

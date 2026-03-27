@@ -51,15 +51,15 @@ export function SourceEditor({ sources, onAdd, onRemove }: SourceEditorProps) {
     setShowAdd(false);
   }
 
-  const inputClass = "w-full bg-[#12121a] border border-[#2a2a3e] rounded px-2 py-1 text-[10px] text-white/80 focus:outline-none focus:border-[#4a4a6e]";
+  const inputClass = "w-full bg-[var(--bg-input)] border border-[var(--border)] rounded px-2 py-1 text-[10px] text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-hover)]";
 
   return (
-    <div className="mt-2 pt-2 border-t border-[#2a2a3e]/50" onClick={(e) => e.stopPropagation()}>
+    <div className="mt-2 pt-2 border-t border-[var(--border)]/50" onClick={(e) => e.stopPropagation()}>
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[10px] text-white/30 uppercase tracking-wide">Sources</span>
+        <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wide">Sources</span>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="text-[10px] text-white/30 hover:text-white/60 flex items-center gap-0.5"
+          className="text-[10px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] flex items-center gap-0.5"
         >
           <Plus size={10} /> Add
         </button>
@@ -84,11 +84,11 @@ export function SourceEditor({ sources, onAdd, onRemove }: SourceEditorProps) {
           })}
         </div>
       ) : (
-        <div className="text-[10px] text-white/20 mb-1.5">No sources linked</div>
+        <div className="text-[10px] text-[var(--text-faint)] mb-1.5">No sources linked</div>
       )}
 
       {showAdd && (
-        <div className="space-y-1.5 bg-[#12121a] rounded p-2">
+        <div className="space-y-1.5 bg-[var(--bg-input)] rounded p-2">
           <div className="grid grid-cols-2 gap-1.5">
             <select className={inputClass} value={newSource} onChange={(e) => setNewSource(e.target.value as any)}>
               {sourceOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -118,7 +118,7 @@ export function SourceBadges({ sources }: { sources: ProblemSource[] }) {
         );
       })}
       {sources.length > 3 && (
-        <span className="text-[8px] text-white/20">+{sources.length - 3}</span>
+        <span className="text-[8px] text-[var(--text-faint)]">+{sources.length - 3}</span>
       )}
     </div>
   );

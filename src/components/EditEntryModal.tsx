@@ -8,8 +8,8 @@ import { tooltips } from "@/lib/tooltip-content";
 const DOMAINS = ["process", "tooling", "communication", "knowledge", "infrastructure", "people", "strategy", "customer", "other"];
 const SEVERITIES = ["critical", "high", "medium", "low"];
 
-const inputClass = "w-full bg-[#12121a] border border-[#2a2a3e] rounded-md px-3 py-2 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-[#4a4a6e] transition-colors";
-const labelClass = "block text-xs font-medium text-white/50 mb-1.5";
+const inputClass = "w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-faint)] focus:outline-none focus:border-[var(--border-hover)] transition-colors";
+const labelClass = "block text-xs font-medium text-[var(--text-secondary)] mb-1.5";
 
 // --- Problem Edit ---
 
@@ -67,9 +67,9 @@ export function EditProblemModal({ open, onClose, initial, onSave }: EditProblem
           <label className={labelClass}>Tags <InfoTooltip text={tooltips.problemTags} size={11} /></label>
           <input className={inputClass} value={tags} onChange={(e) => setTags(e.target.value)} placeholder="comma-separated" />
         </div>
-        <div className="flex gap-3 pt-2 border-t border-[#2a2a3e]">
+        <div className="flex gap-3 pt-2 border-t border-[var(--border)]">
           <button onClick={handleSave} className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-white/5 text-white/50 hover:bg-white/10 transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-[var(--text-faint)] text-[var(--text-secondary)] hover:bg-[var(--text-faint)] transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>
@@ -110,9 +110,9 @@ export function EditPatternModal({ open, onClose, initial, onSave }: EditPattern
           <label className={labelClass}>Confidence (0-1) <InfoTooltip text={tooltips.patternConfidence} size={11} /></label>
           <input className={inputClass} type="number" step="0.05" min="0" max="1" value={confidence} onChange={(e) => setConfidence(e.target.value)} />
         </div>
-        <div className="flex gap-3 pt-2 border-t border-[#2a2a3e]">
+        <div className="flex gap-3 pt-2 border-t border-[var(--border)]">
           <button onClick={handleSave} className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-white/5 text-white/50 hover:bg-white/10 transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-[var(--text-faint)] text-[var(--text-secondary)] hover:bg-[var(--text-faint)] transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>
@@ -169,9 +169,9 @@ export function EditHypothesisModal({ open, onClose, initial, onSave }: EditHypo
           <label className={labelClass}>Test Criteria (one per line) <InfoTooltip text={tooltips.hypothesisTestCriteria} size={11} /></label>
           <textarea className={`${inputClass} min-h-[80px] resize-y`} value={testCriteria} onChange={(e) => setTestCriteria(e.target.value)} />
         </div>
-        <div className="flex gap-3 pt-2 border-t border-[#2a2a3e]">
+        <div className="flex gap-3 pt-2 border-t border-[var(--border)]">
           <button onClick={handleSave} className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-white/5 text-white/50 hover:bg-white/10 transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-[var(--text-faint)] text-[var(--text-secondary)] hover:bg-[var(--text-faint)] transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>
@@ -214,9 +214,9 @@ export function EditAgentModal({ open, onClose, initial, onSave }: EditAgentProp
           <label className={labelClass}>Persona</label>
           <textarea className={`${inputClass} min-h-[120px] resize-y`} value={persona} onChange={(e) => setPersona(e.target.value)} />
         </div>
-        <div className="flex gap-3 pt-2 border-t border-[#2a2a3e]">
+        <div className="flex gap-3 pt-2 border-t border-[var(--border)]">
           <button onClick={handleSave} className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-white/5 text-white/50 hover:bg-white/10 transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-[var(--text-faint)] text-[var(--text-secondary)] hover:bg-[var(--text-faint)] transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>

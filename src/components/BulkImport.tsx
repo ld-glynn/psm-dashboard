@@ -137,13 +137,13 @@ export function BulkImport({ onImport }: BulkImportProps) {
   ).length || 0;
 
   const inputClass =
-    "w-full bg-[#12121a] border border-[#2a2a3e] rounded-md px-3 py-2 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-[#4a4a6e] transition-colors";
+    "w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-faint)] focus:outline-none focus:border-[var(--border-hover)] transition-colors";
 
   return (
     <div className="space-y-4">
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <label className="block text-xs font-medium text-white/50">
+          <label className="block text-xs font-medium text-[var(--text-secondary)]">
             Paste CSV or upload a file
           </label>
           <button
@@ -178,7 +178,7 @@ export function BulkImport({ onImport }: BulkImportProps) {
           type="button"
           onClick={handleParse}
           disabled={!csvText.trim()}
-          className="px-4 py-2 text-sm font-medium rounded-md bg-[#2a2a3e] text-white/80 hover:bg-[#3a3a5e] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-2 text-sm font-medium rounded-md bg-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--border-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
           Preview
         </button>
@@ -212,22 +212,22 @@ export function BulkImport({ onImport }: BulkImportProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
-              <tr className="border-b border-[#2a2a3e]">
-                <th className="text-left py-2 px-2 text-white/40 font-medium">Title</th>
-                <th className="text-left py-2 px-2 text-white/40 font-medium">Domain</th>
-                <th className="text-left py-2 px-2 text-white/40 font-medium">Severity</th>
-                <th className="text-left py-2 px-2 text-white/40 font-medium">Tags</th>
+              <tr className="border-b border-[var(--border)]">
+                <th className="text-left py-2 px-2 text-[var(--text-muted)] font-medium">Title</th>
+                <th className="text-left py-2 px-2 text-[var(--text-muted)] font-medium">Domain</th>
+                <th className="text-left py-2 px-2 text-[var(--text-muted)] font-medium">Severity</th>
+                <th className="text-left py-2 px-2 text-[var(--text-muted)] font-medium">Tags</th>
               </tr>
             </thead>
             <tbody>
               {parsed
                 .filter((r) => r.data.title && r.errors.filter((e) => e.includes("missing")).length === 0)
                 .map((r, i) => (
-                  <tr key={i} className="border-b border-[#2a2a3e]/50">
-                    <td className="py-2 px-2 text-white/80">{r.data.title}</td>
-                    <td className="py-2 px-2 text-white/50">{r.data.domain}</td>
-                    <td className="py-2 px-2 text-white/50">{r.data.severity}</td>
-                    <td className="py-2 px-2 text-white/40">{r.data.tags.join(", ")}</td>
+                  <tr key={i} className="border-b border-[var(--border)]/50">
+                    <td className="py-2 px-2 text-[var(--text-primary)]">{r.data.title}</td>
+                    <td className="py-2 px-2 text-[var(--text-secondary)]">{r.data.domain}</td>
+                    <td className="py-2 px-2 text-[var(--text-secondary)]">{r.data.severity}</td>
+                    <td className="py-2 px-2 text-[var(--text-muted)]">{r.data.tags.join(", ")}</td>
                   </tr>
                 ))}
             </tbody>

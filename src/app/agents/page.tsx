@@ -58,7 +58,7 @@ function SkillFeedbackUI({
           {style.label}
         </span>
         {currentNote && (
-          <span className="text-[10px] text-white/30 truncate max-w-[200px]" title={currentNote}>
+          <span className="text-[10px] text-[var(--text-muted)] truncate max-w-[200px]" title={currentNote}>
             {currentNote}
           </span>
         )}
@@ -67,7 +67,7 @@ function SkillFeedbackUI({
             e.stopPropagation();
             onRate(agentId, skillIndex, "useful"); // reset will be handled by parent toggling
           }}
-          className="text-white/20 hover:text-white/50 ml-auto"
+          className="text-[var(--text-faint)] hover:text-[var(--text-secondary)] ml-auto"
           title="Change rating"
         >
           <RotateCcw size={10} />
@@ -114,7 +114,7 @@ function SkillFeedbackUI({
             e.stopPropagation();
             setShowNote(!showNote);
           }}
-          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-white/5 text-white/30 hover:text-white/60 transition-colors ml-auto"
+          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors ml-auto"
           title="Add note"
         >
           <MessageSquare size={9} />
@@ -122,7 +122,7 @@ function SkillFeedbackUI({
       </div>
       {showNote && (
         <input
-          className="w-full bg-[#12121a] border border-[#2a2a3e] rounded px-2 py-1 text-[10px] text-white/80 placeholder-white/20 focus:outline-none focus:border-[#4a4a6e]"
+          className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded px-2 py-1 text-[10px] text-[var(--text-primary)] placeholder-[var(--text-faint)] focus:outline-none focus:border-[var(--border-hover)]"
           value={noteText}
           onChange={(e) => setNoteText(e.target.value)}
           onClick={(e) => e.stopPropagation()}
@@ -161,13 +161,13 @@ export default function AgentsPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Agent Roster</h1>
-        <p className="text-sm text-white/40 mt-1">
+        <p className="text-sm text-[var(--text-muted)] mt-1">
           Three tiers: Engine agents run the PSM process, New Hires solve
           specific problem clusters, Skills are their capabilities
         </p>
         {feedbackEntries.length > 0 && (
           <div className="flex items-center gap-3 mt-2">
-            <span className="text-xs text-white/30">Skill feedback:</span>
+            <span className="text-xs text-[var(--text-muted)]">Skill feedback:</span>
             {usefulCount > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">{usefulCount} useful</span>}
             {notUsefulCount > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/15 text-red-400">{notUsefulCount} not useful</span>}
             {revisionCount > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-400">{revisionCount} needs revision</span>}
@@ -179,7 +179,7 @@ export default function AgentsPage() {
       <div className="mb-6">
         <button
           onClick={() => setShowInternals(!showInternals)}
-          className="flex items-center gap-2 text-xs text-white/30 hover:text-white/50 transition-colors"
+          className="flex items-center gap-2 text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
         >
           {showInternals ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
           Pipeline Internals (Engine Agents, Screening, Analytics)
@@ -195,9 +195,9 @@ export default function AgentsPage() {
             onClick={() => setShowAnalytics(!showAnalytics)}
             className="flex items-center gap-2 mb-4"
           >
-            {showAnalytics ? <ChevronDown size={14} className="text-white/40" /> : <ChevronRight size={14} className="text-white/40" />}
-            <h2 className="text-lg font-semibold text-white/80 inline">Feedback Analytics</h2><InfoTooltip text={tooltips.feedbackAnalytics} />
-            <span className="text-xs text-white/30">{feedbackEntries.length} ratings</span>
+            {showAnalytics ? <ChevronDown size={14} className="text-[var(--text-muted)]" /> : <ChevronRight size={14} className="text-[var(--text-muted)]" />}
+            <h2 className="text-lg font-semibold text-[var(--text-primary)] inline">Feedback Analytics</h2><InfoTooltip text={tooltips.feedbackAnalytics} />
+            <span className="text-xs text-[var(--text-muted)]">{feedbackEntries.length} ratings</span>
           </button>
 
           {showAnalytics && (
@@ -206,25 +206,25 @@ export default function AgentsPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => exportFeedbackAsJSON(data.newHires, skillFeedback)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-[#2a2a3e] text-white/70 hover:bg-[#3a3a5e] transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--border-hover)] transition-colors"
                 >
                   <Download size={12} /> Export as Gold Dataset (JSON)
                 </button>
               </div>
 
               {/* Quality scores table */}
-              <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4">
-                <div className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Agent Quality Scores</div>
+              <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
+                <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-3">Agent Quality Scores</div>
                 <table className="w-full text-xs">
                   <thead>
-                    <tr className="border-b border-[#2a2a3e]">
-                      <th className="text-left py-2 px-2 text-white/40">Agent</th>
-                      <th className="text-center py-2 px-2 text-white/40">Skills</th>
-                      <th className="text-center py-2 px-2 text-white/40">Rated</th>
+                    <tr className="border-b border-[var(--border)]">
+                      <th className="text-left py-2 px-2 text-[var(--text-muted)]">Agent</th>
+                      <th className="text-center py-2 px-2 text-[var(--text-muted)]">Skills</th>
+                      <th className="text-center py-2 px-2 text-[var(--text-muted)]">Rated</th>
                       <th className="text-center py-2 px-2 text-green-400/60">Useful</th>
                       <th className="text-center py-2 px-2 text-red-400/60">Not Useful</th>
                       <th className="text-center py-2 px-2 text-yellow-400/60">Revision</th>
-                      <th className="text-right py-2 px-2 text-white/40">Score</th>
+                      <th className="text-right py-2 px-2 text-[var(--text-muted)]">Score</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -232,16 +232,16 @@ export default function AgentsPage() {
                       .filter((s) => s.ratedSkills > 0)
                       .sort((a, b) => b.qualityScore - a.qualityScore)
                       .map((score) => (
-                        <tr key={score.agentId} className="border-b border-[#2a2a3e]/30">
-                          <td className="py-2 px-2 text-white/80">{score.agentName}</td>
-                          <td className="py-2 px-2 text-center text-white/40">{score.totalSkills}</td>
-                          <td className="py-2 px-2 text-center text-white/40">{score.ratedSkills}</td>
+                        <tr key={score.agentId} className="border-b border-[var(--border)]/30">
+                          <td className="py-2 px-2 text-[var(--text-primary)]">{score.agentName}</td>
+                          <td className="py-2 px-2 text-center text-[var(--text-muted)]">{score.totalSkills}</td>
+                          <td className="py-2 px-2 text-center text-[var(--text-muted)]">{score.ratedSkills}</td>
                           <td className="py-2 px-2 text-center text-green-400">{score.usefulCount}</td>
                           <td className="py-2 px-2 text-center text-red-400">{score.notUsefulCount}</td>
                           <td className="py-2 px-2 text-center text-yellow-400">{score.revisionCount}</td>
                           <td className="py-2 px-2 text-right">
                             <div className="flex items-center justify-end gap-2">
-                              <div className="w-16 h-1.5 bg-[#12121a] rounded-full overflow-hidden">
+                              <div className="w-16 h-1.5 bg-[var(--bg-input)] rounded-full overflow-hidden">
                                 <div
                                   className={`h-full rounded-full ${score.qualityScore >= 70 ? "bg-green-500" : score.qualityScore >= 40 ? "bg-yellow-500" : "bg-red-500"}`}
                                   style={{ width: `${score.qualityScore}%` }}
@@ -263,7 +263,7 @@ export default function AgentsPage() {
                 {skillTrends.filter((t) => t.totalRated > 0).map((trend) => (
                   <div key={trend.skillType} className={`border rounded-lg p-3 ${skillTypeColors[trend.skillType]}`}>
                     <div className="text-xs font-semibold mb-2">{skillTypeLabels[trend.skillType]}</div>
-                    <div className="text-[10px] text-white/40 mb-1">{trend.totalRated} rated</div>
+                    <div className="text-[10px] text-[var(--text-muted)] mb-1">{trend.totalRated} rated</div>
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <div className="w-full h-1 bg-black/20 rounded-full overflow-hidden">
@@ -295,11 +295,11 @@ export default function AgentsPage() {
       {/* --- Tier 1: Engine Agents --- */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-6 h-6 rounded bg-white/5 border border-white/10 flex items-center justify-center">
-            <span className="text-[10px] font-bold text-white/50">T1</span>
+          <div className="w-6 h-6 rounded bg-[var(--text-faint)] border border-white/10 flex items-center justify-center">
+            <span className="text-[10px] font-bold text-[var(--text-secondary)]">T1</span>
           </div>
-          <h2 className="text-lg font-semibold text-white/80 inline">Engine Agents</h2><InfoTooltip text={tooltips.engineAgents} />
-          <span className="text-xs text-white/30">{engineAgents.length} agents — run the PSM pipeline</span>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] inline">Engine Agents</h2><InfoTooltip text={tooltips.engineAgents} />
+          <span className="text-xs text-[var(--text-muted)]">{engineAgents.length} agents — run the PSM pipeline</span>
         </div>
 
         {(() => {
@@ -310,23 +310,23 @@ export default function AgentsPage() {
           const renderAgentCard = (agent: typeof engineAgents[number], extra?: string) => {
             const colors = stageColors[agent.stage] || stageColors.catalog;
             return (
-              <div key={agent.id} className={`bg-[#1a1a2e] border rounded-xl p-4 ${extra || "border-[#2a2a3e]"}`}>
+              <div key={agent.id} className={`bg-[var(--bg-card)] border rounded-xl p-4 ${extra || "border-[var(--border)]"}`}>
                 <div className="flex items-center gap-3 mb-2">
                   <div className={`w-9 h-9 rounded-lg ${colors.bg} ${colors.border} border flex items-center justify-center`}>
                     <span className={`text-sm font-bold ${colors.text}`}>{agent.name[0]}</span>
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-white/90">{agent.name}</div>
-                    <div className="text-[10px] text-white/30">{agent.title}</div>
+                    <div className="text-sm font-semibold text-[var(--text-primary)]">{agent.name}</div>
+                    <div className="text-[10px] text-[var(--text-muted)]">{agent.title}</div>
                   </div>
                 </div>
-                <p className="text-xs text-white/40 mb-3">{agent.description}</p>
+                <p className="text-xs text-[var(--text-muted)] mb-3">{agent.description}</p>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
                     <div className={`w-1.5 h-1.5 rounded-full ${statusDot[agent.status]}`} />
-                    <span className="text-[10px] text-white/40">{agent.status}</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">{agent.status}</span>
                   </div>
-                  <span className="text-[10px] text-white/30">{agent.itemsProcessed} items</span>
+                  <span className="text-[10px] text-[var(--text-muted)]">{agent.itemsProcessed} items</span>
                   {agent.stage !== "all" && (
                     <span className={`text-[10px] px-1.5 py-0.5 rounded ${colors.bg} ${colors.text}`}>{agent.stage}</span>
                   )}
@@ -342,7 +342,7 @@ export default function AgentsPage() {
               )}
               <div className="flex flex-col items-center">
                 <div className="w-px h-6 bg-white/15" />
-                <div className="text-[10px] text-white/25 px-3 py-1 rounded-full border border-white/10 bg-[#0d0d14]">delegates to</div>
+                <div className="text-[10px] text-[var(--text-faint)] px-3 py-1 rounded-full border border-white/10 bg-[var(--bg-nav)]">delegates to</div>
                 <div className="w-px h-6 bg-white/15" />
               </div>
               <div className="w-full flex flex-col gap-0">
@@ -354,11 +354,11 @@ export default function AgentsPage() {
                     <div className="flex flex-col items-center">
                       <div className="w-px h-6 bg-white/15" />
                       <div className="flex items-center gap-2">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-white/20">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-[var(--text-faint)]">
                           <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
-                        <span className="text-[10px] text-white/25 px-3 py-1 rounded-full border border-purple-500/20 bg-[#0d0d14]">outputs feed into</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-white/20">
+                        <span className="text-[10px] text-[var(--text-faint)] px-3 py-1 rounded-full border border-purple-500/20 bg-[var(--bg-nav)]">outputs feed into</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-[var(--text-faint)]">
                           <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </div>
@@ -367,7 +367,7 @@ export default function AgentsPage() {
                     <div className="w-full max-w-md mx-auto">{renderAgentCard(hiringManager, "border-purple-500/30")}</div>
                     <div className="flex flex-col items-center">
                       <div className="w-px h-6 bg-purple-500/20" />
-                      <div className="text-[10px] text-purple-300/40 px-3 py-1 rounded-full border border-purple-500/15 bg-[#0d0d14]">generates Agent New Hires</div>
+                      <div className="text-[10px] text-purple-300/40 px-3 py-1 rounded-full border border-purple-500/15 bg-[var(--bg-nav)]">generates Agent New Hires</div>
                       <div className="w-px h-4 bg-purple-500/15" />
                     </div>
                   </>
@@ -386,11 +386,11 @@ export default function AgentsPage() {
               <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <h2 className="text-lg font-semibold text-white/80 inline">Screening Gate</h2><InfoTooltip text={tooltips.screeningGate} />
-          <span className="text-xs text-white/30">{passedEvals.length} passed / {failedEvals.length} rejected of {data.evalResults.length} candidates</span>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] inline">Screening Gate</h2><InfoTooltip text={tooltips.screeningGate} />
+          <span className="text-xs text-[var(--text-muted)]">{passedEvals.length} passed / {failedEvals.length} rejected of {data.evalResults.length} candidates</span>
         </div>
 
-        <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
           <div className="space-y-3">
             {data.evalResults.map((evalResult) => (
               <div
@@ -406,20 +406,20 @@ export default function AgentsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-white/90">{evalResult.agent_name}</span>
-                    <span className="text-[10px] text-white/30">{evalResult.agent_id}</span>
+                    <span className="text-sm font-medium text-[var(--text-primary)]">{evalResult.agent_name}</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">{evalResult.agent_id}</span>
                     {!evalResult.passed && <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/15 text-red-300">rejected</span>}
                   </div>
-                  <div className="text-xs text-white/40 mt-0.5">{evalResult.reason}</div>
+                  <div className="text-xs text-[var(--text-muted)] mt-0.5">{evalResult.reason}</div>
                 </div>
                 <div className="flex items-center gap-4 flex-shrink-0">
                   <div className="text-right">
                     <div className={`text-sm font-bold ${evalResult.avg_score >= 0.9 ? "text-emerald-300" : evalResult.avg_score >= 0.7 ? "text-yellow-300" : "text-red-300"}`}>{(evalResult.avg_score * 100).toFixed(0)}%</div>
-                    <div className="text-[10px] text-white/30">avg score</div>
+                    <div className="text-[10px] text-[var(--text-muted)]">avg score</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-bold text-white/70">{evalResult.case_results.filter((c) => c.passed).length}/{evalResult.case_results.length}</div>
-                    <div className="text-[10px] text-white/30">cases</div>
+                    <div className="text-sm font-bold text-[var(--text-secondary)]">{evalResult.case_results.filter((c) => c.passed).length}/{evalResult.case_results.length}</div>
+                    <div className="text-[10px] text-[var(--text-muted)]">cases</div>
                   </div>
                   {evalResult.hard_failures > 0 && (
                     <div className="text-right">
@@ -432,8 +432,8 @@ export default function AgentsPage() {
             ))}
           </div>
           {failedEvals.length > 0 && (
-            <div className="mt-4 pt-3 border-t border-[#2a2a3e]">
-              <div className="text-[10px] uppercase tracking-wider text-white/25 mb-2">Failure Codes</div>
+            <div className="mt-4 pt-3 border-t border-[var(--border)]">
+              <div className="text-[10px] uppercase tracking-wider text-[var(--text-faint)] mb-2">Failure Codes</div>
               <div className="flex flex-wrap gap-2">
                 {Array.from(new Set(failedEvals.flatMap((e) => e.case_results.flatMap((c) => c.failures)))).map((code) => (
                   <span key={code} className="text-[10px] px-2 py-1 rounded bg-red-500/10 text-red-300/70 border border-red-500/15">{code}</span>
@@ -452,8 +452,8 @@ export default function AgentsPage() {
           <div className="w-6 h-6 rounded bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
             <span className="text-[10px] font-bold text-purple-400">T2</span>
           </div>
-          <h2 className="text-lg font-semibold text-white/80 inline">Agent New Hires</h2><InfoTooltip text={tooltips.agentNewHires} />
-          <span className="text-xs text-white/30">{data.newHires.length} specialists</span>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] inline">Agent New Hires</h2><InfoTooltip text={tooltips.agentNewHires} />
+          <span className="text-xs text-[var(--text-muted)]">{data.newHires.length} specialists</span>
         </div>
 
         {/* Lifecycle state summary + filter */}
@@ -475,9 +475,9 @@ export default function AgentsPage() {
           };
           return (
             <div className="flex items-center gap-1.5 mb-4 flex-wrap">
-              <button onClick={() => setLifecycleFilter("all")} className={`px-2 py-1 text-[10px] rounded transition-colors ${lifecycleFilter === "all" ? "bg-white/10 text-white" : "text-white/30 hover:text-white/60"}`}>All ({data.newHires.length})</button>
+              <button onClick={() => setLifecycleFilter("all")} className={`px-2 py-1 text-[10px] rounded transition-colors ${lifecycleFilter === "all" ? "bg-[var(--text-faint)] text-white" : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"}`}>All ({data.newHires.length})</button>
               {Object.entries(stateCounts).map(([state, count]) => (
-                <button key={state} onClick={() => setLifecycleFilter(state)} className={`px-2 py-1 text-[10px] rounded transition-colors ${lifecycleFilter === state ? stateStyles[state] : "text-white/30 hover:text-white/60"}`}>
+                <button key={state} onClick={() => setLifecycleFilter(state)} className={`px-2 py-1 text-[10px] rounded transition-colors ${lifecycleFilter === state ? stateStyles[state] : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"}`}>
                   {state} ({count})
                 </button>
               ))}
@@ -516,7 +516,7 @@ export default function AgentsPage() {
             };
 
             return (
-              <div key={agent.agent_id} className={`bg-[#1a1a2e] border rounded-xl p-5 ${stateStyles[state] || "border-[#2a2a3e]"}`}>
+              <div key={agent.agent_id} className={`bg-[var(--bg-card)] border rounded-xl p-5 ${stateStyles[state] || "border-[var(--border)]"}`}>
                 {/* Header */}
                 <div className="flex items-start gap-4 mb-3">
                   <div className="w-11 h-11 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center flex-shrink-0">
@@ -524,16 +524,16 @@ export default function AgentsPage() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-white/90">{agent.name}</h3>
+                      <h3 className="font-semibold text-[var(--text-primary)]">{agent.name}</h3>
                       <span className={`text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wide font-medium ${stateBadgeStyles[state] || ""}`}>
                         {state}
                       </span>
-                      <span className="text-xs text-white/20">{agent.agent_id}</span>
+                      <span className="text-xs text-[var(--text-faint)]">{agent.agent_id}</span>
                       {agentFeedback.length > 0 && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-300">{agentUseful}/{agentFeedback.length} useful</span>
                       )}
                     </div>
-                    <div className="text-xs text-white/40">{agent.title}</div>
+                    <div className="text-xs text-[var(--text-muted)]">{agent.title}</div>
                   </div>
 
                   {/* Lifecycle action buttons */}
@@ -569,7 +569,7 @@ export default function AgentsPage() {
                   </div>
                 </div>
 
-                <p className="text-xs text-white/40 leading-relaxed mb-3">{agent.persona}</p>
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed mb-3">{agent.persona}</p>
 
                 {pattern && (
                   <div className="text-xs px-2 py-1 rounded bg-yellow-500/8 border border-yellow-500/15 text-yellow-300/70 mb-3 inline-block">
@@ -578,8 +578,8 @@ export default function AgentsPage() {
                 )}
 
                 {/* Skills */}
-                <div className="mt-3 border-t border-[#2a2a3e] pt-3">
-                  <div className="text-[10px] uppercase tracking-wider text-white/25 mb-2">Skills & Capabilities</div>
+                <div className="mt-3 border-t border-[var(--border)] pt-3">
+                  <div className="text-[10px] uppercase tracking-wider text-[var(--text-faint)] mb-2">Skills & Capabilities</div>
                   <div className="flex flex-wrap gap-2">
                     {agent.skills.map((skill, i) => {
                       const hyp = hypMap[skill.hypothesis_id];
@@ -614,8 +614,8 @@ export default function AgentsPage() {
           <div className="w-6 h-6 rounded bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
             <span className="text-[10px] font-bold text-cyan-400">T3</span>
           </div>
-          <h2 className="text-lg font-semibold text-white/80 inline">Skills</h2><InfoTooltip text={tooltips.agentSkills} />
-          <span className="text-xs text-white/30">{totalSkills} capabilities across {data.newHires.length} agents</span>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] inline">Skills</h2><InfoTooltip text={tooltips.agentSkills} />
+          <span className="text-xs text-[var(--text-muted)]">{totalSkills} capabilities across {data.newHires.length} agents</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -674,24 +674,24 @@ export default function AgentsPage() {
       </div>
 
       {/* Summary */}
-      <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-5">
-        <h2 className="text-sm font-semibold text-white/80 mb-3">Agent Summary</h2>
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-5">
+        <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Agent Summary</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
-            <span className="text-white/40">Tier 1 — Engine:</span>{" "}
-            <span className="text-white/80">{engineAgents.length}</span>
+            <span className="text-[var(--text-muted)]">Tier 1 — Engine:</span>{" "}
+            <span className="text-[var(--text-primary)]">{engineAgents.length}</span>
           </div>
           <div>
-            <span className="text-white/40">Tier 2 — New Hires:</span>{" "}
-            <span className="text-white/80">{data.newHires.length}</span>
+            <span className="text-[var(--text-muted)]">Tier 2 — New Hires:</span>{" "}
+            <span className="text-[var(--text-primary)]">{data.newHires.length}</span>
           </div>
           <div>
-            <span className="text-white/40">Tier 3 — Skills:</span>{" "}
-            <span className="text-white/80">{totalSkills}</span>
+            <span className="text-[var(--text-muted)]">Tier 3 — Skills:</span>{" "}
+            <span className="text-[var(--text-primary)]">{totalSkills}</span>
           </div>
           <div>
-            <span className="text-white/40">Problems covered:</span>{" "}
-            <span className="text-white/80">
+            <span className="text-[var(--text-muted)]">Problems covered:</span>{" "}
+            <span className="text-[var(--text-primary)]">
               {new Set(data.newHires.flatMap((a) => { const pat = patternMap[a.pattern_id]; return pat ? pat.problem_ids : []; })).size} of {data.catalog.length}
             </span>
           </div>

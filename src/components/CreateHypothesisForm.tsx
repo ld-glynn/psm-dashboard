@@ -47,13 +47,13 @@ export function CreateHypothesisForm({ patterns, onSubmit, onCancel }: CreateHyp
     });
   }
 
-  const inputClass = "w-full bg-[#12121a] border border-[#2a2a3e] rounded-md px-3 py-2 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-[#4a4a6e] transition-colors";
-  const labelClass = "block text-xs font-medium text-white/50 mb-1.5";
+  const inputClass = "w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-faint)] focus:outline-none focus:border-[var(--border-hover)] transition-colors";
+  const labelClass = "block text-xs font-medium text-[var(--text-secondary)] mb-1.5";
   const isValid = patternId && statement.length >= 20 && testCriteria.length >= 1 && expectedOutcome.trim().length >= 10;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <p className="text-xs text-white/40 leading-relaxed">
+      <p className="text-xs text-[var(--text-muted)] leading-relaxed">
         Create a hypothesis in "If/Then/Because" format. Every hypothesis must have at least one test criterion — untestable hypotheses are not useful.
       </p>
 
@@ -73,8 +73,8 @@ export function CreateHypothesisForm({ patterns, onSubmit, onCancel }: CreateHyp
       </div>
 
       {/* If / Then / Because builder */}
-      <div className="bg-[#12121a] border border-[#2a2a3e] rounded-lg p-3 space-y-3">
-        <div className="text-xs font-medium text-white/50">Hypothesis Statement *</div>
+      <div className="bg-[var(--bg-input)] border border-[var(--border)] rounded-lg p-3 space-y-3">
+        <div className="text-xs font-medium text-[var(--text-secondary)]">Hypothesis Statement *</div>
         <div className="flex items-start gap-2">
           <span className="text-xs text-green-400/70 font-medium mt-2 w-16 flex-shrink-0">If we</span>
           <input value={ifPart} onChange={(e) => setIfPart(e.target.value)} placeholder="take this action..." className={inputClass} />
@@ -88,7 +88,7 @@ export function CreateHypothesisForm({ patterns, onSubmit, onCancel }: CreateHyp
           <input value={becausePart} onChange={(e) => setBecausePart(e.target.value)} placeholder="this reasoning supports it..." className={inputClass} />
         </div>
         {statement && (
-          <div className="text-xs text-white/60 bg-white/[0.03] rounded p-2 leading-relaxed">
+          <div className="text-xs text-[var(--text-secondary)] bg-white/[0.03] rounded p-2 leading-relaxed">
             {statement}
           </div>
         )}
@@ -149,14 +149,14 @@ export function CreateHypothesisForm({ patterns, onSubmit, onCancel }: CreateHyp
         <textarea value={risksInput} onChange={(e) => setRisksInput(e.target.value)} placeholder="What could go wrong?" className={`${inputClass} min-h-[50px] resize-y`} />
       </div>
 
-      <div className="flex items-center gap-3 pt-2 border-t border-[#2a2a3e]">
+      <div className="flex items-center gap-3 pt-2 border-t border-[var(--border)]">
         <button type="submit" disabled={!isValid} className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
           Create Hypothesis
         </button>
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm rounded-md bg-white/5 text-white/50 hover:bg-white/10 transition-colors">
+        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm rounded-md bg-[var(--text-faint)] text-[var(--text-secondary)] hover:bg-[var(--text-faint)] transition-colors">
           Cancel
         </button>
-        <span className="text-[10px] text-white/20 ml-auto">Source: manual</span>
+        <span className="text-[10px] text-[var(--text-faint)] ml-auto">Source: manual</span>
       </div>
     </form>
   );

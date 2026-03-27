@@ -59,8 +59,8 @@ export function ProblemIntakeForm({ onSubmit }: ProblemIntakeFormProps) {
   }
 
   const inputClass =
-    "w-full bg-[#12121a] border border-[#2a2a3e] rounded-md px-3 py-2 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-[#4a4a6e] transition-colors";
-  const labelClass = "block text-xs font-medium text-white/50 mb-1.5";
+    "w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-faint)] focus:outline-none focus:border-[var(--border-hover)] transition-colors";
+  const labelClass = "block text-xs font-medium text-[var(--text-secondary)] mb-1.5";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

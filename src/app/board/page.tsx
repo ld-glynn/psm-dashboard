@@ -77,7 +77,7 @@ export default function BoardPage() {
             <h1 className="text-2xl font-bold text-white">Board View</h1>
             <InfoTooltip text={tooltips.reviewStatus} />
           </div>
-          <p className="text-sm text-white/40 mt-1">
+          <p className="text-sm text-[var(--text-muted)] mt-1">
             Click cards to review — approve, reject, or edit inline
           </p>
         </div>
@@ -106,13 +106,13 @@ export default function BoardPage() {
       </div>
 
       {/* Tabs + filter */}
-      <div className="flex items-center gap-1 mb-3 border-b border-[#2a2a3e] pb-3">
+      <div className="flex items-center gap-1 mb-3 border-b border-[var(--border)] pb-3">
         {TABS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-              activeTab === tab.key ? "bg-white/10 text-white" : "text-white/40 hover:text-white/70 hover:bg-white/5"
+              activeTab === tab.key ? "bg-[var(--text-faint)] text-white" : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--text-faint)]"
             }`}
           >
             {tab.label}
@@ -124,14 +124,14 @@ export default function BoardPage() {
           <button
             onClick={() => setFilterOpen(!filterOpen)}
             className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md transition-colors ${
-              filter !== "all" ? "bg-white/10 text-white" : "text-white/40 hover:text-white/70 hover:bg-white/5"
+              filter !== "all" ? "bg-[var(--text-faint)] text-white" : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--text-faint)]"
             }`}
           >
             <Filter size={12} />
             {filter !== "all" ? filter.replace("unreviewed", "Needs Review") : "Filter"}
           </button>
           {filterOpen && (
-            <div className="absolute right-0 top-full mt-1 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg shadow-xl z-50 py-1 min-w-[180px]">
+            <div className="absolute right-0 top-full mt-1 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg shadow-xl z-50 py-1 min-w-[180px]">
               {([
                 { key: "all" as FilterMode, label: "All items" },
                 { key: "unreviewed" as FilterMode, label: `Needs Review (${counts.unreviewed})` },
@@ -141,14 +141,14 @@ export default function BoardPage() {
                 <button
                   key={opt.key}
                   onClick={() => { setFilter(opt.key); setFilterOpen(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left hover:bg-white/5 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left hover:bg-[var(--text-faint)] transition-colors"
                 >
                   <div className={`w-3 h-3 rounded border flex items-center justify-center ${
-                    filter === opt.key ? "border-blue-400 bg-blue-500/20" : "border-[#3a3a5e]"
+                    filter === opt.key ? "border-blue-400 bg-blue-500/20" : "border-[var(--border-hover)]"
                   }`}>
                     {filter === opt.key && <div className="w-1.5 h-1.5 rounded-sm bg-blue-400" />}
                   </div>
-                  <span className={filter === opt.key ? "text-white" : "text-white/50"}>{opt.label}</span>
+                  <span className={filter === opt.key ? "text-white" : "text-[var(--text-secondary)]"}>{opt.label}</span>
                 </button>
               ))}
             </div>
@@ -278,13 +278,13 @@ export default function BoardPage() {
 
       {/* Create Problem Slide-Over */}
       <SlideOver open={createMode === "problem"} onClose={() => setCreateMode(null)} title="Add Problem">
-        <div className="flex items-center gap-1 mb-4 border-b border-[#2a2a3e] pb-3">
+        <div className="flex items-center gap-1 mb-4 border-b border-[var(--border)] pb-3">
           {(["manual", "csv", "ai"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setProblemTab(tab)}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                problemTab === tab ? "bg-white/10 text-white" : "text-white/40 hover:text-white/70 hover:bg-white/5"
+                problemTab === tab ? "bg-[var(--text-faint)] text-white" : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--text-faint)]"
               }`}
             >
               {tab === "manual" ? "Manual" : tab === "csv" ? "CSV Import" : "AI Parse"}

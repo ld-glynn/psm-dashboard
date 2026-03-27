@@ -112,25 +112,25 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
   return (
     <div className="fixed inset-0 z-[200] flex items-start justify-center pt-[15vh]">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+      <div className="relative bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
         {/* Input */}
-        <div className="flex items-center gap-3 px-4 border-b border-[#2a2a3e]">
-          <Search size={16} className="text-white/30 flex-shrink-0" />
+        <div className="flex items-center gap-3 px-4 border-b border-[var(--border)]">
+          <Search size={16} className="text-[var(--text-muted)] flex-shrink-0" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search problems, patterns, agents, pages..."
-            className="flex-1 bg-transparent py-3 text-sm text-white/90 placeholder-white/30 focus:outline-none"
+            className="flex-1 bg-transparent py-3 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none"
           />
-          <kbd className="text-[10px] text-white/20 border border-[#2a2a3e] rounded px-1.5 py-0.5">ESC</kbd>
+          <kbd className="text-[10px] text-[var(--text-faint)] border border-[var(--border)] rounded px-1.5 py-0.5">ESC</kbd>
         </div>
 
         {/* Results */}
         <div className="max-h-[300px] overflow-y-auto py-1">
           {results.length === 0 ? (
-            <div className="px-4 py-6 text-center text-xs text-white/30">No results found</div>
+            <div className="px-4 py-6 text-center text-xs text-[var(--text-muted)]">No results found</div>
           ) : (
             results.map((result, i) => (
               <button
@@ -138,15 +138,15 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
                 onClick={() => handleSelect(result)}
                 onMouseEnter={() => setSelectedIndex(i)}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${
-                  i === selectedIndex ? "bg-white/5" : ""
+                  i === selectedIndex ? "bg-[var(--text-faint)]" : ""
                 }`}
               >
-                <span className={`text-[9px] uppercase tracking-wide font-medium w-16 flex-shrink-0 ${typeColors[result.type] || "text-white/40"}`}>
+                <span className={`text-[9px] uppercase tracking-wide font-medium w-16 flex-shrink-0 ${typeColors[result.type] || "text-[var(--text-muted)]"}`}>
                   {result.type}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-white/80 truncate">{result.title}</div>
-                  <div className="text-[10px] text-white/30 truncate">{result.subtitle}</div>
+                  <div className="text-sm text-[var(--text-primary)] truncate">{result.title}</div>
+                  <div className="text-[10px] text-[var(--text-muted)] truncate">{result.subtitle}</div>
                 </div>
               </button>
             ))
@@ -154,7 +154,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2 border-t border-[#2a2a3e] flex items-center gap-4 text-[10px] text-white/20">
+        <div className="px-4 py-2 border-t border-[var(--border)] flex items-center gap-4 text-[10px] text-[var(--text-faint)]">
           <span>↑↓ navigate</span>
           <span>↵ select</span>
           <span>esc close</span>
