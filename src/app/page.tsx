@@ -54,9 +54,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {/* Items needing attention */}
         {unreviewedCount > 0 && (
-          <Link href="/board" className="bg-card border border-orange-500/20 rounded-xl p-4 hover:border-orange-500/40 transition-colors group">
+          <Link href="/board" className="bg-card border border-orange-200 dark:border-orange-500/20 rounded-xl p-4 hover:border-orange-300 dark:border-orange-500/40 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-lg bg-orange-100 dark:bg-orange-500/10 flex items-center justify-center">
                 <AlertCircle size={18} className="text-orange-600 dark:text-orange-400" />
               </div>
               <div className="flex-1">
@@ -70,9 +70,9 @@ export default function DashboardPage() {
 
         {/* Proposed agents */}
         {proposedAgents > 0 && (
-          <Link href="/agents" className="bg-card border border-yellow-500/20 rounded-xl p-4 hover:border-yellow-500/40 transition-colors group">
+          <Link href="/agents" className="bg-card border border-yellow-200 dark:border-yellow-500/20 rounded-xl p-4 hover:border-yellow-300 dark:border-yellow-500/40 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-9 h-9 rounded-lg bg-yellow-500/10 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-lg bg-yellow-100 dark:bg-yellow-500/10 flex items-center justify-center">
                 <Users size={18} className="text-amber-600 dark:text-yellow-400" />
               </div>
               <div className="flex-1">
@@ -86,9 +86,9 @@ export default function DashboardPage() {
 
         {/* Drafts pending */}
         {draftCount > 0 && (
-          <Link href="/board" className="bg-card border border-blue-500/20 rounded-xl p-4 hover:border-blue-500/40 transition-colors group">
+          <Link href="/board" className="bg-card border border-blue-200 dark:border-blue-500/20 rounded-xl p-4 hover:border-blue-300 dark:border-blue-500/40 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center">
                 <Plus size={18} className="text-blue-600 dark:text-blue-400" />
               </div>
               <div className="flex-1">

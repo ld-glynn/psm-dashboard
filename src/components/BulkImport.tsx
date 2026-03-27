@@ -198,7 +198,7 @@ export function BulkImport({ onImport }: BulkImportProps) {
 
       {/* Errors */}
       {allErrors.length > 0 && (
-        <div className="bg-red-500/10 border border-red-500/20 rounded-md p-3 space-y-1">
+        <div className="bg-red-100 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-md p-3 space-y-1">
           {allErrors.map((err, i) => (
             <div key={i} className="text-xs text-red-700 dark:text-red-300">
               {err}

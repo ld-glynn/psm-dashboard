@@ -14,10 +14,10 @@ const skillTypeLabels: Record<string, string> = {
 };
 
 const skillTypeColors: Record<string, string> = {
-  recommend: "bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/25",
-  action_plan: "bg-green-500/15 text-green-700 dark:text-green-300 border-green-500/25",
-  process_doc: "bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/25",
-  investigate: "bg-yellow-500/15 text-amber-700 dark:text-yellow-300 border-yellow-500/25",
+  recommend: "bg-blue-100 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/25",
+  action_plan: "bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300 border-green-200 dark:border-green-500/25",
+  process_doc: "bg-purple-100 dark:bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-500/25",
+  investigate: "bg-yellow-100 dark:bg-yellow-500/15 text-amber-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-500/25",
 };
 
 type ViewMode = "outputs" | "timeline";
@@ -104,7 +104,7 @@ export default function SkillsPage() {
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">{group.items.length} output{group.items.length !== 1 ? "s" : ""}</span>
                   {group.items.some((o) => (o as any).invocation_number > 1) && (
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">multi-invocation</span>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-100 dark:bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">multi-invocation</span>
                   )}
                 </div>
               </button>
@@ -127,12 +127,12 @@ export default function SkillsPage() {
                                 {skillTypeLabels[output.skill_type] || output.skill_type}
                               </span>
                               {invNum > 1 && (
-                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center gap-1">
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-100 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center gap-1">
                                   <Clock size={9} /> Invocation #{invNum}
                                 </span>
                               )}
                               {agent && groupBy !== "agent" && (
-                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-700 dark:text-purple-300">{agent.name}</span>
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300">{agent.name}</span>
                               )}
                               {hyp && (
                                 <span className="text-[10px] text-muted-foreground max-w-[300px] truncate" title={hyp.statement}>

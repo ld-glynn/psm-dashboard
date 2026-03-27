@@ -19,10 +19,10 @@ const skillTypeLabels: Record<string, string> = {
 };
 
 const skillTypeColors: Record<string, string> = {
-  recommend: "bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/25",
-  action_plan: "bg-green-500/15 text-green-700 dark:text-green-300 border-green-500/25",
-  process_doc: "bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/25",
-  investigate: "bg-yellow-500/15 text-amber-700 dark:text-yellow-300 border-yellow-500/25",
+  recommend: "bg-blue-100 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/25",
+  action_plan: "bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300 border-green-200 dark:border-green-500/25",
+  process_doc: "bg-purple-100 dark:bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-500/25",
+  investigate: "bg-yellow-100 dark:bg-yellow-500/15 text-amber-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-500/25",
 };
 
 const statusDot: Record<string, string> = {
@@ -84,7 +84,7 @@ function SkillFeedbackUI({
             e.stopPropagation();
             onRate(agentId, skillIndex, "useful", noteText || undefined);
           }}
-          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-green-500/10 text-green-600 dark:text-green-400/70 hover:bg-green-500/20 hover:text-green-600 dark:text-green-400 transition-colors"
+          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400/70 hover:bg-green-100 dark:bg-green-500/20 hover:text-green-600 dark:text-green-400 transition-colors"
           title="Useful"
         >
           <ThumbsUp size={9} />
@@ -94,7 +94,7 @@ function SkillFeedbackUI({
             e.stopPropagation();
             onRate(agentId, skillIndex, "not_useful", noteText || undefined);
           }}
-          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-red-500/10 text-red-600 dark:text-red-400/70 hover:bg-red-500/20 hover:text-red-600 dark:text-red-400 transition-colors"
+          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400/70 hover:bg-red-100 dark:bg-red-500/20 hover:text-red-600 dark:text-red-400 transition-colors"
           title="Not useful"
         >
           <ThumbsDown size={9} />
@@ -104,7 +104,7 @@ function SkillFeedbackUI({
             e.stopPropagation();
             onRate(agentId, skillIndex, "needs_revision", noteText || undefined);
           }}
-          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-yellow-500/10 text-amber-600 dark:text-yellow-400/70 hover:bg-yellow-500/20 hover:text-amber-600 dark:text-yellow-400 transition-colors"
+          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-yellow-100 dark:bg-yellow-500/10 text-amber-600 dark:text-yellow-400/70 hover:bg-yellow-100 dark:bg-yellow-500/20 hover:text-amber-600 dark:text-yellow-400 transition-colors"
           title="Needs revision"
         >
           <RotateCcw size={9} />
@@ -168,9 +168,9 @@ export default function AgentsPage() {
         {feedbackEntries.length > 0 && (
           <div className="flex items-center gap-3 mt-2">
             <span className="text-xs text-muted-foreground">Skill feedback:</span>
-            {usefulCount > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/15 text-green-600 dark:text-green-400">{usefulCount} useful</span>}
-            {notUsefulCount > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/15 text-red-600 dark:text-red-400">{notUsefulCount} not useful</span>}
-            {revisionCount > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/15 text-amber-600 dark:text-yellow-400">{revisionCount} needs revision</span>}
+            {usefulCount > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400">{usefulCount} useful</span>}
+            {notUsefulCount > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-400">{notUsefulCount} not useful</span>}
+            {revisionCount > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-500/15 text-amber-600 dark:text-yellow-400">{revisionCount} needs revision</span>}
           </div>
         )}
       </div>
@@ -357,18 +357,18 @@ export default function AgentsPage() {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-muted-foreground/50">
                           <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
-                        <span className="text-[10px] text-muted-foreground/60 px-3 py-1 rounded-full border border-purple-500/20 bg-sidebar">outputs feed into</span>
+                        <span className="text-[10px] text-muted-foreground/60 px-3 py-1 rounded-full border border-purple-200 dark:border-purple-500/20 bg-sidebar">outputs feed into</span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-muted-foreground/50">
                           <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </div>
-                      <div className="w-px h-6 bg-purple-500/20" />
+                      <div className="w-px h-6 bg-purple-100 dark:bg-purple-500/20" />
                     </div>
-                    <div className="w-full max-w-md mx-auto">{renderAgentCard(hiringManager, "border-purple-500/30")}</div>
+                    <div className="w-full max-w-md mx-auto">{renderAgentCard(hiringManager, "border-purple-200 dark:border-purple-500/30")}</div>
                     <div className="flex flex-col items-center">
-                      <div className="w-px h-6 bg-purple-500/20" />
-                      <div className="text-[10px] text-purple-700 dark:text-purple-300/40 px-3 py-1 rounded-full border border-purple-500/15 bg-sidebar">generates Agent New Hires</div>
-                      <div className="w-px h-4 bg-purple-500/15" />
+                      <div className="w-px h-6 bg-purple-100 dark:bg-purple-500/20" />
+                      <div className="text-[10px] text-purple-700 dark:text-purple-300/40 px-3 py-1 rounded-full border border-purple-200 dark:border-purple-500/15 bg-sidebar">generates Agent New Hires</div>
+                      <div className="w-px h-4 bg-purple-100 dark:bg-purple-500/15" />
                     </div>
                   </>
                 )}
@@ -381,7 +381,7 @@ export default function AgentsPage() {
       {/* --- Screening Gate --- */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-6 h-6 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+          <div className="w-6 h-6 rounded bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 flex items-center justify-center">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-emerald-600 dark:text-emerald-400">
               <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -395,9 +395,9 @@ export default function AgentsPage() {
             {data.evalResults.map((evalResult) => (
               <div
                 key={evalResult.agent_id}
-                className={`flex items-center gap-4 p-3 rounded-lg border ${evalResult.passed ? "border-emerald-500/15 bg-emerald-500/5" : "border-red-500/15 bg-red-500/5"}`}
+                className={`flex items-center gap-4 p-3 rounded-lg border ${evalResult.passed ? "border-emerald-200 dark:border-emerald-500/15 bg-emerald-50 dark:bg-emerald-500/5" : "border-red-200 dark:border-red-500/15 bg-red-50 dark:bg-red-500/5"}`}
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${evalResult.passed ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400" : "bg-red-500/15 text-red-600 dark:text-red-400"}`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${evalResult.passed ? "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400" : "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-400"}`}>
                   {evalResult.passed ? (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   ) : (
@@ -408,7 +408,7 @@ export default function AgentsPage() {
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-foreground">{evalResult.agent_name}</span>
                     <span className="text-[10px] text-muted-foreground">{evalResult.agent_id}</span>
-                    {!evalResult.passed && <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/15 text-red-700 dark:text-red-300">rejected</span>}
+                    {!evalResult.passed && <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-300">rejected</span>}
                   </div>
                   <div className="text-xs text-muted-foreground mt-0.5">{evalResult.reason}</div>
                 </div>
@@ -436,7 +436,7 @@ export default function AgentsPage() {
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground/60 mb-2">Failure Codes</div>
               <div className="flex flex-wrap gap-2">
                 {Array.from(new Set(failedEvals.flatMap((e) => e.case_results.flatMap((c) => c.failures)))).map((code) => (
-                  <span key={code} className="text-[10px] px-2 py-1 rounded bg-red-500/10 text-red-700 dark:text-red-300/70 border border-red-500/15">{code}</span>
+                  <span key={code} className="text-[10px] px-2 py-1 rounded bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-300/70 border border-red-200 dark:border-red-500/15">{code}</span>
                 ))}
               </div>
             </div>
@@ -449,7 +449,7 @@ export default function AgentsPage() {
       {/* --- Tier 2: Agent New Hires --- */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-6 h-6 rounded bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+          <div className="w-6 h-6 rounded bg-purple-100 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 flex items-center justify-center">
             <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400">T2</span>
           </div>
           <h2 className="text-lg font-semibold text-foreground inline">Agent New Hires</h2><InfoTooltip text={tooltips.agentNewHires} />
@@ -465,13 +465,13 @@ export default function AgentsPage() {
           }
           const stateStyles: Record<string, string> = {
             created: "bg-gray-500/15 text-gray-300",
-            screened: "bg-blue-500/15 text-blue-700 dark:text-blue-300",
-            proposed: "bg-yellow-500/15 text-amber-700 dark:text-yellow-300",
-            approved: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-            deployed: "bg-green-500/15 text-green-700 dark:text-green-300",
-            active: "bg-cyan-500/15 text-cyan-700 dark:text-cyan-300",
-            paused: "bg-orange-500/15 text-orange-700 dark:text-orange-300",
-            retired: "bg-red-500/15 text-red-700 dark:text-red-300",
+            screened: "bg-blue-100 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300",
+            proposed: "bg-yellow-100 dark:bg-yellow-500/15 text-amber-700 dark:text-yellow-300",
+            approved: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+            deployed: "bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300",
+            active: "bg-cyan-100 dark:bg-cyan-500/15 text-cyan-700 dark:text-cyan-300",
+            paused: "bg-orange-100 dark:bg-orange-500/15 text-orange-700 dark:text-orange-300",
+            retired: "bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-300",
           };
           return (
             <div className="flex items-center gap-1.5 mb-4 flex-wrap">
@@ -496,30 +496,30 @@ export default function AgentsPage() {
 
             const stateStyles: Record<string, string> = {
               created: "border-gray-500/20",
-              screened: "border-blue-500/20",
-              proposed: "border-yellow-500/20",
-              approved: "border-emerald-500/20",
-              deployed: "border-green-500/30",
-              active: "border-cyan-500/30",
-              paused: "border-orange-500/30",
-              retired: "border-red-500/20 opacity-50",
+              screened: "border-blue-200 dark:border-blue-500/20",
+              proposed: "border-yellow-200 dark:border-yellow-500/20",
+              approved: "border-emerald-200 dark:border-emerald-500/20",
+              deployed: "border-green-200 dark:border-green-500/30",
+              active: "border-cyan-200 dark:border-cyan-500/30",
+              paused: "border-orange-200 dark:border-orange-500/30",
+              retired: "border-red-200 dark:border-red-500/20 opacity-50",
             };
             const stateBadgeStyles: Record<string, string> = {
               created: "bg-gray-500/15 text-gray-300",
-              screened: "bg-blue-500/15 text-blue-700 dark:text-blue-300",
-              proposed: "bg-yellow-500/15 text-amber-700 dark:text-yellow-300",
-              approved: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-              deployed: "bg-green-500/15 text-green-700 dark:text-green-300",
-              active: "bg-cyan-500/15 text-cyan-700 dark:text-cyan-300",
-              paused: "bg-orange-500/15 text-orange-700 dark:text-orange-300",
-              retired: "bg-red-500/15 text-red-700 dark:text-red-300",
+              screened: "bg-blue-100 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300",
+              proposed: "bg-yellow-100 dark:bg-yellow-500/15 text-amber-700 dark:text-yellow-300",
+              approved: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+              deployed: "bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300",
+              active: "bg-cyan-100 dark:bg-cyan-500/15 text-cyan-700 dark:text-cyan-300",
+              paused: "bg-orange-100 dark:bg-orange-500/15 text-orange-700 dark:text-orange-300",
+              retired: "bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-300",
             };
 
             return (
               <div key={agent.agent_id} className={`bg-card border rounded-xl p-5 ${stateStyles[state] || "border-border"}`}>
                 {/* Header */}
                 <div className="flex items-start gap-4 mb-3">
-                  <div className="w-11 h-11 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center flex-shrink-0">
+                  <div className="w-11 h-11 rounded-lg bg-purple-100 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 flex items-center justify-center flex-shrink-0">
                     <span className="text-lg font-bold text-purple-600 dark:text-purple-400">{agent.name[0]}</span>
                   </div>
                   <div className="flex-1">
@@ -530,7 +530,7 @@ export default function AgentsPage() {
                       </span>
                       <span className="text-xs text-muted-foreground/50">{agent.agent_id}</span>
                       {agentFeedback.length > 0 && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-700 dark:text-green-300">{agentUseful}/{agentFeedback.length} useful</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300">{agentUseful}/{agentFeedback.length} useful</span>
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground">{agent.title}</div>
@@ -541,28 +541,28 @@ export default function AgentsPage() {
                     {(state === "proposed" || state === "approved") && serverAvailable && (
                       <button
                         onClick={() => { if (state === "proposed" && agent.deployment_spec_id) approveSpec(agent.deployment_spec_id).then(() => window.location.reload()); else if (state === "approved") deployAgent(agent.agent_id).then(() => window.location.reload()); }}
-                        className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors border border-green-500/20"
+                        className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] rounded-md bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:bg-green-500/20 transition-colors border border-green-200 dark:border-green-500/20"
                       >
                         <Rocket size={11} /> {state === "proposed" ? "Approve" : "Deploy"}
                       </button>
                     )}
                     {state === "deployed" && serverAvailable && (
                       <>
-                        <button onClick={() => invokeAgent(agent.agent_id).then(() => window.location.reload())} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors border border-blue-500/20">
+                        <button onClick={() => invokeAgent(agent.agent_id).then(() => window.location.reload())} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:bg-blue-500/20 transition-colors border border-blue-200 dark:border-blue-500/20">
                           <Play size={11} /> Invoke
                         </button>
-                        <button onClick={() => pauseAgent(agent.agent_id).then(() => window.location.reload())} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 transition-colors border border-orange-500/20">
+                        <button onClick={() => pauseAgent(agent.agent_id).then(() => window.location.reload())} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-orange-100 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:bg-orange-500/20 transition-colors border border-orange-200 dark:border-orange-500/20">
                           <Pause size={11} /> Pause
                         </button>
                       </>
                     )}
                     {state === "paused" && serverAvailable && (
-                      <button onClick={() => resumeAgent(agent.agent_id).then(() => window.location.reload())} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors border border-green-500/20">
+                      <button onClick={() => resumeAgent(agent.agent_id).then(() => window.location.reload())} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:bg-green-500/20 transition-colors border border-green-200 dark:border-green-500/20">
                         <Play size={11} /> Resume
                       </button>
                     )}
                     {(state === "deployed" || state === "paused") && serverAvailable && (
-                      <button onClick={() => { if (confirm("Retire this agent?")) retireAgent(agent.agent_id).then(() => window.location.reload()); }} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 transition-colors border border-red-500/20">
+                      <button onClick={() => { if (confirm("Retire this agent?")) retireAgent(agent.agent_id).then(() => window.location.reload()); }} className="flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-md bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:bg-red-500/20 transition-colors border border-red-200 dark:border-red-500/20">
                         <Power size={11} /> Retire
                       </button>
                     )}
@@ -572,7 +572,7 @@ export default function AgentsPage() {
                 <p className="text-xs text-muted-foreground leading-relaxed mb-3">{agent.persona}</p>
 
                 {pattern && (
-                  <div className="text-xs px-2 py-1 rounded bg-yellow-500/8 border border-yellow-500/15 text-amber-700 dark:text-yellow-300/70 mb-3 inline-block">
+                  <div className="text-xs px-2 py-1 rounded bg-yellow-50 dark:bg-yellow-500/8 border border-yellow-200 dark:border-yellow-500/15 text-amber-700 dark:text-yellow-300/70 mb-3 inline-block">
                     Owns: {pattern.name} ({pattern.problem_ids.length} problems)
                   </div>
                 )}
@@ -611,7 +611,7 @@ export default function AgentsPage() {
       {/* --- Tier 3: Skills --- */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-6 h-6 rounded bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+          <div className="w-6 h-6 rounded bg-cyan-100 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20 flex items-center justify-center">
             <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400">T3</span>
           </div>
           <h2 className="text-lg font-semibold text-foreground inline">Skills</h2><InfoTooltip text={tooltips.agentSkills} />
@@ -642,7 +642,7 @@ export default function AgentsPage() {
                     return (
                       <div key={`${agent.agent_id}-${i}`} className="bg-black/15 rounded-lg px-3 py-2.5">
                         <div className="flex items-center gap-2 mb-1">
-                          <div className="w-5 h-5 rounded bg-purple-500/15 flex items-center justify-center flex-shrink-0">
+                          <div className="w-5 h-5 rounded bg-purple-100 dark:bg-purple-500/15 flex items-center justify-center flex-shrink-0">
                             <span className="text-[9px] font-bold text-purple-700 dark:text-purple-300">{agent.name[0]}</span>
                           </div>
                           <span className="text-xs font-medium opacity-80">{agent.name}</span>

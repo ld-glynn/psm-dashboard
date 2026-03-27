@@ -86,19 +86,19 @@ export default function BoardPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setCreateMode("problem")}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 transition-colors border border-orange-500/20"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-orange-100 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:bg-orange-500/20 transition-colors border border-orange-200 dark:border-orange-500/20"
           >
             <Plus size={12} /> Problem
           </button>
           <button
             onClick={() => setCreateMode("pattern")}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-yellow-500/10 text-amber-600 dark:text-yellow-400 hover:bg-yellow-500/20 transition-colors border border-yellow-500/20"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-yellow-100 dark:bg-yellow-500/10 text-amber-600 dark:text-yellow-400 hover:bg-yellow-100 dark:bg-yellow-500/20 transition-colors border border-yellow-200 dark:border-yellow-500/20"
           >
             <Plus size={12} /> Pattern
           </button>
           <button
             onClick={() => setCreateMode("hypothesis")}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors border border-green-500/20"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:bg-green-500/20 transition-colors border border-green-200 dark:border-green-500/20"
           >
             <Plus size={12} /> Hypothesis
           </button>
@@ -144,7 +144,7 @@ export default function BoardPage() {
                   className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left hover:bg-accent transition-colors"
                 >
                   <div className={`w-3 h-3 rounded border flex items-center justify-center ${
-                    filter === opt.key ? "border-blue-400 bg-blue-500/20" : "border-ring"
+                    filter === opt.key ? "border-blue-400 bg-blue-100 dark:bg-blue-500/20" : "border-ring"
                   }`}>
                     {filter === opt.key && <div className="w-1.5 h-1.5 rounded-sm bg-blue-400" />}
                   </div>

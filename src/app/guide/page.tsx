@@ -260,7 +260,7 @@ export default function GuidePage() {
               onClick={() => toggleSection(section.id)}
               className="w-full flex items-center gap-3 p-4 hover:bg-accent/20 transition-colors text-left"
             >
-              <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 flex items-center justify-center flex-shrink-0">
                 <Icon size={16} className="text-blue-600 dark:text-blue-400" />
               </div>
               <div className="flex-1">
@@ -286,7 +286,7 @@ export default function GuidePage() {
                         <div className="text-xs font-medium text-foreground mb-1">{step.title}</div>
                         <div className="text-xs text-muted-foreground leading-relaxed">{step.description}</div>
                         {step.tip && (
-                          <div className="mt-2 flex items-start gap-1.5 text-[11px] text-blue-700 dark:text-blue-300/70 bg-blue-500/5 rounded px-2.5 py-1.5">
+                          <div className="mt-2 flex items-start gap-1.5 text-[11px] text-blue-700 dark:text-blue-300/70 bg-blue-50 dark:bg-blue-500/5 rounded px-2.5 py-1.5">
                             <Info size={11} className="flex-shrink-0 mt-0.5" />
                             <span>{step.tip}</span>
                           </div>

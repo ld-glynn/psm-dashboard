@@ -137,7 +137,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
           {processing ? "Processing..." : "Extract Problems"}
         </button>
         {serverAvailable ? (
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/15 text-green-600 dark:text-green-400">Claude API</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400">Claude API</span>
         ) : (
           <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">Local parsing</span>
         )}
@@ -174,7 +174,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
               <div
                 key={s.tempId}
                 className={`bg-muted border rounded-lg p-3 transition-colors ${
-                  isAccepted ? "border-green-500/30 opacity-60" : "border-border"
+                  isAccepted ? "border-green-200 dark:border-green-500/30 opacity-60" : "border-border"
                 }`}
               >
                 {/* Header */}
@@ -186,7 +186,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
                       <div className="text-sm font-medium text-foreground">{s.title}</div>
                     )}
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-pink-500/15 text-pink-600 dark:text-pink-400">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-pink-100 dark:bg-pink-500/15 text-pink-600 dark:text-pink-400">
                         {Math.round(s.confidence * 100)}% confidence
                       </span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{s.domain}</span>
@@ -196,13 +196,13 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
 
                   {!isAccepted && (
                     <div className="flex gap-1">
-                      <button onClick={() => handleAccept(s)} className="p-1.5 rounded bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20" title="Accept">
+                      <button onClick={() => handleAccept(s)} className="p-1.5 rounded bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:bg-green-500/20" title="Accept">
                         <Check size={12} />
                       </button>
                       <button onClick={() => startEdit(s)} className="p-1.5 rounded bg-accent text-muted-foreground hover:bg-accent" title="Edit">
                         <Pencil size={12} />
                       </button>
-                      <button onClick={() => setRejected((prev) => new Set(prev).add(s.tempId))} className="p-1.5 rounded bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20" title="Reject">
+                      <button onClick={() => setRejected((prev) => new Set(prev).add(s.tempId))} className="p-1.5 rounded bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:bg-red-500/20" title="Reject">
                         <X size={12} />
                       </button>
                     </div>

@@ -61,7 +61,7 @@ export function IntegrationFlow({
         </div>
 
         {/* Structurer */}
-        <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg px-4 py-3 flex items-center gap-3">
+        <div className="bg-cyan-100 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/30 rounded-lg px-4 py-3 flex items-center gap-3">
           <Cpu size={18} className="text-cyan-600 dark:text-cyan-400 flex-shrink-0" />
           <div>
             <div className="text-sm font-medium text-cyan-600 dark:text-cyan-400">Structurer</div>
@@ -76,7 +76,7 @@ export function IntegrationFlow({
         </div>
 
         {/* Pipeline */}
-        <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 flex items-center gap-3">
+        <div className="bg-red-100 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-lg px-4 py-3 flex items-center gap-3">
           <div className="text-2xl font-bold text-red-600 dark:text-red-400">{totalProblems}</div>
           <div>
             <div className="text-sm font-medium text-foreground">Pipeline</div>

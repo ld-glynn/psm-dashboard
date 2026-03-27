@@ -103,7 +103,7 @@ export function IntegrationCard({ config, onToggle }: IntegrationCardProps) {
       {expanded && (
         <div className="space-y-3 pt-2 border-t border-white/5">
           {config.status === "mock" && (
-            <div className="bg-yellow-500/5 border border-yellow-500/15 rounded-lg px-3 py-2 text-[10px] text-amber-700 dark:text-yellow-300/70">
+            <div className="bg-yellow-50 dark:bg-yellow-500/5 border border-yellow-200 dark:border-yellow-500/15 rounded-lg px-3 py-2 text-[10px] text-amber-700 dark:text-yellow-300/70">
               Demo mode — using sample data. Connect real API credentials to enable live sync.
             </div>
           )}

@@ -40,7 +40,7 @@ export function ReviewSummary({ reviews, totalItems, onFocusUnreviewed }: Review
         {unreviewedCount > 0 && (
           <button
             onClick={onFocusUnreviewed}
-            className="text-[10px] px-2.5 py-1 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 transition-colors"
+            className="text-[10px] px-2.5 py-1 rounded bg-orange-100 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:bg-orange-500/20 transition-colors"
           >
             Review oldest first
           </button>

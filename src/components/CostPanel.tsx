@@ -97,7 +97,7 @@ export function CostPanel({
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-foreground inline">Cost Tracking</h2><InfoTooltip text={tooltips.costTracking} />
         <div className="flex items-center gap-2">
-          <button onClick={onSimulateCosts} className="px-2 py-1 text-[10px] rounded bg-blue-600/60 text-foreground hover:bg-blue-500/80 transition-colors">
+          <button onClick={onSimulateCosts} className="px-2 py-1 text-[10px] rounded bg-blue-600/60 text-foreground hover:bg-blue-50 dark:bg-blue-500/80 transition-colors">
             Simulate
           </button>
           <button onClick={() => setShowManual(!showManual)} className="px-2 py-1 text-[10px] rounded bg-accent text-muted-foreground hover:bg-accent transition-colors">
@@ -107,7 +107,7 @@ export function CostPanel({
             Budget
           </button>
           {costEntries.length > 0 && (
-            <button onClick={onClearCosts} className="px-2 py-1 text-[10px] rounded bg-red-500/10 text-red-600 dark:text-red-400/70 hover:bg-red-500/20 transition-colors">
+            <button onClick={onClearCosts} className="px-2 py-1 text-[10px] rounded bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400/70 hover:bg-red-100 dark:bg-red-500/20 transition-colors">
               Clear
             </button>
           )}

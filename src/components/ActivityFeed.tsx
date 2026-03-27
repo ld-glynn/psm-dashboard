@@ -15,11 +15,11 @@ const typeIcons: Record<string, any> = {
 };
 
 const typeColors: Record<string, string> = {
-  pipeline_run: "text-blue-600 dark:text-blue-400 bg-blue-500/10",
-  sync: "text-cyan-600 dark:text-cyan-400 bg-cyan-500/10",
-  review: "text-green-600 dark:text-green-400 bg-green-500/10",
-  draft: "text-orange-600 dark:text-orange-400 bg-orange-500/10",
-  intake: "text-pink-600 dark:text-pink-400 bg-pink-500/10",
+  pipeline_run: "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-500/10",
+  sync: "text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-500/10",
+  review: "text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-500/10",
+  draft: "text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-500/10",
+  intake: "text-pink-600 dark:text-pink-400 bg-pink-100 dark:bg-pink-500/10",
   system: "text-muted-foreground bg-accent",
 };
 

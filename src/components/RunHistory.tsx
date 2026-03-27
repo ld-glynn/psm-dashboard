@@ -6,10 +6,10 @@ import { fetchRunHistory, triggerRollback } from "@/lib/api-client";
 import type { RunHistoryRecord } from "@/lib/types";
 
 const statusConfig: Record<string, { icon: any; color: string; label: string }> = {
-  success: { icon: Check, color: "text-green-600 dark:text-green-400 bg-green-500/10", label: "Success" },
-  partial: { icon: AlertTriangle, color: "text-amber-600 dark:text-yellow-400 bg-yellow-500/10", label: "Partial" },
-  failed: { icon: XCircle, color: "text-red-600 dark:text-red-400 bg-red-500/10", label: "Failed" },
-  running: { icon: Loader2, color: "text-blue-600 dark:text-blue-400 bg-blue-500/10", label: "Running" },
+  success: { icon: Check, color: "text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-500/10", label: "Success" },
+  partial: { icon: AlertTriangle, color: "text-amber-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-500/10", label: "Partial" },
+  failed: { icon: XCircle, color: "text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-500/10", label: "Failed" },
+  running: { icon: Loader2, color: "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-500/10", label: "Running" },
 };
 
 function timeAgo(dateStr: string): string {
