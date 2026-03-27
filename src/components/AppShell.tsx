@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Nav } from "@/components/Nav";
+import { TopBar } from "@/components/TopBar";
 import { SearchDialog } from "@/components/SearchDialog";
 
 const NAV_STATE_KEY = "psm-nav-collapsed";
@@ -20,11 +21,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  useEffect(() => {
-    setReady(true);
-  }, []);
+  useEffect(() => { setReady(true); }, []);
 
-  // Cmd+K / Ctrl+K shortcut
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -42,19 +40,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     try { localStorage.setItem(NAV_STATE_KEY, String(next)); } catch {}
   }
 
-  if (!ready) {
-    return <div style={{ visibility: "hidden" }} />;
-  }
+  if (!ready) return <div style={{ visibility: "hidden" }} />;
+
+  const sidebarWidth = collapsed ? 64 : 208;
 
   return (
     <>
-      <Nav collapsed={collapsed} onToggle={handleToggle} onSearch={() => setSearchOpen(true)} />
-      <main
-        className="py-4 px-4"
-        style={{ marginLeft: collapsed ? 64 : 208 }}
-      >
-        {children}
-      </main>
+      <Nav collapsed={collapsed} onToggle={handleToggle} />
+      <div style={{ marginLeft: sidebarWidth }}>
+        <TopBar onSearch={() => setSearchOpen(true)} />
+        <main className="py-4 px-4">
+          {children}
+        </main>
+      </div>
       <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
