@@ -43,32 +43,32 @@ export function CapabilitiesPanel() {
   }, []);
 
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
+    <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-4">
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center gap-2"
       >
-        {expanded ? <ChevronDown size={14} className="text-[var(--text-muted)]" /> : <ChevronRight size={14} className="text-[var(--text-muted)]" />}
-        <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Capability Inventory</h3>
+        {expanded ? <ChevronDown size={14} className="text-white/40" /> : <ChevronRight size={14} className="text-white/40" />}
+        <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider">Capability Inventory</h3>
         <InfoTooltip text="What the system can do — agent types, skills, and output formats. The Solvability Evaluator checks patterns against this inventory to decide what's worth pursuing." />
-        <span className="text-[10px] text-[var(--text-faint)] ml-auto">v{inventory.version}</span>
+        <span className="text-[10px] text-white/20 ml-auto">v{inventory.version}</span>
       </button>
 
       {expanded && (
         <div className="mt-4 space-y-4">
           {/* Agent types */}
           <div>
-            <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wide mb-2 flex items-center gap-1">
+            <div className="text-[10px] text-white/30 uppercase tracking-wide mb-2 flex items-center gap-1">
               <Cpu size={10} /> Agent Types ({inventory.agent_types.length})
             </div>
             <div className="space-y-2">
               {inventory.agent_types.map((at) => (
-                <div key={at.agent_type} className="bg-[var(--bg-input)] rounded-lg p-3">
-                  <div className="text-xs font-medium text-[var(--text-primary)]">{at.agent_type.replace(/_/g, " ")}</div>
-                  <div className="text-[10px] text-[var(--text-muted)] mt-0.5">{at.description}</div>
+                <div key={at.agent_type} className="bg-[#12121a] rounded-lg p-3">
+                  <div className="text-xs font-medium text-white/80">{at.agent_type.replace(/_/g, " ")}</div>
+                  <div className="text-[10px] text-white/40 mt-0.5">{at.description}</div>
                   <div className="flex flex-wrap gap-1 mt-1.5">
                     {at.domains.map((d) => (
-                      <span key={d} className="text-[9px] px-1.5 py-0.5 rounded bg-[var(--text-faint)] text-[var(--text-muted)]">{d}</span>
+                      <span key={d} className="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-white/30">{d}</span>
                     ))}
                   </div>
                   <div className="flex flex-wrap gap-1 mt-1">
@@ -83,17 +83,17 @@ export function CapabilitiesPanel() {
 
           {/* Skill types */}
           <div>
-            <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wide mb-2 flex items-center gap-1">
+            <div className="text-[10px] text-white/30 uppercase tracking-wide mb-2 flex items-center gap-1">
               <Wrench size={10} /> Skill Types ({inventory.skill_types.length})
             </div>
             <div className="grid grid-cols-2 gap-2">
               {inventory.skill_types.map((st) => (
-                <div key={st.skill_type} className="bg-[var(--bg-input)] rounded-lg p-2.5">
-                  <div className="text-xs font-medium text-[var(--text-primary)]">{st.skill_type.replace(/_/g, " ")}</div>
-                  <div className="text-[10px] text-[var(--text-muted)] mt-0.5">{st.description}</div>
+                <div key={st.skill_type} className="bg-[#12121a] rounded-lg p-2.5">
+                  <div className="text-xs font-medium text-white/80">{st.skill_type.replace(/_/g, " ")}</div>
+                  <div className="text-[10px] text-white/40 mt-0.5">{st.description}</div>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {st.output_formats.map((f) => (
-                      <span key={f} className="text-[9px] px-1 py-0.5 rounded bg-[var(--text-faint)] text-[var(--text-faint)]">{f.replace(/_/g, " ")}</span>
+                      <span key={f} className="text-[9px] px-1 py-0.5 rounded bg-white/5 text-white/20">{f.replace(/_/g, " ")}</span>
                     ))}
                   </div>
                 </div>
@@ -101,7 +101,7 @@ export function CapabilitiesPanel() {
             </div>
           </div>
 
-          <div className="text-[10px] text-[var(--text-faint)] pt-2 border-t border-[var(--border)]">
+          <div className="text-[10px] text-white/20 pt-2 border-t border-[#2a2a3e]">
             Min problems per pattern: {inventory.min_problems_per_pattern}
           </div>
         </div>

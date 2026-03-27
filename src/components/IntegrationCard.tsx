@@ -50,7 +50,7 @@ export function IntegrationCard({ config, onToggle }: IntegrationCardProps) {
   const label = sourceLabels[config.source] || config.source;
   const description = sourceDescriptions[config.source] || "";
 
-  const inputClass = "w-full bg-[var(--bg-input)] border border-[var(--border)] rounded px-2 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-hover)]";
+  const inputClass = "w-full bg-[#12121a] border border-[#2a2a3e] rounded px-2 py-1.5 text-xs text-white/80 focus:outline-none focus:border-[#4a4a6e]";
 
   return (
     <div className={`${colors.bg} ${colors.border} border rounded-xl p-4 transition-opacity ${config.enabled ? "" : "opacity-40"}`}>
@@ -61,38 +61,38 @@ export function IntegrationCard({ config, onToggle }: IntegrationCardProps) {
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-[var(--text-primary)]">{label}</span>
+            <span className="text-sm font-semibold text-white/90">{label}</span>
             <span className={`text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wide ${integrationStatusColor[config.status] || ""}`}>
               {config.status}
             </span>
           </div>
-          <div className="text-[10px] text-[var(--text-muted)]">
+          <div className="text-[10px] text-white/40">
             {config.recordCount} records · Synced {timeAgo(config.lastSyncAt)}
           </div>
         </div>
         <button
           onClick={() => onToggle(config.source, !config.enabled)}
-          className={`w-9 h-5 rounded-full transition-colors relative flex-shrink-0 ${config.enabled ? "bg-green-500/40" : "bg-[var(--text-faint)]"}`}
+          className={`w-9 h-5 rounded-full transition-colors relative flex-shrink-0 ${config.enabled ? "bg-green-500/40" : "bg-white/10"}`}
         >
           <div className={`w-3.5 h-3.5 rounded-full bg-white absolute top-[3px] transition-all ${config.enabled ? "left-[18px]" : "left-[3px]"}`} />
         </button>
       </div>
 
       {description && (
-        <p className="text-[11px] text-[var(--text-muted)] mb-3">{description}</p>
+        <p className="text-[11px] text-white/30 mb-3">{description}</p>
       )}
 
       {/* Quick actions */}
       <div className="flex items-center gap-2 mb-2">
-        <button className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:bg-[var(--text-faint)] transition-colors">
+        <button className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:bg-white/10 transition-colors">
           <RefreshCw size={10} /> Sync Now
         </button>
-        <button className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:bg-[var(--text-faint)] transition-colors">
+        <button className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:bg-white/10 transition-colors">
           <Plug size={10} /> Test Connection
         </button>
         <button
           onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:bg-[var(--text-faint)] transition-colors ml-auto"
+          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:bg-white/10 transition-colors ml-auto"
         >
           {expanded ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
           Settings
@@ -110,7 +110,7 @@ export function IntegrationCard({ config, onToggle }: IntegrationCardProps) {
           {/* Connection */}
           <div>
             <div className="flex items-center gap-1 mb-1">
-              <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wide">Connection</span>
+              <span className="text-[10px] text-white/30 uppercase tracking-wide">Connection</span>
               <InfoTooltip text={tooltips.connectionSettings} size={11} />
             </div>
             <input
@@ -124,7 +124,7 @@ export function IntegrationCard({ config, onToggle }: IntegrationCardProps) {
           {/* Sync frequency */}
           <div>
             <div className="flex items-center gap-1 mb-1">
-              <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wide">Sync Frequency</span>
+              <span className="text-[10px] text-white/30 uppercase tracking-wide">Sync Frequency</span>
               <InfoTooltip text={tooltips.syncFrequency} size={11} />
             </div>
             <select className={inputClass} value={config.syncFrequency} disabled>
@@ -138,7 +138,7 @@ export function IntegrationCard({ config, onToggle }: IntegrationCardProps) {
           {/* Filters */}
           <div>
             <div className="flex items-center gap-1 mb-1">
-              <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wide">Filters</span>
+              <span className="text-[10px] text-white/30 uppercase tracking-wide">Filters</span>
               <InfoTooltip text={tooltips.filters} size={11} />
             </div>
             <input

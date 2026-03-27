@@ -112,7 +112,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
     setEditVals({ title: s.title, description: s.description, domain: s.domain, severity: s.severity, tags: s.tags.join(", ") });
   }
 
-  const inputClass = "w-full bg-[var(--bg-input)] border border-[var(--border)] rounded px-2 py-1 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-hover)]";
+  const inputClass = "w-full bg-[#12121a] border border-[#2a2a3e] rounded px-2 py-1 text-xs text-white/90 focus:outline-none focus:border-[#4a4a6e]";
   const activeSuggestions = suggestions.filter((s) => !rejected.has(s.tempId));
 
   return (
@@ -123,7 +123,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Paste a meeting transcript, support ticket, Slack thread, or any unstructured text. AI will extract structured problems..."
-          className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] placeholder-[var(--text-faint)] focus:outline-none focus:border-[var(--border-hover)] min-h-[140px] resize-y"
+          className="w-full bg-[#12121a] border border-[#2a2a3e] rounded-lg px-4 py-3 text-sm text-white/90 placeholder-white/20 focus:outline-none focus:border-[#4a4a6e] min-h-[140px] resize-y"
         />
       </div>
 
@@ -139,7 +139,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
         {serverAvailable ? (
           <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">Claude API</span>
         ) : (
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--text-faint)] text-[var(--text-muted)]">Local parsing</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/30">Local parsing</span>
         )}
         {suggestions.length > 0 && useAI && (
           <span className="text-[10px] text-pink-400">Powered by Claude</span>
@@ -154,14 +154,14 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
             <div className="w-2 h-2 rounded-full bg-pink-400 animate-bounce" style={{ animationDelay: "150ms" }} />
             <div className="w-2 h-2 rounded-full bg-pink-400 animate-bounce" style={{ animationDelay: "300ms" }} />
           </div>
-          <span className="text-sm text-[var(--text-muted)]">Analyzing text and extracting problems...</span>
+          <span className="text-sm text-white/40">Analyzing text and extracting problems...</span>
         </div>
       )}
 
       {/* Suggestions */}
       {activeSuggestions.length > 0 && (
         <div className="space-y-3">
-          <div className="text-xs text-[var(--text-muted)]">
+          <div className="text-xs text-white/40">
             Found {activeSuggestions.length} problem{activeSuggestions.length !== 1 ? "s" : ""}. Review and accept:
           </div>
 
@@ -173,8 +173,8 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
             return (
               <div
                 key={s.tempId}
-                className={`bg-[var(--bg-input)] border rounded-lg p-3 transition-colors ${
-                  isAccepted ? "border-green-500/30 opacity-60" : "border-[var(--border)]"
+                className={`bg-[#12121a] border rounded-lg p-3 transition-colors ${
+                  isAccepted ? "border-green-500/30 opacity-60" : "border-[#2a2a3e]"
                 }`}
               >
                 {/* Header */}
@@ -183,14 +183,14 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
                     {isEditing ? (
                       <input className={inputClass} value={editVals.title} onChange={(e) => setEditVals((v: any) => ({ ...v, title: e.target.value }))} />
                     ) : (
-                      <div className="text-sm font-medium text-[var(--text-primary)]">{s.title}</div>
+                      <div className="text-sm font-medium text-white/90">{s.title}</div>
                     )}
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-pink-500/15 text-pink-400">
                         {Math.round(s.confidence * 100)}% confidence
                       </span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--text-faint)] text-[var(--text-muted)]">{s.domain}</span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--text-faint)] text-[var(--text-muted)]">{s.severity}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/40">{s.domain}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/40">{s.severity}</span>
                     </div>
                   </div>
 
@@ -199,7 +199,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
                       <button onClick={() => handleAccept(s)} className="p-1.5 rounded bg-green-500/10 text-green-400 hover:bg-green-500/20" title="Accept">
                         <Check size={12} />
                       </button>
-                      <button onClick={() => startEdit(s)} className="p-1.5 rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:bg-[var(--text-faint)]" title="Edit">
+                      <button onClick={() => startEdit(s)} className="p-1.5 rounded bg-white/5 text-white/40 hover:bg-white/10" title="Edit">
                         <Pencil size={12} />
                       </button>
                       <button onClick={() => setRejected((prev) => new Set(prev).add(s.tempId))} className="p-1.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20" title="Reject">
@@ -227,21 +227,21 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
                     </div>
                     <div className="flex gap-2">
                       <button onClick={() => handleAccept(s)} className="px-2 py-1 text-[10px] rounded bg-green-600 text-white hover:bg-green-500">Accept</button>
-                      <button onClick={() => setEditingId(null)} className="px-2 py-1 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)]">Cancel</button>
+                      <button onClick={() => setEditingId(null)} className="px-2 py-1 text-[10px] rounded bg-white/5 text-white/40">Cancel</button>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{s.description}</p>
+                  <p className="text-xs text-white/50 leading-relaxed">{s.description}</p>
                 )}
 
                 {/* Related existing problems */}
                 {relatedProblems.length > 0 && !isEditing && (
-                  <div className="mt-2 pt-2 border-t border-[var(--border)]/30">
-                    <div className="flex items-center gap-1 text-[10px] text-[var(--text-faint)] mb-1">
+                  <div className="mt-2 pt-2 border-t border-[#2a2a3e]/30">
+                    <div className="flex items-center gap-1 text-[10px] text-white/25 mb-1">
                       <Link2 size={9} /> May relate to:
                     </div>
                     {relatedProblems.map((rp) => (
-                      <div key={rp.problem_id} className="text-[10px] text-[var(--text-muted)] ml-3">
+                      <div key={rp.problem_id} className="text-[10px] text-white/30 ml-3">
                         {rp.problem_id}: {rp.title}
                       </div>
                     ))}

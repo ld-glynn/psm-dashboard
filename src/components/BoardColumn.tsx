@@ -12,7 +12,7 @@ import type { ReviewStatus, HypothesisOutcome, ProblemSource } from "@/lib/types
 // --- Shared helpers ---
 
 const inputClass =
-  "w-full bg-[var(--bg-input)] border border-[var(--border)] rounded px-2 py-1 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-hover)] transition-colors";
+  "w-full bg-[#12121a] border border-[#2a2a3e] rounded px-2 py-1 text-xs text-white/90 focus:outline-none focus:border-[#4a4a6e] transition-colors";
 
 const DOMAINS = ["process", "tooling", "communication", "knowledge", "infrastructure", "people", "strategy", "customer", "other"];
 const SEVERITIES = ["critical", "high", "medium", "low"];
@@ -53,13 +53,13 @@ function ReviewButtons({
 
   return (
     <div
-      className="flex items-center gap-1.5 mt-2 pt-2 border-t border-[var(--border)]/50"
+      className="flex items-center gap-1.5 mt-2 pt-2 border-t border-[#2a2a3e]/50"
       onClick={(e) => e.stopPropagation()}
     >
       {isReviewed ? (
         <button
           onClick={() => onReview("unreviewed")}
-          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--text-faint)] transition-colors"
+          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:text-white/70 hover:bg-white/10 transition-colors"
         >
           <Undo2 size={10} /> Undo
         </button>
@@ -82,7 +82,7 @@ function ReviewButtons({
       {(onEditModal || onEdit) && !isEditing && (
         <button
           onClick={onEditModal || onEdit}
-          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--text-faint)] transition-colors ml-auto"
+          className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:text-white/70 hover:bg-white/10 transition-colors ml-auto"
         >
           <Pencil size={10} /> Edit
         </button>
@@ -96,7 +96,7 @@ function cardBorder(reviewStatus?: ReviewStatus, isDraft?: boolean): string {
   if (reviewStatus && reviewStatus !== "unreviewed") {
     return reviewStatusStyle[reviewStatus].border;
   }
-  return "border-[var(--border)]";
+  return "border-[#2a2a3e]";
 }
 
 // --- Column ---
@@ -123,9 +123,9 @@ export function BoardColumn({ stageKey, title, count, children, fullWidth }: Boa
     <div className={fullWidth ? "flex flex-col w-full" : "flex flex-col min-w-[300px] max-w-[340px]"}>
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className={`w-2 h-2 rounded-full ${colors.dot}`} />
-        <h3 className="text-sm font-semibold text-[var(--text-primary)]">{title}</h3>
+        <h3 className="text-sm font-semibold text-white/80">{title}</h3>
         {tip && <InfoTooltip text={tip} size={12} />}
-        <span className="text-xs text-[var(--text-muted)] ml-auto">{count}</span>
+        <span className="text-xs text-white/40 ml-auto">{count}</span>
       </div>
       <div className="flex flex-col gap-2 overflow-y-auto max-h-[calc(100vh-200px)] pr-1">
         {children}
@@ -179,14 +179,14 @@ export function ProblemCard({
 
   return (
     <div
-      className={`bg-[var(--bg-card)] border rounded-lg p-3 cursor-pointer hover:border-[var(--border-hover)] transition-colors ${cardBorder(reviewStatus, isDraft)}`}
+      className={`bg-[#1a1a2e] border rounded-lg p-3 cursor-pointer hover:border-[#3a3a5e] transition-colors ${cardBorder(reviewStatus, isDraft)}`}
       onClick={() => !isEditing && setExpanded(!expanded)}
     >
       <div className="flex items-start gap-2">
         <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${sevColors[severity] || "bg-gray-500"}`} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <span className="text-xs text-[var(--text-muted)]">{id}</span>
+            <span className="text-xs text-white/30">{id}</span>
             {isDraft && (
               <span className="text-[9px] px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-400 font-medium uppercase tracking-wide">Draft</span>
             )}
@@ -208,19 +208,19 @@ export function ProblemCard({
               <input className={inputClass} value={editVals.tags} onChange={(e) => setEditVals((v) => ({ ...v, tags: e.target.value }))} placeholder="Tags (comma-separated)" />
               <div className="flex gap-2">
                 <button onClick={handleSave} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-white hover:bg-blue-500">Save</button>
-                <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:bg-[var(--text-faint)]">Cancel</button>
+                <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:bg-white/10">Cancel</button>
               </div>
             </div>
           ) : (
             <>
-              <div className="text-sm font-medium text-[var(--text-primary)] leading-snug">{title}</div>
+              <div className="text-sm font-medium text-white/90 leading-snug">{title}</div>
               {expanded && (
-                <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">{description}</p>
+                <p className="text-xs text-white/50 mt-2 leading-relaxed">{description}</p>
               )}
               <div className="flex flex-wrap gap-1 mt-2">
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--text-faint)] text-[var(--text-muted)]">{domain}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/40">{domain}</span>
                 {tags.slice(0, 3).map((tag) => (
-                  <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--text-faint)] text-[var(--text-muted)]">{tag}</span>
+                  <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/30">{tag}</span>
                 ))}
               </div>
               {!expanded && sources && sources.length > 0 && (
@@ -269,11 +269,11 @@ export function PatternCard({
 
   return (
     <div
-      className={`bg-[var(--bg-card)] border rounded-lg p-3 cursor-pointer hover:border-[var(--border-hover)] transition-colors ${cardBorder(reviewStatus)}`}
+      className={`bg-[#1a1a2e] border rounded-lg p-3 cursor-pointer hover:border-[#3a3a5e] transition-colors ${cardBorder(reviewStatus)}`}
       onClick={() => !isEditing && setExpanded(!expanded)}
     >
       <div className="flex items-center gap-2 mb-0.5">
-        <span className="text-xs text-[var(--text-muted)]">{id}</span>
+        <span className="text-xs text-white/30">{id}</span>
         <ReviewBadge status={reviewStatus} />
       </div>
 
@@ -283,22 +283,22 @@ export function PatternCard({
           <textarea className={`${inputClass} min-h-[60px] resize-y`} value={editVals.description} onChange={(e) => setEditVals((v) => ({ ...v, description: e.target.value }))} />
           <div className="flex gap-2">
             <button onClick={handleSave} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-white hover:bg-blue-500">Save</button>
-            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:bg-[var(--text-faint)]">Cancel</button>
+            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:bg-white/10">Cancel</button>
           </div>
         </div>
       ) : (
         <>
-          <div className="text-sm font-medium text-[var(--text-primary)] leading-snug">{name}</div>
+          <div className="text-sm font-medium text-white/90 leading-snug">{name}</div>
           {expanded && (
-            <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">{description}</p>
+            <p className="text-xs text-white/50 mt-2 leading-relaxed">{description}</p>
           )}
           <div className="flex items-center gap-2 mt-2">
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/10 text-yellow-300">{problemCount} problems</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--text-faint)] text-[var(--text-muted)]">{(confidence * 100).toFixed(0)}% confidence</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/40">{(confidence * 100).toFixed(0)}% confidence</span>
           </div>
           <div className="flex flex-wrap gap-1 mt-1.5">
             {domains.map((d) => (
-              <span key={d} className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--text-faint)] text-[var(--text-muted)]">{d}</span>
+              <span key={d} className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/30">{d}</span>
             ))}
           </div>
         </>
@@ -353,11 +353,11 @@ export function HypothesisCard({
 
   return (
     <div
-      className={`bg-[var(--bg-card)] border rounded-lg p-3 cursor-pointer hover:border-[var(--border-hover)] transition-colors ${cardBorder(reviewStatus)}`}
+      className={`bg-[#1a1a2e] border rounded-lg p-3 cursor-pointer hover:border-[#3a3a5e] transition-colors ${cardBorder(reviewStatus)}`}
       onClick={() => !isEditing && setExpanded(!expanded)}
     >
       <div className="flex items-center gap-2 mb-0.5">
-        <span className="text-xs text-[var(--text-muted)]">{id}</span>
+        <span className="text-xs text-white/30">{id}</span>
         <ReviewBadge status={reviewStatus} />
         {outcome && outcome !== "untested" && (
           <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium uppercase tracking-wide ${hypOutcomeStyle[outcome].bg} ${hypOutcomeStyle[outcome].text}`}>
@@ -379,16 +379,16 @@ export function HypothesisCard({
           </div>
           <div className="flex gap-2">
             <button onClick={handleSave} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-white hover:bg-blue-500">Save</button>
-            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:bg-[var(--text-faint)]">Cancel</button>
+            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:bg-white/10">Cancel</button>
           </div>
         </div>
       ) : (
         <>
-          <div className="text-sm text-[var(--text-primary)] leading-snug line-clamp-3">{statement}</div>
+          <div className="text-sm text-white/80 leading-snug line-clamp-3">{statement}</div>
           {expanded && (
             <div className="mt-2 space-y-1">
               {testCriteria.map((tc, i) => (
-                <div key={i} className="text-xs text-[var(--text-muted)] flex items-start gap-1.5">
+                <div key={i} className="text-xs text-white/40 flex items-start gap-1.5">
                   <span className="text-green-400 mt-0.5">&#10003;</span>
                   {tc}
                 </div>
@@ -397,7 +397,7 @@ export function HypothesisCard({
           )}
           <div className="flex items-center gap-2 mt-2">
             <span className={`text-[10px] px-1.5 py-0.5 rounded ${effortColors[effort] || ""}`}>{effort} effort</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--text-faint)] text-[var(--text-muted)]">{(confidence * 100).toFixed(0)}%</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/40">{(confidence * 100).toFixed(0)}%</span>
           </div>
         </>
       )}
@@ -405,10 +405,10 @@ export function HypothesisCard({
       {/* Outcome tracker */}
       {expanded && !isEditing && onSetOutcome && (
         <div
-          className="flex items-center gap-1.5 mt-2 pt-2 border-t border-[var(--border)]/50"
+          className="flex items-center gap-1.5 mt-2 pt-2 border-t border-[#2a2a3e]/50"
           onClick={(e) => e.stopPropagation()}
         >
-          <span className="text-[10px] text-[var(--text-muted)] mr-1">Outcome:</span>
+          <span className="text-[10px] text-white/30 mr-1">Outcome:</span>
           {OUTCOMES.map((o) => {
             const style = hypOutcomeStyle[o];
             const isActive = outcome === o;
@@ -419,7 +419,7 @@ export function HypothesisCard({
                 className={`text-[10px] px-1.5 py-0.5 rounded transition-colors ${
                   isActive
                     ? `${style.bg} ${style.text}`
-                    : "bg-[var(--text-faint)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--text-faint)]"
+                    : "bg-white/5 text-white/30 hover:text-white/50 hover:bg-white/10"
                 }`}
               >
                 {style.label}
@@ -479,7 +479,7 @@ export function NewHireCard({
 
   return (
     <div
-      className={`bg-[var(--bg-card)] border rounded-lg p-3 cursor-pointer hover:border-purple-500/40 transition-colors ${borderClass}`}
+      className={`bg-[#1a1a2e] border rounded-lg p-3 cursor-pointer hover:border-purple-500/40 transition-colors ${borderClass}`}
       onClick={() => !isEditing && setExpanded(!expanded)}
     >
       <div className="flex items-center gap-2 mb-1">
@@ -488,7 +488,7 @@ export function NewHireCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-[var(--text-primary)] truncate">{name}</span>
+            <span className="text-sm font-medium text-white/90 truncate">{name}</span>
             {lifecycleState && lifecycleState !== "created" && (
               <span className={`text-[8px] px-1 py-0.5 rounded uppercase tracking-wide font-medium ${
                 lifecycleState === "deployed" ? "bg-green-500/15 text-green-400" :
@@ -496,12 +496,12 @@ export function NewHireCard({
                 lifecycleState === "active" ? "bg-cyan-500/15 text-cyan-400" :
                 lifecycleState === "paused" ? "bg-orange-500/15 text-orange-400" :
                 lifecycleState === "retired" ? "bg-red-500/15 text-red-400" :
-                "bg-[var(--text-faint)] text-[var(--text-muted)]"
+                "bg-white/5 text-white/40"
               }`}>{lifecycleState}</span>
             )}
             <ReviewBadge status={reviewStatus} />
           </div>
-          <div className="text-[10px] text-[var(--text-muted)]">{title}</div>
+          <div className="text-[10px] text-white/30">{title}</div>
         </div>
       </div>
 
@@ -514,13 +514,13 @@ export function NewHireCard({
           <textarea className={`${inputClass} min-h-[60px] resize-y`} value={editVals.persona} onChange={(e) => setEditVals((v) => ({ ...v, persona: e.target.value }))} placeholder="Persona description" />
           <div className="flex gap-2">
             <button onClick={handleSave} className="px-2 py-1 text-[10px] rounded bg-blue-600 text-white hover:bg-blue-500">Save</button>
-            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-[var(--text-faint)] text-[var(--text-muted)] hover:bg-[var(--text-faint)]">Cancel</button>
+            <button onClick={handleCancel} className="px-2 py-1 text-[10px] rounded bg-white/5 text-white/40 hover:bg-white/10">Cancel</button>
           </div>
         </div>
       ) : (
         <>
           {expanded && (
-            <p className="text-xs text-[var(--text-muted)] mt-2 leading-relaxed">{persona}</p>
+            <p className="text-xs text-white/40 mt-2 leading-relaxed">{persona}</p>
           )}
           <div className="flex flex-wrap gap-1 mt-2">
             {skills.sort((a, b) => a.priority - b.priority).map((skill, i) => (
@@ -531,7 +531,7 @@ export function NewHireCard({
             ))}
           </div>
           {assignedTo && (
-            <div className="text-[10px] text-[var(--text-muted)] mt-1.5">{assignedTo}</div>
+            <div className="text-[10px] text-white/30 mt-1.5">{assignedTo}</div>
           )}
         </>
       )}
