@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Play, RefreshCw, Loader2 } from "lucide-react";
+import { Play, RefreshCw, Loader2, Settings } from "lucide-react";
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { RunHistory } from "@/components/RunHistory";
 import { PipelineConfig } from "@/components/PipelineConfig";
+import { SlideOver } from "@/components/SlideOver";
 
 interface RunPipelineProps {
   serverAvailable: boolean;
@@ -19,6 +20,7 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
   const [withIntegrations, setWithIntegrations] = useState(false);
   const [lastResult, setLastResult] = useState<string | null>(null);
   const [historyKey, setHistoryKey] = useState(0);
+  const [configOpen, setConfigOpen] = useState(false);
 
   async function handleRun() {
     setRunning(true);
@@ -55,9 +57,6 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
 
   return (
     <div className="space-y-4">
-      {/* Config panel */}
-      <PipelineConfig serverAvailable={serverAvailable} />
-
       {/* Run controls */}
       <div className="bg-card border border-border rounded-xl p-4">
         <div className="flex items-center gap-2 mb-3">
@@ -114,6 +113,14 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
             {syncing ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
             {syncing ? "Syncing..." : "Sync Sources"}
           </button>
+
+          <button
+            onClick={() => setConfigOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-secondary text-secondary-foreground hover:bg-accent transition-colors ml-auto"
+          >
+            <Settings size={12} />
+            Configure
+          </button>
         </div>
 
         {lastResult && (
@@ -129,6 +136,10 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
           onRollback={() => setHistoryKey((k) => k + 1)}
         />
       </div>
+
+      <SlideOver open={configOpen} onClose={() => setConfigOpen(false)} title="Pipeline Configuration">
+        <PipelineConfig serverAvailable={serverAvailable} alwaysExpanded />
+      </SlideOver>
     </div>
   );
 }

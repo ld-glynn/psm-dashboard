@@ -19,10 +19,11 @@ const CONFIG_LS_KEY = "psm-pipeline-config";
 
 interface PipelineConfigProps {
   serverAvailable: boolean;
+  alwaysExpanded?: boolean;
 }
 
-export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
-  const [expanded, setExpanded] = useState(false);
+export function PipelineConfig({ serverAvailable, alwaysExpanded }: PipelineConfigProps) {
+  const [expanded, setExpanded] = useState(alwaysExpanded || false);
   const [config, setConfig] = useState<PipelineConfigType>(DEFAULTS);
   const [saved, setSaved] = useState(false);
 
@@ -66,15 +67,19 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
   const inputClass = "w-full bg-muted border border-border rounded px-2 py-1.5 text-xs text-foreground focus:outline-none focus:border-ring";
   const labelClass = "text-[10px] text-muted-foreground mb-1 block";
 
-  return (
-    <div className="bg-card border border-border rounded-xl p-4">
-      <button onClick={() => setExpanded(!expanded)} className="w-full flex items-center gap-2">
-        {expanded ? <ChevronDown size={14} className="text-muted-foreground" /> : <ChevronRight size={14} className="text-muted-foreground" />}
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Pipeline Configuration</h3>
-        <InfoTooltip text="Configure how each pipeline stage behaves. These settings are injected as instructions to the AI agents." />
-      </button>
+  const showContent = alwaysExpanded || expanded;
 
-      {expanded && (
+  return (
+    <div className={alwaysExpanded ? "" : "bg-card border border-border rounded-xl p-4"}>
+      {!alwaysExpanded && (
+        <button onClick={() => setExpanded(!expanded)} className="w-full flex items-center gap-2">
+          {expanded ? <ChevronDown size={14} className="text-muted-foreground" /> : <ChevronRight size={14} className="text-muted-foreground" />}
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Pipeline Configuration</h3>
+          <InfoTooltip text="Configure how each pipeline stage behaves. These settings are injected as instructions to the AI agents." />
+        </button>
+      )}
+
+      {showContent && (
         <div className="mt-4 space-y-4">
           {/* Cataloger */}
           <div className="bg-muted rounded-lg p-3">
