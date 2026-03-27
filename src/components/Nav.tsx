@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Database, PlusCircle, BarChart3, Columns3, GitBranch,
-  Users, Briefcase, HelpCircle, ChevronLeft, ChevronRight,
+  Home, Database, PlusCircle, BarChart3, Columns3, GitBranch,
+  Users, Briefcase, HelpCircle, Search, ChevronLeft, ChevronRight,
 } from "lucide-react";
 
 const links = [
+  { href: "/", label: "Dashboard", icon: Home },
   { href: "/integrations", label: "Sources", icon: Database },
   { href: "/intake", label: "Intake", icon: PlusCircle },
-  { href: "/", label: "Pipeline", icon: BarChart3 },
+  { href: "/pipeline", label: "Pipeline", icon: BarChart3 },
   { href: "/board", label: "Board", icon: Columns3 },
   { href: "/graph", label: "Graph", icon: GitBranch },
   { href: "/agents", label: "Agents", icon: Users },
@@ -21,7 +22,7 @@ const bottomLinks = [
   { href: "/guide", label: "Guide", icon: HelpCircle },
 ];
 
-export function Nav({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onToggle: () => void; onSearch?: () => void }) {
   const pathname = usePathname();
 
   return (
@@ -36,8 +37,25 @@ export function Nav({ collapsed, onToggle }: { collapsed: boolean; onToggle: () 
         )}
       </div>
 
+      {/* Search button */}
+      <div className="px-2 pt-3 pb-1">
+        <button
+          onClick={onSearch}
+          className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors ${collapsed ? "justify-center px-0" : ""}`}
+          title={collapsed ? "Search (⌘K)" : undefined}
+        >
+          <Search size={16} className="flex-shrink-0" />
+          {!collapsed && (
+            <>
+              <span className="flex-1 text-left">Search</span>
+              <kbd className="text-[9px] text-white/15 border border-[#2a2a3e] rounded px-1 py-0.5">⌘K</kbd>
+            </>
+          )}
+        </button>
+      </div>
+
       {/* Main links */}
-      <div className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
+      <div className="flex-1 py-2 px-2 space-y-0.5 overflow-y-auto">
         {links.map((link) => {
           const Icon = link.icon;
           const isActive = pathname === link.href;
