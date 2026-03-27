@@ -26,7 +26,7 @@ export function ReviewSummary({ reviews, totalItems, onFocusUnreviewed }: Review
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
           {unreviewedCount > 0 && (
-            <div className="flex items-center gap-1.5 text-orange-400">
+            <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400">
               <AlertCircle size={14} />
               <span className="text-xs font-medium">{unreviewedCount} items need review</span>
             </div>
@@ -40,7 +40,7 @@ export function ReviewSummary({ reviews, totalItems, onFocusUnreviewed }: Review
         {unreviewedCount > 0 && (
           <button
             onClick={onFocusUnreviewed}
-            className="text-[10px] px-2.5 py-1 rounded bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 transition-colors"
+            className="text-[10px] px-2.5 py-1 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 transition-colors"
           >
             Review oldest first
           </button>

@@ -31,7 +31,7 @@ export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onT
       {/* Logo */}
       <div className={`flex items-center h-14 px-4 border-b border-border ${collapsed ? "justify-center" : "gap-3"}`}>
         <div className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/25 flex items-center justify-center flex-shrink-0">
-          <span className="text-[10px] font-bold text-blue-400">P</span>
+          <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400">P</span>
         </div>
         {!collapsed && (
           <span className="text-sm font-semibold tracking-wider text-foreground">PSM</span>

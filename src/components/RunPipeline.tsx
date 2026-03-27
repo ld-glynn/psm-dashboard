@@ -64,9 +64,9 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
           <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Run Pipeline</h3>
           <InfoTooltip text="Execute the PSM pipeline to process problems through all stages. Requires the API server to be running (uvicorn psm.server:app). Each run creates a snapshot for rollback." />
           {serverAvailable ? (
-            <span className="text-[9px] px-1.5 py-0.5 rounded bg-green-500/15 text-green-400 ml-auto">Server Connected</span>
+            <span className="text-[9px] px-1.5 py-0.5 rounded bg-green-500/15 text-green-600 dark:text-green-400 ml-auto">Server Connected</span>
           ) : (
-            <span className="text-[9px] px-1.5 py-0.5 rounded bg-red-500/15 text-red-400 ml-auto">Server Offline</span>
+            <span className="text-[9px] px-1.5 py-0.5 rounded bg-red-500/15 text-red-600 dark:text-red-400 ml-auto">Server Offline</span>
           )}
         </div>
 
@@ -117,7 +117,7 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: R
         </div>
 
         {lastResult && (
-          <div className={`mt-2 text-xs ${lastResult.startsWith("Error") ? "text-red-400" : "text-green-400"}`}>
+          <div className={`mt-2 text-xs ${lastResult.startsWith("Error") ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400"}`}>
             {lastResult}
           </div>
         )}

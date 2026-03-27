@@ -68,15 +68,15 @@ export function OutcomesPanel({ hypFeedback, serverAvailable }: OutcomesPanelPro
               <div className="text-[10px] text-muted-foreground">Tracked</div>
             </div>
             <div className="bg-muted rounded-lg p-2.5 text-center">
-              <div className="text-lg font-bold text-blue-400">{localTesting}</div>
+              <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{localTesting}</div>
               <div className="text-[10px] text-muted-foreground">Testing</div>
             </div>
             <div className="bg-muted rounded-lg p-2.5 text-center">
-              <div className="text-lg font-bold text-green-400">{summary.validated}</div>
+              <div className="text-lg font-bold text-green-600 dark:text-green-400">{summary.validated}</div>
               <div className="text-[10px] text-muted-foreground">Validated</div>
             </div>
             <div className="bg-muted rounded-lg p-2.5 text-center">
-              <div className="text-lg font-bold text-red-400">{summary.invalidated}</div>
+              <div className="text-lg font-bold text-red-600 dark:text-red-400">{summary.invalidated}</div>
               <div className="text-[10px] text-muted-foreground">Invalidated</div>
             </div>
           </div>
@@ -88,7 +88,7 @@ export function OutcomesPanel({ hypFeedback, serverAvailable }: OutcomesPanelPro
                 <div className="h-full bg-green-500" style={{ width: `${summary.validation_rate * 100}%` }} />
                 <div className="h-full bg-red-500" style={{ width: `${(1 - summary.validation_rate) * 100}%` }} />
               </div>
-              <span className={`text-xs font-medium flex items-center gap-1 ${summary.validation_rate >= 0.5 ? "text-green-400" : "text-red-400"}`}>
+              <span className={`text-xs font-medium flex items-center gap-1 ${summary.validation_rate >= 0.5 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
                 {summary.validation_rate >= 0.5 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                 {Math.round(summary.validation_rate * 100)}% validated
               </span>

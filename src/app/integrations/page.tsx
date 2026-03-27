@@ -54,7 +54,7 @@ export default function IntegrationsPage() {
             Ingestion Records ({ingestionRecords.length}) <InfoTooltip text={tooltips.structuredStatus} size={11} />
           </h2>
           <div className="flex items-center gap-3 text-xs">
-            <span className="text-green-400">{totalStructured} structured</span>
+            <span className="text-green-600 dark:text-green-400">{totalStructured} structured</span>
             <span className="text-muted-foreground">{totalUnstructured} pending</span>
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function IntegrationsPage() {
                     <td className="py-2.5 px-4 text-xs text-muted-foreground max-w-[300px] truncate">{record.rawTextPreview}</td>
                     <td className="py-2.5 px-4 text-xs text-muted-foreground">{new Date(record.ingestedAt).toLocaleDateString()}</td>
                     <td className="py-2.5 px-4">
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded ${record.structured ? "bg-green-500/15 text-green-400" : "bg-gray-500/15 text-gray-400"}`}>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded ${record.structured ? "bg-green-500/15 text-green-600 dark:text-green-400" : "bg-gray-500/15 text-gray-600 dark:text-gray-400"}`}>
                         {record.structured ? "Structured" : "Pending"}
                       </span>
                     </td>

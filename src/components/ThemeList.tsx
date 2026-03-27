@@ -28,7 +28,7 @@ export function ThemeList({ data }: { data: PipelineData }) {
                 return (
                   <span
                     key={pid}
-                    className="text-xs px-2 py-1 rounded-md bg-yellow-500/10 text-yellow-300 border border-yellow-500/20"
+                    className="text-xs px-2 py-1 rounded-md bg-yellow-500/10 text-amber-700 dark:text-yellow-300 border border-yellow-500/20"
                   >
                     {pat ? pat.name : pid}
                   </span>

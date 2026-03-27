@@ -101,7 +101,7 @@ export function CreatePatternForm({ catalog, onSubmit, onCancel }: CreatePattern
           )}
         </div>
         {selectedProblems.size > 0 && selectedProblems.size < 2 && (
-          <div className="text-[10px] text-orange-400 mt-1">Select at least 2 problems</div>
+          <div className="text-[10px] text-orange-600 dark:text-orange-400 mt-1">Select at least 2 problems</div>
         )}
       </div>
 

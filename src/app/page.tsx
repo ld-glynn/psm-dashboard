@@ -22,10 +22,10 @@ export default function DashboardPage() {
 
   // Quick stats
   const stats = [
-    { label: "Problems", value: data.catalog.length, sub: draftCount > 0 ? `${draftCount} drafts` : "cataloged", color: "text-orange-400" },
-    { label: "Patterns", value: data.patterns.length, sub: `from ${data.catalog.length} problems`, color: "text-yellow-400" },
-    { label: "Hypotheses", value: data.hypotheses.length, sub: "testable solutions", color: "text-green-400" },
-    { label: "Agents", value: data.newHires.length, sub: `${deployedAgents} deployed`, color: "text-purple-400" },
+    { label: "Problems", value: data.catalog.length, sub: draftCount > 0 ? `${draftCount} drafts` : "cataloged", color: "text-orange-600 dark:text-orange-400" },
+    { label: "Patterns", value: data.patterns.length, sub: `from ${data.catalog.length} problems`, color: "text-amber-600 dark:text-yellow-400" },
+    { label: "Hypotheses", value: data.hypotheses.length, sub: "testable solutions", color: "text-green-600 dark:text-green-400" },
+    { label: "Agents", value: data.newHires.length, sub: `${deployedAgents} deployed`, color: "text-purple-600 dark:text-purple-400" },
   ];
 
   return (
@@ -35,7 +35,7 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-boldtext-foreground">Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Problem Solution Mapping — overview
-          {serverAvailable && <span className="text-green-400/60 ml-2">Server connected</span>}
+          {serverAvailable && <span className="text-green-600 dark:text-green-400/60 ml-2">Server connected</span>}
         </p>
       </div>
 
@@ -57,7 +57,7 @@ export default function DashboardPage() {
           <Link href="/board" className="bg-card border border-orange-500/20 rounded-xl p-4 hover:border-orange-500/40 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                <AlertCircle size={18} className="text-orange-400" />
+                <AlertCircle size={18} className="text-orange-600 dark:text-orange-400" />
               </div>
               <div className="flex-1">
                 <div className="text-sm font-medium text-foreground">{unreviewedCount} items need review</div>
@@ -73,7 +73,7 @@ export default function DashboardPage() {
           <Link href="/agents" className="bg-card border border-yellow-500/20 rounded-xl p-4 hover:border-yellow-500/40 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-9 h-9 rounded-lg bg-yellow-500/10 flex items-center justify-center">
-                <Users size={18} className="text-yellow-400" />
+                <Users size={18} className="text-amber-600 dark:text-yellow-400" />
               </div>
               <div className="flex-1">
                 <div className="text-sm font-medium text-foreground">{proposedAgents} agents proposed</div>
@@ -89,7 +89,7 @@ export default function DashboardPage() {
           <Link href="/board" className="bg-card border border-blue-500/20 rounded-xl p-4 hover:border-blue-500/40 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <Plus size={18} className="text-blue-400" />
+                <Plus size={18} className="text-blue-600 dark:text-blue-400" />
               </div>
               <div className="flex-1">
                 <div className="text-sm font-medium text-foreground">{draftCount} drafts pending</div>

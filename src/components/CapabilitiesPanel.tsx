@@ -73,7 +73,7 @@ export function CapabilitiesPanel() {
                   </div>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {at.skills.map((s) => (
-                      <span key={s} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-300">{s.replace(/_/g, " ")}</span>
+                      <span key={s} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-700 dark:text-blue-300">{s.replace(/_/g, " ")}</span>
                     ))}
                   </div>
                 </div>

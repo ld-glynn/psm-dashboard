@@ -78,7 +78,7 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
         <div className="mt-4 space-y-4">
           {/* Cataloger */}
           <div className="bg-muted rounded-lg p-3">
-            <div className="text-xs font-medium text-orange-400 mb-2">Cataloger</div>
+            <div className="text-xs font-medium text-orange-600 dark:text-orange-400 mb-2">Cataloger</div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={labelClass}>Severity Threshold</label>
@@ -98,7 +98,7 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
 
           {/* Pattern Analyzer */}
           <div className="bg-muted rounded-lg p-3">
-            <div className="text-xs font-medium text-yellow-400 mb-2">Pattern Analyzer</div>
+            <div className="text-xs font-medium text-amber-600 dark:text-yellow-400 mb-2">Pattern Analyzer</div>
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <label className={labelClass}>Min Cluster Size</label>
@@ -117,7 +117,7 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
 
           {/* Solvability */}
           <div className="bg-muted rounded-lg p-3">
-            <div className="text-xs font-medium text-cyan-400 mb-2">Solvability Evaluator</div>
+            <div className="text-xs font-medium text-cyan-600 dark:text-cyan-400 mb-2">Solvability Evaluator</div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={labelClass}>Min Signal Threshold</label>
@@ -135,7 +135,7 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
 
           {/* Hypothesis Gen */}
           <div className="bg-muted rounded-lg p-3">
-            <div className="text-xs font-medium text-green-400 mb-2">Hypothesis Generator</div>
+            <div className="text-xs font-medium text-green-600 dark:text-green-400 mb-2">Hypothesis Generator</div>
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <label className={labelClass}>Max per Pattern</label>
@@ -159,7 +159,7 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
 
           {/* Hiring Manager */}
           <div className="bg-muted rounded-lg p-3">
-            <div className="text-xs font-medium text-purple-400 mb-2">Hiring Manager</div>
+            <div className="text-xs font-medium text-purple-600 dark:text-purple-400 mb-2">Hiring Manager</div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={labelClass}>Max Agents</label>
@@ -180,7 +180,7 @@ export function PipelineConfig({ serverAvailable }: PipelineConfigProps) {
             <button onClick={handleReset} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">
               <RotateCcw size={12} /> Reset Defaults
             </button>
-            {saved && <span className="text-xs text-green-400">Saved!</span>}
+            {saved && <span className="text-xs text-green-600 dark:text-green-400">Saved!</span>}
           </div>
         </div>
       )}

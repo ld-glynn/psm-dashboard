@@ -150,7 +150,7 @@ export function ProblemIntakeForm({ onSubmit }: ProblemIntakeFormProps) {
           Add Problem
         </button>
         {success && (
-          <span className="text-sm text-green-400">Added!</span>
+          <span className="text-sm text-green-600 dark:text-green-400">Added!</span>
         )}
       </div>
     </form>

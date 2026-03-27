@@ -137,12 +137,12 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
           {processing ? "Processing..." : "Extract Problems"}
         </button>
         {serverAvailable ? (
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">Claude API</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/15 text-green-600 dark:text-green-400">Claude API</span>
         ) : (
           <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">Local parsing</span>
         )}
         {suggestions.length > 0 && useAI && (
-          <span className="text-[10px] text-pink-400">Powered by Claude</span>
+          <span className="text-[10px] text-pink-600 dark:text-pink-400">Powered by Claude</span>
         )}
       </div>
 
@@ -186,7 +186,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
                       <div className="text-sm font-medium text-foreground">{s.title}</div>
                     )}
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-pink-500/15 text-pink-400">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-pink-500/15 text-pink-600 dark:text-pink-400">
                         {Math.round(s.confidence * 100)}% confidence
                       </span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{s.domain}</span>
@@ -196,19 +196,19 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
 
                   {!isAccepted && (
                     <div className="flex gap-1">
-                      <button onClick={() => handleAccept(s)} className="p-1.5 rounded bg-green-500/10 text-green-400 hover:bg-green-500/20" title="Accept">
+                      <button onClick={() => handleAccept(s)} className="p-1.5 rounded bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20" title="Accept">
                         <Check size={12} />
                       </button>
                       <button onClick={() => startEdit(s)} className="p-1.5 rounded bg-accent text-muted-foreground hover:bg-accent" title="Edit">
                         <Pencil size={12} />
                       </button>
-                      <button onClick={() => setRejected((prev) => new Set(prev).add(s.tempId))} className="p-1.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20" title="Reject">
+                      <button onClick={() => setRejected((prev) => new Set(prev).add(s.tempId))} className="p-1.5 rounded bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20" title="Reject">
                         <X size={12} />
                       </button>
                     </div>
                   )}
                   {isAccepted && (
-                    <span className="text-[10px] text-green-400">Added</span>
+                    <span className="text-[10px] text-green-600 dark:text-green-400">Added</span>
                   )}
                 </div>
 

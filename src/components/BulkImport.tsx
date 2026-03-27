@@ -149,7 +149,7 @@ export function BulkImport({ onImport }: BulkImportProps) {
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:text-blue-300 transition-colors"
           >
             Upload .csv
           </button>
@@ -192,7 +192,7 @@ export function BulkImport({ onImport }: BulkImportProps) {
           </button>
         )}
         {imported && (
-          <span className="text-sm text-green-400">Imported!</span>
+          <span className="text-sm text-green-600 dark:text-green-400">Imported!</span>
         )}
       </div>
 
@@ -200,7 +200,7 @@ export function BulkImport({ onImport }: BulkImportProps) {
       {allErrors.length > 0 && (
         <div className="bg-red-500/10 border border-red-500/20 rounded-md p-3 space-y-1">
           {allErrors.map((err, i) => (
-            <div key={i} className="text-xs text-red-300">
+            <div key={i} className="text-xs text-red-700 dark:text-red-300">
               {err}
             </div>
           ))}

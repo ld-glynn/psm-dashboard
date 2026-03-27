@@ -76,15 +76,15 @@ export function CreateHypothesisForm({ patterns, onSubmit, onCancel }: CreateHyp
       <div className="bg-muted border border-border rounded-lg p-3 space-y-3">
         <div className="text-xs font-medium text-muted-foreground">Hypothesis Statement *</div>
         <div className="flex items-start gap-2">
-          <span className="text-xs text-green-400/70 font-medium mt-2 w-16 flex-shrink-0">If we</span>
+          <span className="text-xs text-green-600 dark:text-green-400/70 font-medium mt-2 w-16 flex-shrink-0">If we</span>
           <input value={ifPart} onChange={(e) => setIfPart(e.target.value)} placeholder="take this action..." className={inputClass} />
         </div>
         <div className="flex items-start gap-2">
-          <span className="text-xs text-blue-400/70 font-medium mt-2 w-16 flex-shrink-0">then</span>
+          <span className="text-xs text-blue-600 dark:text-blue-400/70 font-medium mt-2 w-16 flex-shrink-0">then</span>
           <input value={thenPart} onChange={(e) => setThenPart(e.target.value)} placeholder="this outcome will occur..." className={inputClass} />
         </div>
         <div className="flex items-start gap-2">
-          <span className="text-xs text-purple-400/70 font-medium mt-2 w-16 flex-shrink-0">because</span>
+          <span className="text-xs text-purple-600 dark:text-purple-400/70 font-medium mt-2 w-16 flex-shrink-0">because</span>
           <input value={becausePart} onChange={(e) => setBecausePart(e.target.value)} placeholder="this reasoning supports it..." className={inputClass} />
         </div>
         {statement && (
@@ -114,7 +114,7 @@ export function CreateHypothesisForm({ patterns, onSubmit, onCancel }: CreateHyp
           className={`${inputClass} min-h-[70px] resize-y`}
         />
         {testCriteriaInput && testCriteria.length === 0 && (
-          <div className="text-[10px] text-orange-400 mt-1">At least one test criterion is required</div>
+          <div className="text-[10px] text-orange-600 dark:text-orange-400 mt-1">At least one test criterion is required</div>
         )}
       </div>
 

@@ -67,13 +67,13 @@ function ReviewButtons({
         <>
           <button
             onClick={() => onReview("approved")}
-            className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors"
+            className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors"
           >
             <Check size={10} /> Approve
           </button>
           <button
             onClick={() => onReview("rejected")}
-            className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
+            className="flex items-center gap-1 px-2 py-1 text-[10px] rounded bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 transition-colors"
           >
             <X size={10} /> Reject
           </button>
@@ -188,7 +188,7 @@ export function ProblemCard({
           <div className="flex items-center gap-2 mb-0.5">
             <span className="text-xs text-muted-foreground">{id}</span>
             {isDraft && (
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-400 font-medium uppercase tracking-wide">Draft</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-600 dark:text-orange-400 font-medium uppercase tracking-wide">Draft</span>
             )}
             <ReviewBadge status={reviewStatus} />
           </div>
@@ -293,7 +293,7 @@ export function PatternCard({
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>
           )}
           <div className="flex items-center gap-2 mt-2">
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/10 text-yellow-300">{problemCount} problems</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/10 text-amber-700 dark:text-yellow-300">{problemCount} problems</span>
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{(confidence * 100).toFixed(0)}% confidence</span>
           </div>
           <div className="flex flex-wrap gap-1 mt-1.5">
@@ -330,9 +330,9 @@ export function HypothesisCard({
   const [editVals, setEditVals] = useState({ statement, effort, confidence: String(confidence) });
 
   const effortColors: Record<string, string> = {
-    low: "bg-green-500/10 text-green-300",
-    medium: "bg-yellow-500/10 text-yellow-300",
-    high: "bg-red-500/10 text-red-300",
+    low: "bg-green-500/10 text-green-700 dark:text-green-300",
+    medium: "bg-yellow-500/10 text-amber-700 dark:text-yellow-300",
+    high: "bg-red-500/10 text-red-700 dark:text-red-300",
   };
 
   function handleSave(e: React.MouseEvent) {
@@ -389,7 +389,7 @@ export function HypothesisCard({
             <div className="mt-2 space-y-1">
               {testCriteria.map((tc, i) => (
                 <div key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
-                  <span className="text-green-400 mt-0.5">&#10003;</span>
+                  <span className="text-green-600 dark:text-green-400 mt-0.5">&#10003;</span>
                   {tc}
                 </div>
               ))}
@@ -452,10 +452,10 @@ export function NewHireCard({
   const [editVals, setEditVals] = useState({ name, title, persona });
 
   const skillColors: Record<string, string> = {
-    recommend: "bg-blue-500/10 text-blue-300",
-    action_plan: "bg-green-500/10 text-green-300",
-    process_doc: "bg-purple-500/10 text-purple-300",
-    investigate: "bg-yellow-500/10 text-yellow-300",
+    recommend: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
+    action_plan: "bg-green-500/10 text-green-700 dark:text-green-300",
+    process_doc: "bg-purple-500/10 text-purple-700 dark:text-purple-300",
+    investigate: "bg-yellow-500/10 text-amber-700 dark:text-yellow-300",
   };
   const statusDot: Record<string, string> = {
     pending: "bg-gray-400", in_progress: "bg-blue-400", complete: "bg-green-400",
@@ -484,18 +484,18 @@ export function NewHireCard({
     >
       <div className="flex items-center gap-2 mb-1">
         <div className="w-6 h-6 rounded bg-purple-500/10 flex items-center justify-center">
-          <span className="text-[10px] font-bold text-purple-400">{name[0]}</span>
+          <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400">{name[0]}</span>
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-foreground truncate">{name}</span>
             {lifecycleState && lifecycleState !== "created" && (
               <span className={`text-[8px] px-1 py-0.5 rounded uppercase tracking-wide font-medium ${
-                lifecycleState === "deployed" ? "bg-green-500/15 text-green-400" :
-                lifecycleState === "proposed" ? "bg-yellow-500/15 text-yellow-400" :
-                lifecycleState === "active" ? "bg-cyan-500/15 text-cyan-400" :
-                lifecycleState === "paused" ? "bg-orange-500/15 text-orange-400" :
-                lifecycleState === "retired" ? "bg-red-500/15 text-red-400" :
+                lifecycleState === "deployed" ? "bg-green-500/15 text-green-600 dark:text-green-400" :
+                lifecycleState === "proposed" ? "bg-yellow-500/15 text-amber-600 dark:text-yellow-400" :
+                lifecycleState === "active" ? "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400" :
+                lifecycleState === "paused" ? "bg-orange-500/15 text-orange-600 dark:text-orange-400" :
+                lifecycleState === "retired" ? "bg-red-500/15 text-red-600 dark:text-red-400" :
                 "bg-accent text-muted-foreground"
               }`}>{lifecycleState}</span>
             )}

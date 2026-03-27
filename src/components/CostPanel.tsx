@@ -107,7 +107,7 @@ export function CostPanel({
             Budget
           </button>
           {costEntries.length > 0 && (
-            <button onClick={onClearCosts} className="px-2 py-1 text-[10px] rounded bg-red-500/10 text-red-400/70 hover:bg-red-500/20 transition-colors">
+            <button onClick={onClearCosts} className="px-2 py-1 text-[10px] rounded bg-red-500/10 text-red-600 dark:text-red-400/70 hover:bg-red-500/20 transition-colors">
               Clear
             </button>
           )}
@@ -117,7 +117,7 @@ export function CostPanel({
       {/* Budget bar */}
       <div>
         <div className="flex items-center justify-between text-xs mb-1">
-          <span className={costSummary.overBudget ? "text-red-400" : costSummary.atWarning ? "text-yellow-400" : "text-muted-foreground"}>
+          <span className={costSummary.overBudget ? "text-red-600 dark:text-red-400" : costSummary.atWarning ? "text-amber-600 dark:text-yellow-400" : "text-muted-foreground"}>
             {formatUsd(costSummary.totalCostUsd)} / {formatUsd(costBudget.monthlyLimitUsd)}
           </span>
           <span className="text-muted-foreground">
@@ -237,7 +237,7 @@ export function CostPanel({
                       <td className="py-1.5 px-2 text-right text-secondary-foreground">{formatUsd(e.costUsd)}</td>
                       <td className="py-1.5 px-2 text-muted-foreground truncate max-w-[120px]">{e.note}</td>
                       <td className="py-1.5 px-1">
-                        <button onClick={() => onRemoveCost(e.id)} className="text-muted-foreground/50 hover:text-red-400"><Trash2 size={10} /></button>
+                        <button onClick={() => onRemoveCost(e.id)} className="text-muted-foreground/50 hover:text-red-600 dark:text-red-400"><Trash2 size={10} /></button>
                       </td>
                     </tr>
                   ))}

@@ -86,19 +86,19 @@ export default function BoardPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setCreateMode("problem")}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 transition-colors border border-orange-500/20"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 transition-colors border border-orange-500/20"
           >
             <Plus size={12} /> Problem
           </button>
           <button
             onClick={() => setCreateMode("pattern")}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 transition-colors border border-yellow-500/20"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-yellow-500/10 text-amber-600 dark:text-yellow-400 hover:bg-yellow-500/20 transition-colors border border-yellow-500/20"
           >
             <Plus size={12} /> Pattern
           </button>
           <button
             onClick={() => setCreateMode("hypothesis")}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors border border-green-500/20"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors border border-green-500/20"
           >
             <Plus size={12} /> Hypothesis
           </button>

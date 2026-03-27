@@ -25,11 +25,11 @@ const PAGES: SearchResult[] = [
 ];
 
 const typeColors: Record<string, string> = {
-  problem: "text-orange-400",
-  pattern: "text-yellow-400",
-  hypothesis: "text-green-400",
-  agent: "text-purple-400",
-  page: "text-blue-400",
+  problem: "text-orange-600 dark:text-orange-400",
+  pattern: "text-amber-600 dark:text-yellow-400",
+  hypothesis: "text-green-600 dark:text-green-400",
+  agent: "text-purple-600 dark:text-purple-400",
+  page: "text-blue-600 dark:text-blue-400",
 };
 
 export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => void }) {

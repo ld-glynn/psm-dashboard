@@ -66,7 +66,7 @@ export function StatsGrid({ data, skillFeedback, costSummary }: StatsGridProps) 
         label="Skill Quality"
         value={qualityPct >= 0 ? `${qualityPct}%` : "—"}
         detail={fbTotal > 0 ? `${fbTotal} rated, ${fbUseful} useful` : "No ratings yet"}
-        accent={qualityPct >= 70 ? "text-green-400" : qualityPct >= 40 ? "text-yellow-400" : qualityPct >= 0 ? "text-red-400" : undefined}
+        accent={qualityPct >= 70 ? "text-green-600 dark:text-green-400" : qualityPct >= 40 ? "text-amber-600 dark:text-yellow-400" : qualityPct >= 0 ? "text-red-600 dark:text-red-400" : undefined}
         tooltip={tooltips.skillQuality}
       />
       <StatCard
@@ -75,7 +75,7 @@ export function StatsGrid({ data, skillFeedback, costSummary }: StatsGridProps) 
         detail={costSummary && costSummary.totalCalls > 0
           ? `${costSummary.totalCalls} calls`
           : "No cost data"}
-        accent={costSummary?.overBudget ? "text-red-400" : costSummary?.atWarning ? "text-yellow-400" : undefined}
+        accent={costSummary?.overBudget ? "text-red-600 dark:text-red-400" : costSummary?.atWarning ? "text-amber-600 dark:text-yellow-400" : undefined}
         tooltip={tooltips.costTracking}
       />
     </div>
