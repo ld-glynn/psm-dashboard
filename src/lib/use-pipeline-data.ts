@@ -12,6 +12,7 @@ import {
 import {
   getPipelineRuns, savePipelineRun, updatePipelineRun, nextRunId,
   getPipelineImports, savePipelineImport, clearPipelineImports, clearPipelineRuns,
+  seedMockPipelineRuns,
 } from "./pipeline-run-store";
 import {
   getCostEntries, addCostEntry as storeAddCost, deleteCostEntry as storeDeleteCost,
@@ -74,6 +75,7 @@ export function usePipelineData() {
   useEffect(() => {
     seedMockIntegrationData();
     seedMockHypothesisFeedback();
+    seedMockPipelineRuns();
     setDrafts(getDrafts());
     setReviewsState(getReviews());
     setSkillFeedbackState(getSkillFeedback());
