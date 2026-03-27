@@ -102,6 +102,11 @@ export function IntegrationCard({ config, onToggle }: IntegrationCardProps) {
       {/* Expanded settings */}
       {expanded && (
         <div className="space-y-3 pt-2 border-t border-white/5">
+          {config.status === "mock" && (
+            <div className="bg-yellow-500/5 border border-yellow-500/15 rounded-lg px-3 py-2 text-[10px] text-yellow-300/70">
+              Demo mode — using sample data. Connect real API credentials to enable live sync.
+            </div>
+          )}
           {/* Connection */}
           <div>
             <div className="flex items-center gap-1 mb-1">

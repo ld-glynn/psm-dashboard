@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePipelineData } from "@/lib/use-pipeline-data";
 import { InfoTooltip } from "@/components/InfoTooltip";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { tooltips } from "@/lib/tooltip-content";
 import { ChevronDown, ChevronRight, CheckCircle2, Play, Clock, AlertCircle } from "lucide-react";
 
@@ -59,6 +60,7 @@ export default function SkillsPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumb items={[{ label: "Agents", href: "/agents" }, { label: "Work" }]} />
       <div>
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-white">Agent Work</h1>

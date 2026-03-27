@@ -4,7 +4,10 @@ import { usePipelineData } from "@/lib/use-pipeline-data";
 import { IntegrationCard } from "@/components/IntegrationCard";
 import { sourceColors, integrationStatusColor } from "@/lib/colors";
 import { InfoTooltip } from "@/components/InfoTooltip";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { Pagination, paginate } from "@/components/Pagination";
 import { tooltips } from "@/lib/tooltip-content";
+import { useState } from "react";
 import { Database, Phone, MessageSquare } from "lucide-react";
 
 const sourceIcons: Record<string, any> = {
@@ -18,9 +21,12 @@ export default function IntegrationsPage() {
 
   const totalStructured = ingestionRecords.filter((r) => r.structured).length;
   const totalUnstructured = ingestionRecords.length - totalStructured;
+  const [recordsPage, setRecordsPage] = useState(1);
+  const RECORDS_PAGE_SIZE = 10;
 
   return (
     <div className="space-y-8">
+      <Breadcrumb items={[{ label: "Sources" }]} />
       <div>
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-white">Integration Sources</h1>
@@ -67,7 +73,7 @@ export default function IntegrationsPage() {
               </tr>
             </thead>
             <tbody>
-              {ingestionRecords.map((record) => {
+              {paginate(ingestionRecords, recordsPage, RECORDS_PAGE_SIZE).map((record) => {
                 const colors = sourceColors[record.source] || sourceColors.csv;
                 const Icon = sourceIcons[record.source] || Database;
                 return (
@@ -93,6 +99,7 @@ export default function IntegrationsPage() {
               })}
             </tbody>
           </table>
+          <Pagination total={ingestionRecords.length} pageSize={RECORDS_PAGE_SIZE} page={recordsPage} onPageChange={setRecordsPage} />
         </div>
       </div>
     </div>

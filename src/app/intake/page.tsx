@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { usePipelineData } from "@/lib/use-pipeline-data";
 import { ProblemIntakeForm } from "@/components/ProblemIntakeForm";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { Pagination, paginate } from "@/components/Pagination";
 import { BulkImport } from "@/components/BulkImport";
 import { AiIntake } from "@/components/AiIntake";
 import { InfoTooltip } from "@/components/InfoTooltip";
@@ -21,6 +23,8 @@ export default function IntakePage() {
   } = usePipelineData();
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [draftsPage, setDraftsPage] = useState(1);
+  const DRAFTS_PAGE_SIZE = 15;
   const [activeTab, setActiveTab] = useState<IntakeTab>("manual");
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -64,6 +68,7 @@ export default function IntakePage() {
 
   return (
     <div className="space-y-8">
+      <Breadcrumb items={[{ label: "Intake" }]} />
       <div>
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-white">Report Problems</h1>
@@ -143,7 +148,7 @@ export default function IntakePage() {
                 </tr>
               </thead>
               <tbody>
-                {drafts.map((draft) => (
+                {paginate(drafts, draftsPage, DRAFTS_PAGE_SIZE).map((draft) => (
                   <tr key={draft.problem_id} className="border-b border-[#2a2a3e]/50 hover:bg-white/[0.02]">
                     <td className="py-2.5 px-3"><input type="checkbox" checked={selected.has(draft.problem_id)} onChange={() => toggleSelect(draft.problem_id)} disabled={draft.status !== "draft"} className="rounded border-[#2a2a3e] bg-[#12121a] disabled:opacity-30" /></td>
                     <td className="py-2.5 px-3 text-xs text-white/30 font-mono">{draft.problem_id}</td>
@@ -156,6 +161,7 @@ export default function IntakePage() {
                 ))}
               </tbody>
             </table>
+            <Pagination total={drafts.length} pageSize={DRAFTS_PAGE_SIZE} page={draftsPage} onPageChange={setDraftsPage} />
           </div>
         </div>
       )}

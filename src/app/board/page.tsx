@@ -13,6 +13,7 @@ import {
 // ReviewSummary removed — too much space
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { Modal } from "@/components/Modal";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { CreatePatternForm } from "@/components/CreatePatternForm";
 import { CreateHypothesisForm } from "@/components/CreateHypothesisForm";
 import { ProblemIntakeForm } from "@/components/ProblemIntakeForm";
@@ -69,6 +70,7 @@ export default function BoardPage() {
 
   return (
     <div>
+      <Breadcrumb items={[{ label: "Board" }]} />
       <div className="mb-4 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">

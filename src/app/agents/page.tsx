@@ -8,6 +8,7 @@ import { ThumbsUp, ThumbsDown, RotateCcw, MessageSquare, Download, ChevronDown, 
 import { approveSpec, deployAgent, invokeAgent, pauseAgent, resumeAgent, retireAgent } from "@/lib/api-client";
 import { computeAgentQualityScores, computeSkillTypeTrends, exportFeedbackAsJSON } from "@/lib/feedback-analytics";
 import { InfoTooltip } from "@/components/InfoTooltip";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { tooltips } from "@/lib/tooltip-content";
 import type { SkillRating } from "@/lib/types";
 
@@ -136,6 +137,7 @@ function SkillFeedbackUI({
 export default function AgentsPage() {
   const { data, skillFeedback, rateSkill, serverAvailable } = usePipelineData();
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showInternals, setShowInternals] = useState(false);
   const [lifecycleFilter, setLifecycleFilter] = useState<string>("all");
   const engineAgents = getEngineAgents(data);
 
@@ -158,6 +160,7 @@ export default function AgentsPage() {
 
   return (
     <div>
+      <Breadcrumb items={[{ label: "Agents" }]} />
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Agent Roster</h1>
         <p className="text-sm text-white/40 mt-1">
@@ -173,6 +176,19 @@ export default function AgentsPage() {
           </div>
         )}
       </div>
+
+      {/* --- Pipeline Internals (collapsed by default) --- */}
+      <div className="mb-6">
+        <button
+          onClick={() => setShowInternals(!showInternals)}
+          className="flex items-center gap-2 text-xs text-white/30 hover:text-white/50 transition-colors"
+        >
+          {showInternals ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+          Pipeline Internals (Engine Agents, Screening, Analytics)
+        </button>
+      </div>
+
+      {showInternals && <>
 
       {/* --- Feedback Analytics --- */}
       {feedbackEntries.length > 0 && (
@@ -429,6 +445,8 @@ export default function AgentsPage() {
           )}
         </div>
       </div>
+
+      </>}
 
       {/* --- Tier 2: Agent New Hires --- */}
       <div className="mb-10">
