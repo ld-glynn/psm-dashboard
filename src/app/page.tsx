@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePipelineData } from "@/lib/use-pipeline-data";
-import { Database, PlusCircle, BarChart3, Columns3, Users, Briefcase, ArrowRight, AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { Database, BarChart3, Columns3, Users, Briefcase, ArrowRight, AlertCircle, CheckCircle2, Clock, Plus } from "lucide-react";
 
 export default function DashboardPage() {
   const { data, drafts, reviews, ingestionRecords, skillFeedback, activityEvents, serverAvailable } = usePipelineData();
@@ -86,10 +86,10 @@ export default function DashboardPage() {
 
         {/* Drafts pending */}
         {draftCount > 0 && (
-          <Link href="/intake" className="bg-[#1a1a2e] border border-blue-500/20 rounded-xl p-4 hover:border-blue-500/40 transition-colors group">
+          <Link href="/board" className="bg-[#1a1a2e] border border-blue-500/20 rounded-xl p-4 hover:border-blue-500/40 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <PlusCircle size={18} className="text-blue-400" />
+                <Plus size={18} className="text-blue-400" />
               </div>
               <div className="flex-1">
                 <div className="text-sm font-medium text-white/90">{draftCount} drafts pending</div>

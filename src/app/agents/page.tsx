@@ -8,7 +8,6 @@ import { ThumbsUp, ThumbsDown, RotateCcw, MessageSquare, Download, ChevronDown, 
 import { approveSpec, deployAgent, invokeAgent, pauseAgent, resumeAgent, retireAgent } from "@/lib/api-client";
 import { computeAgentQualityScores, computeSkillTypeTrends, exportFeedbackAsJSON } from "@/lib/feedback-analytics";
 import { InfoTooltip } from "@/components/InfoTooltip";
-import { Breadcrumb } from "@/components/Breadcrumb";
 import { tooltips } from "@/lib/tooltip-content";
 import type { SkillRating } from "@/lib/types";
 
@@ -160,7 +159,6 @@ export default function AgentsPage() {
 
   return (
     <div>
-      <Breadcrumb items={[{ label: "Agents" }]} />
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Agent Roster</h1>
         <p className="text-sm text-white/40 mt-1">

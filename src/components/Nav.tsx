@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Home, Database, PlusCircle, BarChart3, Columns3, GitBranch,
+  Home, Database, BarChart3, Columns3, GitBranch,
   Users, Briefcase, HelpCircle, Search, ChevronLeft, ChevronRight,
 } from "lucide-react";
 
 const links = [
   { href: "/", label: "Dashboard", icon: Home },
   { href: "/integrations", label: "Sources", icon: Database },
-  { href: "/intake", label: "Intake", icon: PlusCircle },
   { href: "/pipeline", label: "Pipeline", icon: BarChart3 },
   { href: "/board", label: "Board", icon: Columns3 },
   { href: "/graph", label: "Graph", icon: GitBranch },

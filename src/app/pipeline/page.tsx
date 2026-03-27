@@ -5,7 +5,6 @@ import { PipelineFlow } from "@/components/PipelineFlow";
 import { CostPanel } from "@/components/CostPanel";
 import { RunPipeline } from "@/components/RunPipeline";
 import { OutcomesPanel } from "@/components/OutcomesPanel";
-import { Breadcrumb } from "@/components/Breadcrumb";
 
 export default function PipelinePage() {
   const {
@@ -21,7 +20,6 @@ export default function PipelinePage() {
 
   return (
     <div className="space-y-6">
-      <Breadcrumb items={[{ label: "Pipeline" }]} />
 
       <div>
         <h1 className="text-2xl font-bold text-white">Pipeline</h1>

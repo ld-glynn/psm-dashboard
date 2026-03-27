@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Breadcrumb } from "@/components/Breadcrumb";
 import {
   ChevronDown, ChevronRight, Database, Plus, BarChart3, Columns3,
   GitBranch, Users, FileText, Play, RefreshCw, Check, X, Pencil,
@@ -239,7 +238,6 @@ export default function GuidePage() {
 
   return (
     <div className="max-w-4xl space-y-6">
-      <Breadcrumb items={[{ label: "Guide" }]} />
       <div>
         <h1 className="text-2xl font-bold text-white">How To Use PSM</h1>
         <p className="text-sm text-white/40 mt-1">

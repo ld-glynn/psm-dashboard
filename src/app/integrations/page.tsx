@@ -4,7 +4,6 @@ import { usePipelineData } from "@/lib/use-pipeline-data";
 import { IntegrationCard } from "@/components/IntegrationCard";
 import { sourceColors, integrationStatusColor } from "@/lib/colors";
 import { InfoTooltip } from "@/components/InfoTooltip";
-import { Breadcrumb } from "@/components/Breadcrumb";
 import { Pagination, paginate } from "@/components/Pagination";
 import { tooltips } from "@/lib/tooltip-content";
 import { useState } from "react";
@@ -26,7 +25,6 @@ export default function IntegrationsPage() {
 
   return (
     <div className="space-y-8">
-      <Breadcrumb items={[{ label: "Sources" }]} />
       <div>
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-white">Integration Sources</h1>

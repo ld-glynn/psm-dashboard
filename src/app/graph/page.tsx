@@ -12,7 +12,6 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { usePipelineData } from "@/lib/use-pipeline-data";
-import { Breadcrumb } from "@/components/Breadcrumb";
 
 const nodeDefaults = {
   sourcePosition: Position.Right,
@@ -164,7 +163,6 @@ export default function GraphPage() {
 
   return (
     <div>
-      <Breadcrumb items={[{ label: "Graph" }]} />
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Relationship Graph</h1>
         <p className="text-sm text-white/40 mt-1">

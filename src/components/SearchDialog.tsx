@@ -16,7 +16,6 @@ interface SearchResult {
 const PAGES: SearchResult[] = [
   { type: "page", id: "dashboard", title: "Dashboard", subtitle: "Overview and quick actions", href: "/" },
   { type: "page", id: "sources", title: "Sources", subtitle: "Integration management", href: "/integrations" },
-  { type: "page", id: "intake", title: "Intake", subtitle: "Add problems", href: "/intake" },
   { type: "page", id: "pipeline", title: "Pipeline", subtitle: "Run and configure", href: "/pipeline" },
   { type: "page", id: "board", title: "Board", subtitle: "Review and approve", href: "/board" },
   { type: "page", id: "graph", title: "Graph", subtitle: "Relationship visualization", href: "/graph" },

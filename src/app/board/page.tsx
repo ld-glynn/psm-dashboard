@@ -10,13 +10,13 @@ import {
   HypothesisCard,
   NewHireCard,
 } from "@/components/BoardColumn";
-// ReviewSummary removed — too much space
 import { InfoTooltip } from "@/components/InfoTooltip";
-import { Modal } from "@/components/Modal";
-import { Breadcrumb } from "@/components/Breadcrumb";
+import { SlideOver } from "@/components/SlideOver";
 import { CreatePatternForm } from "@/components/CreatePatternForm";
 import { CreateHypothesisForm } from "@/components/CreateHypothesisForm";
 import { ProblemIntakeForm } from "@/components/ProblemIntakeForm";
+import { BulkImport } from "@/components/BulkImport";
+import { AiIntake } from "@/components/AiIntake";
 import { EditProblemModal, EditPatternModal, EditHypothesisModal, EditAgentModal } from "@/components/EditEntryModal";
 import { tooltips } from "@/lib/tooltip-content";
 import type { ReviewStatus } from "@/lib/types";
@@ -35,16 +35,17 @@ const TABS: { key: TabMode; label: string; tooltipKey: keyof typeof tooltips }[]
 
 export default function BoardPage() {
   const {
-    data, reviews, hypFeedback,
+    data, reviews, hypFeedback, serverAvailable,
     setReview, saveEdits, setHypOutcome,
     addSourceToProblem, removeSourceFromProblem,
-    addDraft, createPattern, createHypothesis,
+    addDraft, addBulkDrafts, createPattern, createHypothesis,
   } = usePipelineData();
   const [filter, setFilter] = useState<FilterMode>("all");
   const [activeTab, setActiveTab] = useState<TabMode>("all");
   const [createMode, setCreateMode] = useState<CreateMode>(null);
   const [editTarget, setEditTarget] = useState<{ type: string; data: any } | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [problemTab, setProblemTab] = useState<"manual" | "csv" | "ai">("manual");
 
   // Count review statuses
   const allIds = [
@@ -70,7 +71,6 @@ export default function BoardPage() {
 
   return (
     <div>
-      <Breadcrumb items={[{ label: "Board" }]} />
       <div className="mb-4 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">
@@ -276,54 +276,49 @@ export default function BoardPage() {
         )}
       </div>
 
-      {/* Create Problem Modal */}
-      <Modal
-        open={createMode === "problem"}
-        onClose={() => setCreateMode(null)}
-        title="Create Problem"
-      >
-        <p className="text-xs text-white/40 leading-relaxed mb-4">
-          Manually report a problem. It will be added as a draft and appear in the Problems column.
-        </p>
-        <ProblemIntakeForm
-          onSubmit={(input) => {
-            addDraft(input);
-            setCreateMode(null);
-          }}
-        />
-      </Modal>
+      {/* Create Problem Slide-Over */}
+      <SlideOver open={createMode === "problem"} onClose={() => setCreateMode(null)} title="Add Problem">
+        <div className="flex items-center gap-1 mb-4 border-b border-[#2a2a3e] pb-3">
+          {(["manual", "csv", "ai"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setProblemTab(tab)}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                problemTab === tab ? "bg-white/10 text-white" : "text-white/40 hover:text-white/70 hover:bg-white/5"
+              }`}
+            >
+              {tab === "manual" ? "Manual" : tab === "csv" ? "CSV Import" : "AI Parse"}
+            </button>
+          ))}
+        </div>
+        {problemTab === "manual" && (
+          <ProblemIntakeForm onSubmit={(input) => { addDraft(input); setCreateMode(null); }} />
+        )}
+        {problemTab === "csv" && (
+          <BulkImport onImport={(inputs) => { addBulkDrafts(inputs); setCreateMode(null); }} />
+        )}
+        {problemTab === "ai" && (
+          <AiIntake catalog={data.catalog} serverAvailable={serverAvailable} onAccept={(input) => { addDraft(input); }} />
+        )}
+      </SlideOver>
 
-      {/* Create Pattern Modal */}
-      <Modal
-        open={createMode === "pattern"}
-        onClose={() => setCreateMode(null)}
-        title="Create Pattern"
-      >
+      {/* Create Pattern Slide-Over */}
+      <SlideOver open={createMode === "pattern"} onClose={() => setCreateMode(null)} title="Create Pattern">
         <CreatePatternForm
           catalog={data.catalog}
-          onSubmit={(input) => {
-            createPattern(input);
-            setCreateMode(null);
-          }}
+          onSubmit={(input) => { createPattern(input); setCreateMode(null); }}
           onCancel={() => setCreateMode(null)}
         />
-      </Modal>
+      </SlideOver>
 
-      {/* Create Hypothesis Modal */}
-      <Modal
-        open={createMode === "hypothesis"}
-        onClose={() => setCreateMode(null)}
-        title="Create Hypothesis"
-      >
+      {/* Create Hypothesis Slide-Over */}
+      <SlideOver open={createMode === "hypothesis"} onClose={() => setCreateMode(null)} title="Create Hypothesis">
         <CreateHypothesisForm
           patterns={data.patterns}
-          onSubmit={(input) => {
-            createHypothesis(input);
-            setCreateMode(null);
-          }}
+          onSubmit={(input) => { createHypothesis(input); setCreateMode(null); }}
           onCancel={() => setCreateMode(null)}
         />
-      </Modal>
+      </SlideOver>
 
       {/* Edit Modals */}
       {editTarget?.type === "problem" && (
