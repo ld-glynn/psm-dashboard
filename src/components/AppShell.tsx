@@ -5,17 +5,21 @@ import { Nav } from "@/components/Nav";
 
 const NAV_STATE_KEY = "psm-nav-collapsed";
 
-export function AppShell({ children }: { children: React.ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+function getInitialState(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return localStorage.getItem(NAV_STATE_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
 
-  // Load saved state on mount
+export function AppShell({ children }: { children: React.ReactNode }) {
+  const [collapsed, setCollapsed] = useState(getInitialState);
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(NAV_STATE_KEY);
-      if (saved === "true") setCollapsed(true);
-    } catch {}
-    setLoaded(true);
+    setReady(true);
   }, []);
 
   function handleToggle() {
@@ -24,11 +28,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     try { localStorage.setItem(NAV_STATE_KEY, String(next)); } catch {}
   }
 
+  // Hide everything until client hydration completes to prevent flicker
+  if (!ready) {
+    return <div style={{ visibility: "hidden" }} />;
+  }
+
   return (
     <>
       <Nav collapsed={collapsed} onToggle={handleToggle} />
       <main
-        className={`py-4 px-4 ${loaded ? "transition-all duration-200" : ""}`}
+        className="py-4 px-4"
         style={{ marginLeft: collapsed ? 64 : 208 }}
       >
         {children}
