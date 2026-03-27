@@ -217,12 +217,6 @@ export function ProblemCard({
               {expanded && (
                 <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>
               )}
-              <div className="flex flex-wrap gap-1 mt-2">
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{domain}</span>
-                {tags.slice(0, 3).map((tag) => (
-                  <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{tag}</span>
-                ))}
-              </div>
               {!expanded && sources && sources.length > 0 && (
                 <SourceBadges sources={sources} />
               )}
@@ -295,11 +289,6 @@ export function PatternCard({
           <div className="flex items-center gap-2 mt-2">
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-500/10 text-amber-700 dark:text-yellow-300">{problemCount} problems</span>
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{(confidence * 100).toFixed(0)}% confidence</span>
-          </div>
-          <div className="flex flex-wrap gap-1 mt-1.5">
-            {domains.map((d) => (
-              <span key={d} className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{d}</span>
-            ))}
           </div>
         </>
       )}
