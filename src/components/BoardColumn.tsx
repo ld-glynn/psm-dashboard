@@ -288,7 +288,6 @@ export function PatternCard({
           )}
           <div className="flex items-center gap-2 mt-2">
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-500/10 text-amber-700 dark:text-yellow-300">{problemCount} problems</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{(confidence * 100).toFixed(0)}% confidence</span>
           </div>
         </>
       )}
@@ -386,7 +385,6 @@ export function HypothesisCard({
           )}
           <div className="flex items-center gap-2 mt-2">
             <span className={`text-[10px] px-1.5 py-0.5 rounded ${effortColors[effort] || ""}`}>{effort} effort</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">{(confidence * 100).toFixed(0)}%</span>
           </div>
         </>
       )}
