@@ -58,7 +58,7 @@ export function PipelineFlow({ data, draftCount = 0, ingestionCount = 0, costSum
           <div key={stage.key} className="flex items-center gap-3">
             <div className={`${colors.bg} ${colors.border} border rounded-xl px-6 py-4 min-w-[140px] text-center`}>
               <div className={`text-base font-bold ${colors.text}`}>{stage.count}</div>
-              <div className="text-sm font-medium text-foreground mt-1">{stage.label}</div>
+              <div className="text-xs font-medium text-foreground mt-1">{stage.label}</div>
               <div className="text-xs text-muted-foreground mt-0.5">{stage.sublabel}</div>
               {stageCost && stageCost.costUsd > 0 && (
                 <div className="text-[10px] text-muted-foreground/60 mt-1">${stageCost.costUsd.toFixed(2)}</div>

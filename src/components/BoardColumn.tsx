@@ -213,7 +213,7 @@ export function ProblemCard({
             </div>
           ) : (
             <>
-              <div className="text-sm font-medium text-foreground leading-snug">{title}</div>
+              <div className="text-xs font-medium text-foreground leading-snug">{title}</div>
               {expanded && (
                 <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>
               )}
@@ -288,7 +288,7 @@ export function PatternCard({
         </div>
       ) : (
         <>
-          <div className="text-sm font-medium text-foreground leading-snug">{name}</div>
+          <div className="text-xs font-medium text-foreground leading-snug">{name}</div>
           {expanded && (
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>
           )}
@@ -384,7 +384,7 @@ export function HypothesisCard({
         </div>
       ) : (
         <>
-          <div className="text-sm text-foreground leading-snug line-clamp-3">{statement}</div>
+          <div className="text-xs text-foreground leading-snug line-clamp-3">{statement}</div>
           {expanded && (
             <div className="mt-2 space-y-1">
               {testCriteria.map((tc, i) => (
@@ -488,7 +488,7 @@ export function NewHireCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-foreground truncate">{name}</span>
+            <span className="text-xs font-medium text-foreground truncate">{name}</span>
             {lifecycleState && lifecycleState !== "created" && (
               <span className={`text-[8px] px-1 py-0.5 rounded uppercase tracking-wide font-medium ${
                 lifecycleState === "deployed" ? "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400" :

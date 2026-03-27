@@ -49,7 +49,7 @@ export function CreatePatternForm({ catalog, onSubmit, onCancel }: CreatePattern
     });
   }
 
-  const inputClass = "w-full bg-muted border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
+  const inputClass = "w-full bg-muted border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
   const labelClass = "block text-xs font-medium text-muted-foreground mb-1.5";
   const isValid = name.trim() && description.trim().length >= 10 && selectedProblems.size >= 2;
 
@@ -134,10 +134,10 @@ export function CreatePatternForm({ catalog, onSubmit, onCancel }: CreatePattern
       </div>
 
       <div className="flex items-center gap-3 pt-2 border-t border-border">
-        <button type="submit" disabled={!isValid} className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+        <button type="submit" disabled={!isValid} className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
           Create Pattern
         </button>
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">
+        <button type="button" onClick={onCancel} className="px-4 py-2 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">
           Cancel
         </button>
         <span className="text-[10px] text-muted-foreground/50 ml-auto">

@@ -32,8 +32,8 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-sm font-boldtext-foreground">Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-sm font-bold text-foreground">Dashboard</h1>
+        <p className="text-xs text-muted-foreground mt-1">
           Problem Solution Mapping — overview
           {serverAvailable && <span className="text-green-600 dark:text-green-400/60 ml-2">Server connected</span>}
         </p>
@@ -44,7 +44,7 @@ export default function DashboardPage() {
         {stats.map((stat) => (
           <div key={stat.label} className="bg-card border border-border rounded-xl p-4">
             <div className={`text-base font-bold ${stat.color}`}>{stat.value}</div>
-            <div className="text-sm text-secondary-foreground mt-1">{stat.label}</div>
+            <div className="text-xs text-secondary-foreground mt-1">{stat.label}</div>
             <div className="text-xs text-muted-foreground mt-0.5">{stat.sub}</div>
           </div>
         ))}
@@ -60,7 +60,7 @@ export default function DashboardPage() {
                 <AlertCircle size={18} className="text-orange-600 dark:text-orange-400" />
               </div>
               <div className="flex-1">
-                <div className="text-sm font-medium text-foreground">{unreviewedCount} items need review</div>
+                <div className="text-xs font-medium text-foreground">{unreviewedCount} items need review</div>
                 <div className="text-xs text-muted-foreground">Problems, patterns, hypotheses awaiting approval</div>
               </div>
               <ArrowRight size={14} className="text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
@@ -76,7 +76,7 @@ export default function DashboardPage() {
                 <Users size={18} className="text-amber-600 dark:text-yellow-400" />
               </div>
               <div className="flex-1">
-                <div className="text-sm font-medium text-foreground">{proposedAgents} agents proposed</div>
+                <div className="text-xs font-medium text-foreground">{proposedAgents} agents proposed</div>
                 <div className="text-xs text-muted-foreground">Ready for deployment approval</div>
               </div>
               <ArrowRight size={14} className="text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
@@ -92,7 +92,7 @@ export default function DashboardPage() {
                 <Plus size={18} className="text-blue-600 dark:text-blue-400" />
               </div>
               <div className="flex-1">
-                <div className="text-sm font-medium text-foreground">{draftCount} drafts pending</div>
+                <div className="text-xs font-medium text-foreground">{draftCount} drafts pending</div>
                 <div className="text-xs text-muted-foreground">Ready to process through pipeline</div>
               </div>
               <ArrowRight size={14} className="text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
@@ -113,7 +113,7 @@ export default function DashboardPage() {
           return (
             <Link key={item.href} href={item.href} className="bg-card border border-border rounded-xl p-4 hover:border-ring transition-colors group">
               <Icon size={20} className={`text-${item.color}-400 mb-2`} />
-              <div className="text-sm font-medium text-foreground group-hover:text-white transition-colors">{item.label}</div>
+              <div className="text-xs font-medium text-foreground group-hover:text-foreground transition-colors">{item.label}</div>
               <div className="text-xs text-muted-foreground mt-0.5">{item.desc}</div>
             </Link>
           );

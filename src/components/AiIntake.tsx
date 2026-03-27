@@ -123,7 +123,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Paste a meeting transcript, support ticket, Slack thread, or any unstructured text. AI will extract structured problems..."
-          className="w-full bg-muted border border-border rounded-lg px-4 py-3 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring min-h-[140px] resize-y"
+          className="w-full bg-muted border border-border rounded-lg px-4 py-3 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring min-h-[140px] resize-y"
         />
       </div>
 
@@ -131,7 +131,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
         <button
           onClick={handleProcess}
           disabled={!inputText.trim() || processing}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-pink-600/80 text-foreground hover:bg-pink-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-xs font-medium rounded-md bg-pink-600/80 text-foreground hover:bg-pink-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
           <Sparkles size={14} />
           {processing ? "Processing..." : "Extract Problems"}
@@ -154,7 +154,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
             <div className="w-2 h-2 rounded-full bg-pink-400 animate-bounce" style={{ animationDelay: "150ms" }} />
             <div className="w-2 h-2 rounded-full bg-pink-400 animate-bounce" style={{ animationDelay: "300ms" }} />
           </div>
-          <span className="text-sm text-muted-foreground">Analyzing text and extracting problems...</span>
+          <span className="text-xs text-muted-foreground">Analyzing text and extracting problems...</span>
         </div>
       )}
 
@@ -183,7 +183,7 @@ export function AiIntake({ catalog, serverAvailable, onAccept }: AiIntakeProps) 
                     {isEditing ? (
                       <input className={inputClass} value={editVals.title} onChange={(e) => setEditVals((v: any) => ({ ...v, title: e.target.value }))} />
                     ) : (
-                      <div className="text-sm font-medium text-foreground">{s.title}</div>
+                      <div className="text-xs font-medium text-foreground">{s.title}</div>
                     )}
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-pink-100 dark:bg-pink-500/15 text-pink-600 dark:text-pink-400">

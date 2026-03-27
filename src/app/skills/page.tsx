@@ -61,11 +61,11 @@ export default function SkillsPage() {
     <div className="space-y-6">
       <div>
         <div className="flex items-center gap-2">
-          <h1 className="text-sm font-boldtext-foreground">Agent Work</h1>
+          <h1 className="text-sm font-bold text-foreground">Agent Work</h1>
           <InfoTooltip text="Deliverables produced by deployed agents. Each output is linked to a specific invocation — agents accumulate work over time as they're triggered." />
           <span className="text-xs text-muted-foreground ml-2">{outputs.length} deliverable{outputs.length !== 1 ? "s" : ""}</span>
         </div>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           Outputs from agent invocations — action plans, recommendations, process docs, investigations.
         </p>
       </div>

@@ -137,7 +137,7 @@ export function BulkImport({ onImport }: BulkImportProps) {
   ).length || 0;
 
   const inputClass =
-    "w-full bg-muted border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
+    "w-full bg-muted border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
 
   return (
     <div className="space-y-4">
@@ -178,7 +178,7 @@ export function BulkImport({ onImport }: BulkImportProps) {
           type="button"
           onClick={handleParse}
           disabled={!csvText.trim()}
-          className="px-4 py-2 text-sm font-medium rounded-md bg-secondary text-foreground hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-2 text-xs font-medium rounded-md bg-secondary text-foreground hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
           Preview
         </button>
@@ -186,13 +186,13 @@ export function BulkImport({ onImport }: BulkImportProps) {
           <button
             type="button"
             onClick={handleImport}
-            className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors"
+            className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors"
           >
             Import {validCount} problem{validCount !== 1 ? "s" : ""}
           </button>
         )}
         {imported && (
-          <span className="text-sm text-green-600 dark:text-green-400">Imported!</span>
+          <span className="text-xs text-green-600 dark:text-green-400">Imported!</span>
         )}
       </div>
 

@@ -160,8 +160,8 @@ export default function AgentsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-sm font-boldtext-foreground">Agent Roster</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-sm font-bold text-foreground">Agent Roster</h1>
+        <p className="text-xs text-muted-foreground mt-1">
           Three tiers: Engine agents run the PSM process, New Hires solve
           specific problem clusters, Skills are their capabilities
         </p>
@@ -406,7 +406,7 @@ export default function AgentsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-foreground">{evalResult.agent_name}</span>
+                    <span className="text-xs font-medium text-foreground">{evalResult.agent_name}</span>
                     <span className="text-[10px] text-muted-foreground">{evalResult.agent_id}</span>
                     {!evalResult.passed && <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-300">rejected</span>}
                   </div>
@@ -676,7 +676,7 @@ export default function AgentsPage() {
       {/* Summary */}
       <div className="bg-card border border-border rounded-xl p-5">
         <h2 className="text-sm font-semibold text-foreground mb-3">Agent Summary</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
           <div>
             <span className="text-muted-foreground">Tier 1 — Engine:</span>{" "}
             <span className="text-foreground">{engineAgents.length}</span>

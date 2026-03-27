@@ -59,7 +59,7 @@ export function ProblemIntakeForm({ onSubmit }: ProblemIntakeFormProps) {
   }
 
   const inputClass =
-    "w-full bg-muted border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
+    "w-full bg-muted border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
   const labelClass = "block text-xs font-medium text-muted-foreground mb-1.5";
 
   return (
@@ -145,12 +145,12 @@ export function ProblemIntakeForm({ onSubmit }: ProblemIntakeFormProps) {
         <button
           type="submit"
           disabled={!title.trim() || !description.trim()}
-          className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
           Add Problem
         </button>
         {success && (
-          <span className="text-sm text-green-600 dark:text-green-400">Added!</span>
+          <span className="text-xs text-green-600 dark:text-green-400">Added!</span>
         )}
       </div>
     </form>

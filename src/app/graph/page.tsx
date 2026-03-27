@@ -164,8 +164,8 @@ export default function GraphPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-sm font-boldtext-foreground">Relationship Graph</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-sm font-bold text-foreground">Relationship Graph</h1>
+        <p className="text-xs text-muted-foreground mt-1">
           Problems → Patterns → Hypotheses → Agent New Hires
         </p>
       </div>

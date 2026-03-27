@@ -85,7 +85,7 @@ export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onT
 
         <button
           onClick={onSearch}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-muted-foreground hover:bg-accent transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-muted-foreground hover:bg-accent transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
           title={collapsed ? "Search (⌘K)" : undefined}
         >
           <Search size={18} className="flex-shrink-0" />
@@ -94,7 +94,7 @@ export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onT
 
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-muted-foreground hover:bg-accent transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-muted-foreground hover:bg-accent transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
           title={collapsed ? (theme === "dark" ? "Light mode" : "Dark mode") : undefined}
         >
           {theme === "dark" ? <Sun size={18} className="flex-shrink-0" /> : <Moon size={18} className="flex-shrink-0" />}
@@ -103,7 +103,7 @@ export function Nav({ collapsed, onToggle, onSearch }: { collapsed: boolean; onT
 
         <button
           onClick={onToggle}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           {!collapsed && <span>Collapse</span>}

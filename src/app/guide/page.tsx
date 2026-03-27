@@ -239,8 +239,8 @@ export default function GuidePage() {
   return (
     <div className="max-w-4xl space-y-6">
       <div>
-        <h1 className="text-sm font-boldtext-foreground">How To Use PSM</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-sm font-bold text-foreground">How To Use PSM</h1>
+        <p className="text-xs text-muted-foreground mt-1">
           A step-by-step guide to getting the most out of Problem Solution Mapping.
         </p>
         <div className="flex items-center gap-2 mt-3">

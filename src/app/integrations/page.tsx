@@ -27,10 +27,10 @@ export default function IntegrationsPage() {
     <div className="space-y-8">
       <div>
         <div className="flex items-center gap-2">
-          <h1 className="text-sm font-boldtext-foreground">Integration Sources</h1>
+          <h1 className="text-sm font-bold text-foreground">Integration Sources</h1>
           <InfoTooltip text={tooltips.integrationSource} />
         </div>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           External data feeds into the pipeline. {ingestionRecords.length} records
           ingested, {totalStructured} structured into problems.
         </p>
@@ -59,7 +59,7 @@ export default function IntegrationsPage() {
           </div>
         </div>
         <div className="bg-card border border-border rounded-lg overflow-hidden">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-border">
                 <th className="text-left py-2.5 px-4 text-xs text-muted-foreground font-medium w-8">Source</th>

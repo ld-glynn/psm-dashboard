@@ -8,7 +8,7 @@ import { tooltips } from "@/lib/tooltip-content";
 const DOMAINS = ["process", "tooling", "communication", "knowledge", "infrastructure", "people", "strategy", "customer", "other"];
 const SEVERITIES = ["critical", "high", "medium", "low"];
 
-const inputClass = "w-full bg-muted border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
+const inputClass = "w-full bg-muted border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
 const labelClass = "block text-xs font-medium text-muted-foreground mb-1.5";
 
 // --- Problem Edit ---
@@ -68,8 +68,8 @@ export function EditProblemModal({ open, onClose, initial, onSave }: EditProblem
           <input className={inputClass} value={tags} onChange={(e) => setTags(e.target.value)} placeholder="comma-separated" />
         </div>
         <div className="flex gap-3 pt-2 border-t border-border">
-          <button onClick={handleSave} className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
+          <button onClick={handleSave} className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
+          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>
@@ -111,8 +111,8 @@ export function EditPatternModal({ open, onClose, initial, onSave }: EditPattern
           <input className={inputClass} type="number" step="0.05" min="0" max="1" value={confidence} onChange={(e) => setConfidence(e.target.value)} />
         </div>
         <div className="flex gap-3 pt-2 border-t border-border">
-          <button onClick={handleSave} className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
+          <button onClick={handleSave} className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
+          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>
@@ -170,8 +170,8 @@ export function EditHypothesisModal({ open, onClose, initial, onSave }: EditHypo
           <textarea className={`${inputClass} min-h-[80px] resize-y`} value={testCriteria} onChange={(e) => setTestCriteria(e.target.value)} />
         </div>
         <div className="flex gap-3 pt-2 border-t border-border">
-          <button onClick={handleSave} className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
+          <button onClick={handleSave} className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
+          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>
@@ -215,8 +215,8 @@ export function EditAgentModal({ open, onClose, initial, onSave }: EditAgentProp
           <textarea className={`${inputClass} min-h-[120px] resize-y`} value={persona} onChange={(e) => setPersona(e.target.value)} />
         </div>
         <div className="flex gap-3 pt-2 border-t border-border">
-          <button onClick={handleSave} className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
-          <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
+          <button onClick={handleSave} className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 transition-colors">Save Changes</button>
+          <button onClick={onClose} className="px-4 py-2 text-xs rounded-md bg-accent text-muted-foreground hover:bg-accent transition-colors">Cancel</button>
         </div>
       </div>
     </Modal>

@@ -122,7 +122,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search problems, patterns, agents, pages..."
-            className="flex-1 bg-transparent py-3 text-sm text-foreground placeholder-muted-foreground focus:outline-none"
+            className="flex-1 bg-transparent py-3 text-xs text-foreground placeholder-muted-foreground focus:outline-none"
           />
           <kbd className="text-[10px] text-muted-foreground/50 border border-border rounded px-1.5 py-0.5">ESC</kbd>
         </div>
@@ -145,7 +145,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
                   {result.type}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-foreground truncate">{result.title}</div>
+                  <div className="text-xs text-foreground truncate">{result.title}</div>
                   <div className="text-[10px] text-muted-foreground truncate">{result.subtitle}</div>
                 </div>
               </button>

@@ -21,7 +21,7 @@ export function ThemeList({ data }: { data: PipelineData }) {
                 Priority {theme.priority_score.toFixed(1)}
               </span>
             </div>
-            <p className="text-sm text-muted-foreground mb-3">{theme.summary}</p>
+            <p className="text-xs text-muted-foreground mb-3">{theme.summary}</p>
             <div className="flex flex-wrap gap-2">
               {theme.pattern_ids.map((pid) => {
                 const pat = patternMap[pid];

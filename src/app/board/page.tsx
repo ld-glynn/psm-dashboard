@@ -74,10 +74,10 @@ export default function BoardPage() {
       <div className="mb-4 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-sm font-boldtext-foreground">Board View</h1>
+            <h1 className="text-sm font-bold text-foreground">Board View</h1>
             <InfoTooltip text={tooltips.reviewStatus} />
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Click cards to review — approve, reject, or edit inline
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function BoardPage() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+            className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
               activeTab === tab.key ? "bg-accent text-foreground" : "text-muted-foreground hover:text-secondary-foreground hover:bg-accent"
             }`}
           >
@@ -283,7 +283,7 @@ export default function BoardPage() {
             <button
               key={tab}
               onClick={() => setProblemTab(tab)}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+              className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
                 problemTab === tab ? "bg-accent text-foreground" : "text-muted-foreground hover:text-secondary-foreground hover:bg-accent"
               }`}
             >
