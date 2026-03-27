@@ -63,7 +63,7 @@ export default function IntakePage() {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="space-y-8">
       <div>
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-white">Report Problems</h1>

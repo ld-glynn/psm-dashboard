@@ -162,7 +162,7 @@ export default function GraphPage() {
   }, [data]);
 
   return (
-    <div className="max-w-full mx-auto">
+    <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Relationship Graph</h1>
         <p className="text-sm text-white/40 mt-1">

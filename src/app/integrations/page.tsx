@@ -21,7 +21,7 @@ export default function IntegrationsPage() {
   const totalUnstructured = ingestionRecords.length - totalStructured;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="space-y-8">
       <div>
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-white">Integration Sources</h1>

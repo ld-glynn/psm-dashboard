@@ -24,7 +24,7 @@ export default function Home() {
   const ingestionCount = ingestionRecords.length;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="space-y-8">
       <div>
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-white">Problem Solution Mapping</h1>

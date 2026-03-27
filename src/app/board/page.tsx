@@ -68,7 +68,7 @@ export default function BoardPage() {
   const activeFilterCount = filter === "all" ? 0 : 1;
 
   return (
-    <div className="max-w-full mx-auto">
+    <div>
       <div className="mb-4 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">

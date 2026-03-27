@@ -157,7 +157,7 @@ export default function AgentsPage() {
   const skillTrends = computeSkillTypeTrends(data.newHires, skillFeedback);
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Agent Roster</h1>
         <p className="text-sm text-white/40 mt-1">
