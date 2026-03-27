@@ -2,7 +2,6 @@
 
 import { usePipelineData } from "@/lib/use-pipeline-data";
 import { IntegrationCard } from "@/components/IntegrationCard";
-import { IntegrationFlow } from "@/components/IntegrationFlow";
 import { sourceColors, integrationStatusColor } from "@/lib/colors";
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { tooltips } from "@/lib/tooltip-content";
@@ -43,13 +42,6 @@ export default function IntegrationsPage() {
           />
         ))}
       </div>
-
-      {/* Data flow visualization */}
-      <IntegrationFlow
-        integrations={integrations}
-        ingestionRecords={ingestionRecords}
-        totalProblems={data.catalog.length}
-      />
 
       {/* Recent ingestion records */}
       <div>
