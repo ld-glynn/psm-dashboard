@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Nav } from "@/components/Nav";
+import { AppShell } from "@/components/AppShell";
 
 export const metadata: Metadata = {
   title: "PSM Dashboard",
@@ -15,8 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-[#0a0a0f] antialiased">
-        <Nav />
-        <main className="ml-52 px-4 py-4">{children}</main>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

@@ -6,7 +6,6 @@ import {
   Database, PlusCircle, BarChart3, Columns3, GitBranch,
   Users, Briefcase, HelpCircle, ChevronLeft, ChevronRight,
 } from "lucide-react";
-import { useState } from "react";
 
 const links = [
   { href: "/integrations", label: "Sources", icon: Database },
@@ -22,9 +21,8 @@ const bottomLinks = [
   { href: "/guide", label: "Guide", icon: HelpCircle },
 ];
 
-export function Nav() {
+export function Nav({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <nav className={`fixed left-0 top-0 h-screen bg-[#0d0d14] border-r border-[#2a2a3e] flex flex-col z-50 transition-all duration-200 ${collapsed ? "w-16" : "w-52"}`}>
@@ -83,9 +81,8 @@ export function Nav() {
           );
         })}
 
-        {/* Collapse toggle */}
         <button
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={onToggle}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/20 hover:text-white/40 hover:bg-white/5 transition-colors w-full ${collapsed ? "justify-center px-0" : ""}`}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
