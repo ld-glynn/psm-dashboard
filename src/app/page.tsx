@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePipelineData } from "@/lib/use-pipeline-data";
+import { Card, CardContent } from "@/components/ui/card";
 import { Database, BarChart3, Columns3, Users, Briefcase, ArrowRight, AlertCircle, CheckCircle2, Clock, Plus } from "lucide-react";
 
 export default function DashboardPage() {
@@ -20,7 +21,6 @@ export default function DashboardPage() {
   const totalOutputs = (data.skillOutputs || []).length;
   const feedbackCount = Object.keys(skillFeedback).length;
 
-  // Quick stats
   const stats = [
     { label: "Problems", value: data.catalog.length, sub: draftCount > 0 ? `${draftCount} drafts` : "cataloged", color: "text-orange-600 dark:text-orange-400" },
     { label: "Patterns", value: data.patterns.length, sub: `from ${data.catalog.length} problems`, color: "text-amber-600 dark:text-yellow-400" },
@@ -30,7 +30,6 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-sm font-bold text-foreground">Dashboard</h1>
         <p className="text-xs text-muted-foreground mt-1">
@@ -42,61 +41,66 @@ export default function DashboardPage() {
       {/* Pipeline stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-card border border-border rounded-xl p-4">
-            <div className={`text-base font-bold ${stat.color}`}>{stat.value}</div>
-            <div className="text-xs text-secondary-foreground mt-1">{stat.label}</div>
-            <div className="text-xs text-muted-foreground mt-0.5">{stat.sub}</div>
-          </div>
+          <Card key={stat.label}>
+            <CardContent className="p-4">
+              <div className={`text-base font-bold ${stat.color}`}>{stat.value}</div>
+              <div className="text-xs text-foreground mt-1">{stat.label}</div>
+              <div className="text-[10px] text-muted-foreground mt-0.5">{stat.sub}</div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
       {/* Action cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {/* Items needing attention */}
         {unreviewedCount > 0 && (
-          <Link href="/board" className="bg-card border border-orange-200 dark:border-orange-500/20 rounded-xl p-4 hover:border-orange-300 dark:border-orange-500/40 transition-colors group">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-9 h-9 rounded-lg bg-orange-100 dark:bg-orange-500/10 flex items-center justify-center">
-                <AlertCircle size={18} className="text-orange-600 dark:text-orange-400" />
-              </div>
-              <div className="flex-1">
-                <div className="text-xs font-medium text-foreground">{unreviewedCount} items need review</div>
-                <div className="text-xs text-muted-foreground">Problems, patterns, hypotheses awaiting approval</div>
-              </div>
-              <ArrowRight size={14} className="text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
-            </div>
+          <Link href="/board">
+            <Card className="hover:border-orange-400 transition-colors">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-orange-100 dark:bg-orange-500/10 flex items-center justify-center shrink-0">
+                  <AlertCircle size={18} className="text-orange-600 dark:text-orange-400" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-xs font-medium text-foreground">{unreviewedCount} items need review</div>
+                  <div className="text-[10px] text-muted-foreground">Problems, patterns, hypotheses awaiting approval</div>
+                </div>
+                <ArrowRight size={14} className="text-muted-foreground" />
+              </CardContent>
+            </Card>
           </Link>
         )}
 
-        {/* Proposed agents */}
         {proposedAgents > 0 && (
-          <Link href="/agents" className="bg-card border border-yellow-200 dark:border-yellow-500/20 rounded-xl p-4 hover:border-yellow-300 dark:border-yellow-500/40 transition-colors group">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-9 h-9 rounded-lg bg-yellow-100 dark:bg-yellow-500/10 flex items-center justify-center">
-                <Users size={18} className="text-amber-600 dark:text-yellow-400" />
-              </div>
-              <div className="flex-1">
-                <div className="text-xs font-medium text-foreground">{proposedAgents} agents proposed</div>
-                <div className="text-xs text-muted-foreground">Ready for deployment approval</div>
-              </div>
-              <ArrowRight size={14} className="text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
-            </div>
+          <Link href="/agents">
+            <Card className="hover:border-amber-400 transition-colors">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center shrink-0">
+                  <Users size={18} className="text-amber-600 dark:text-amber-400" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-xs font-medium text-foreground">{proposedAgents} agents proposed</div>
+                  <div className="text-[10px] text-muted-foreground">Ready for deployment approval</div>
+                </div>
+                <ArrowRight size={14} className="text-muted-foreground" />
+              </CardContent>
+            </Card>
           </Link>
         )}
 
-        {/* Drafts pending */}
         {draftCount > 0 && (
-          <Link href="/board" className="bg-card border border-blue-200 dark:border-blue-500/20 rounded-xl p-4 hover:border-blue-300 dark:border-blue-500/40 transition-colors group">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center">
-                <Plus size={18} className="text-blue-600 dark:text-blue-400" />
-              </div>
-              <div className="flex-1">
-                <div className="text-xs font-medium text-foreground">{draftCount} drafts pending</div>
-                <div className="text-xs text-muted-foreground">Ready to process through pipeline</div>
-              </div>
-              <ArrowRight size={14} className="text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
-            </div>
+          <Link href="/board">
+            <Card className="hover:border-blue-400 transition-colors">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center shrink-0">
+                  <Plus size={18} className="text-blue-600 dark:text-blue-400" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-xs font-medium text-foreground">{draftCount} drafts pending</div>
+                  <div className="text-[10px] text-muted-foreground">Ready to process through pipeline</div>
+                </div>
+                <ArrowRight size={14} className="text-muted-foreground" />
+              </CardContent>
+            </Card>
           </Link>
         )}
       </div>
@@ -104,17 +108,21 @@ export default function DashboardPage() {
       {/* Quick navigation */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { href: "/integrations", icon: Database, label: "Sources", desc: `${ingestionRecords.length} records ingested`, color: "blue" },
-          { href: "/pipeline", icon: BarChart3, label: "Pipeline", desc: "Run & configure stages", color: "emerald" },
-          { href: "/board", icon: Columns3, label: "Board", desc: "Review & approve items", color: "orange" },
-          { href: "/skills", icon: Briefcase, label: "Agent Work", desc: `${totalOutputs} deliverables`, color: "purple" },
+          { href: "/integrations", icon: Database, label: "Sources", desc: `${ingestionRecords.length} records ingested` },
+          { href: "/pipeline", icon: BarChart3, label: "Pipeline", desc: "Run & configure stages" },
+          { href: "/board", icon: Columns3, label: "Board", desc: "Review & approve items" },
+          { href: "/skills", icon: Briefcase, label: "Agent Work", desc: `${totalOutputs} deliverables` },
         ].map((item) => {
           const Icon = item.icon;
           return (
-            <Link key={item.href} href={item.href} className="bg-card border border-border rounded-xl p-4 hover:border-ring transition-colors group">
-              <Icon size={20} className={`text-${item.color}-400 mb-2`} />
-              <div className="text-xs font-medium text-foreground group-hover:text-foreground transition-colors">{item.label}</div>
-              <div className="text-xs text-muted-foreground mt-0.5">{item.desc}</div>
+            <Link key={item.href} href={item.href}>
+              <Card className="hover:border-ring transition-colors h-full">
+                <CardContent className="p-4">
+                  <Icon size={16} className="text-muted-foreground mb-2" />
+                  <div className="text-xs font-medium text-foreground">{item.label}</div>
+                  <div className="text-[10px] text-muted-foreground mt-0.5">{item.desc}</div>
+                </CardContent>
+              </Card>
             </Link>
           );
         })}
@@ -122,28 +130,30 @@ export default function DashboardPage() {
 
       {/* Recent activity */}
       {activityEvents.length > 0 && (
-        <div className="bg-card border border-border rounded-xl p-4">
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Recent Activity</h3>
-          <div className="space-y-2">
-            {activityEvents.slice(0, 5).map((event) => {
-              const diff = Date.now() - new Date(event.timestamp).getTime();
-              const mins = Math.floor(diff / 60000);
-              const timeAgo = mins < 1 ? "Just now" : mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`;
-              return (
-                <div key={event.id} className="flex items-center gap-3 text-xs">
-                  <span className="text-muted-foreground flex-1">{event.message}</span>
-                  <span className="text-muted-foreground/50 flex-shrink-0">{timeAgo}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <Card>
+          <CardContent className="p-4">
+            <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">Recent Activity</h3>
+            <div className="space-y-2">
+              {activityEvents.slice(0, 5).map((event) => {
+                const diff = Date.now() - new Date(event.timestamp).getTime();
+                const mins = Math.floor(diff / 60000);
+                const timeAgo = mins < 1 ? "Just now" : mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`;
+                return (
+                  <div key={event.id} className="flex items-center gap-3 text-xs">
+                    <span className="text-foreground flex-1">{event.message}</span>
+                    <span className="text-muted-foreground flex-shrink-0">{timeAgo}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Status bar */}
-      <div className="flex items-center gap-4 text-xs text-muted-foreground/50">
+      <div className="flex items-center gap-4 text-[10px] text-muted-foreground">
         <div className="flex items-center gap-1.5">
-          <div className={`w-1.5 h-1.5 rounded-full ${serverAvailable ? "bg-green-400" : "bg-red-400"}`} />
+          <div className={`w-1.5 h-1.5 rounded-full ${serverAvailable ? "bg-green-500" : "bg-red-500"}`} />
           {serverAvailable ? "API server connected" : "API server offline — using local data"}
         </div>
         <div className="flex items-center gap-1.5">

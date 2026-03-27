@@ -1,66 +1,27 @@
 "use client";
 
-import { useEffect } from "react";
-import { X } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
 interface SlideOverProps {
   open: boolean;
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  width?: string;
+  width?: string; // kept for backward compat
 }
 
-export function SlideOver({ open, onClose, title, children, width = "max-w-lg" }: SlideOverProps) {
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-      return () => { document.body.style.overflow = ""; };
-    }
-  }, [open]);
-
-  // Close on Escape
-  useEffect(() => {
-    if (!open) return;
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-    }
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [open, onClose]);
-
-  if (!open) return null;
-
+export function SlideOver({ open, onClose, title, children }: SlideOverProps) {
   return (
-    <div className="fixed inset-0 z-[100]">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-
-      {/* Panel */}
-      <div className={`absolute right-0 top-0 h-full ${width} w-full bg-muted border-l border-border shadow-2xl flex flex-col animate-slide-in`}>
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border flex-shrink-0">
-          <h2 className="text-sm font-semibold text-foreground">{title}</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-secondary-foreground transition-colors">
-            <X size={16} />
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto px-5 py-4">
+    <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <SheetContent side="right">
+        <SheetHeader>
+          <SheetTitle>{title}</SheetTitle>
+          <SheetDescription className="sr-only">{title}</SheetDescription>
+        </SheetHeader>
+        <div className="flex-1 overflow-y-auto px-4 py-4">
           {children}
         </div>
-      </div>
-
-      <style jsx>{`
-        @keyframes slideIn {
-          from { transform: translateX(100%); }
-          to { transform: translateX(0); }
-        }
-        .animate-slide-in {
-          animation: slideIn 0.2s ease-out;
-        }
-      `}</style>
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 }
