@@ -77,6 +77,17 @@ export default function BoardPage() {
           <p className="text-xs text-muted-foreground mt-1">
             Click cards to review — approve, reject, or edit inline
           </p>
+          <div className="flex gap-2 mt-2">
+            {[
+              { href: "/board/approach-a", label: "A: List" },
+              { href: "/board/approach-b", label: "B: Two-Panel" },
+              { href: "/board/approach-c", label: "C: Stepper" },
+              { href: "/board/approach-d", label: "D: Kanban+Slide" },
+              { href: "/board/approach-e", label: "E: Graph" },
+            ].map((a) => (
+              <a key={a.href} href={a.href} className="text-[10px] px-2 py-1 rounded border border-border text-foreground hover:bg-accent transition-colors">{a.label}</a>
+            ))}
+          </div>
         </div>
 
         {/* Create buttons */}
