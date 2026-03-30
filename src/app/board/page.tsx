@@ -216,6 +216,7 @@ export default function BoardPage() {
                   problemCount={pat.problem_ids.length}
                   confidence={pat.confidence}
                   domains={pat.domains_affected}
+                  problemTitles={pat.problem_ids.map((pid) => data.catalog.find((e) => e.problem_id === pid)?.title).filter(Boolean) as string[]}
                   reviewStatus={reviews[pat.pattern_id]?.status || "unreviewed"}
                   onReview={(status) => setReview(pat.pattern_id, "pattern", status)}
                   onSaveEdits={(edits) => saveEdits(pat.pattern_id, "pattern", edits)}
@@ -243,6 +244,8 @@ export default function BoardPage() {
                   effort={hyp.effort_estimate}
                   confidence={hyp.confidence}
                   testCriteria={hyp.test_criteria}
+                  patternName={data.patterns.find((p) => p.pattern_id === hyp.pattern_id)?.name}
+                  problemTitles={(() => { const pat = data.patterns.find((p) => p.pattern_id === hyp.pattern_id); return pat ? pat.problem_ids.map((pid) => data.catalog.find((e) => e.problem_id === pid)?.title).filter(Boolean) as string[] : []; })()}
                   reviewStatus={reviews[hyp.hypothesis_id]?.status || "unreviewed"}
                   onReview={(status) => setReview(hyp.hypothesis_id, "hypothesis", status)}
                   onSaveEdits={(edits) => saveEdits(hyp.hypothesis_id, "hypothesis", edits)}

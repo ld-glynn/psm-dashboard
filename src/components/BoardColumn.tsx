@@ -240,10 +240,12 @@ export function ProblemCard({
 
 export function PatternCard({
   id, name, description, problemCount, confidence, domains,
+  problemTitles,
   reviewStatus, onReview, onSaveEdits, onEditModal,
 }: {
   id: string; name: string; description: string;
   problemCount: number; confidence: number; domains: string[];
+  problemTitles?: string[];
 } & ReviewProps) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -283,12 +285,22 @@ export function PatternCard({
       ) : (
         <>
           <div className="text-xs font-medium text-foreground leading-snug">{name}</div>
+          {problemTitles && problemTitles.length > 0 && (
+            <div className="mt-1.5 space-y-0.5">
+              {problemTitles.slice(0, 3).map((title, i) => (
+                <div key={i} className="text-[10px] text-muted-foreground flex items-start gap-1.5">
+                  <span className="text-muted-foreground mt-0.5">·</span>
+                  <span className="line-clamp-1">{title}</span>
+                </div>
+              ))}
+              {problemTitles.length > 3 && (
+                <div className="text-[10px] text-muted-foreground pl-3">+{problemTitles.length - 3} more</div>
+              )}
+            </div>
+          )}
           {expanded && (
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>
           )}
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-500/10 text-amber-700 dark:text-yellow-300">{problemCount} problems</span>
-          </div>
         </>
       )}
 
@@ -305,11 +317,14 @@ const OUTCOMES: HypothesisOutcome[] = ["untested", "testing", "validated", "inva
 
 export function HypothesisCard({
   id, statement, effort, confidence, testCriteria,
+  patternName, problemTitles,
   reviewStatus, onReview, onSaveEdits, onEditModal,
   outcome, onSetOutcome,
 }: {
   id: string; statement: string; effort: string;
   confidence: number; testCriteria: string[];
+  patternName?: string;
+  problemTitles?: string[];
   outcome?: HypothesisOutcome;
   onSetOutcome?: (outcome: HypothesisOutcome) => void;
 } & ReviewProps) {
@@ -373,6 +388,24 @@ export function HypothesisCard({
       ) : (
         <>
           <div className="text-xs text-foreground leading-snug line-clamp-3">{statement}</div>
+          {patternName && (
+            <div className="mt-1.5 border-l-2 border-amber-300 dark:border-amber-500/40 pl-2">
+              <div className="text-[10px] font-medium text-foreground">{patternName}</div>
+              {problemTitles && problemTitles.length > 0 && (
+                <div className="mt-0.5 space-y-0.5">
+                  {problemTitles.slice(0, 3).map((title, i) => (
+                    <div key={i} className="text-[10px] text-muted-foreground flex items-start gap-1.5">
+                      <span className="mt-0.5">·</span>
+                      <span className="line-clamp-1">{title}</span>
+                    </div>
+                  ))}
+                  {problemTitles.length > 3 && (
+                    <div className="text-[10px] text-muted-foreground pl-3">+{problemTitles.length - 3} more</div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
           {expanded && (
             <div className="mt-2 space-y-1">
               {testCriteria.map((tc, i) => (
