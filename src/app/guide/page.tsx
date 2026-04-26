@@ -39,8 +39,55 @@ const SECTIONS: GuideSection[] = [
       },
       {
         title: "Online vs. offline mode",
-        description: "The dashboard works in two modes. When the API server is running (green 'Server Connected' badge on the Pipeline page), it fetches live data and can trigger real pipeline runs. When offline, it uses sample data and localStorage — you can still explore the UI, add drafts, and review items.",
+        description: "The dashboard works in two modes. When the API server is running (green 'Server Connected' badge on the Pipeline page), it fetches live data and can trigger real pipeline runs. When offline, it uses sample data and localStorage — you can still explore the UI and review items.",
         tip: "Start the server with: uvicorn psm.server:app --reload --port 8000",
+      },
+    ],
+  },
+  {
+    id: "engine-agents",
+    icon: Settings,
+    title: "Engine Agents — What Powers the Pipeline",
+    subtitle: "The Tier 1 AI agents that run each stage of PSM",
+    steps: [
+      {
+        title: "Scout (Wisdom Adapter)",
+        description: "Queries the Enterpret Wisdom knowledge graph to discover experimentation-related themes from Gong calls, Zendesk tickets, Slack messages, G2 reviews, and Jira tickets. Filters by experimentation keywords, enriches each theme with customer feedback samples and upstream source attribution, then generates a one-line summary, a synthesis of why it matters, and a specific agent opportunity idea for each theme.",
+        tip: "The Scout uses two Claude Haiku calls for summarization and excerpt extraction, keeping costs low while processing hundreds of themes.",
+      },
+      {
+        title: "Structurer",
+        description: "Converts raw Wisdom themes into structured RawProblem objects. Extracts title, description, domain, and tags. Preserves provenance metadata: which sources contributed (Gong, Zendesk), how many mentions, what agent opportunity was identified. Falls back to a heuristic extractor if the LLM call fails, building descriptions from the synthesis and agent idea fields.",
+        tip: "Problems are batched 8 at a time to stay within token limits.",
+      },
+      {
+        title: "Cataloger",
+        description: "Normalizes raw problems into structured CatalogEntry objects. Assigns severity (low/medium/high/critical), domain classification, lowercase tags, reporter role, affected roles, frequency, and impact summary. Knows about your role as an Experimentation Specialist and classifies problems through that lens.",
+        tip: "Runs in batches of 20. Can use Haiku instead of Sonnet via pipeline config for cost savings.",
+      },
+      {
+        title: "Pattern Analyzer",
+        description: "Clusters related catalog entries into patterns — groups of problems that share a root cause. Identifies which domains are affected, proposes a root cause hypothesis, and assigns a confidence score. Also generates ThemeSummary objects that group patterns into higher-level themes with priority scores.",
+        tip: "Configurable: adjust min cluster size, max patterns, and clustering strictness (strict causal vs. loose thematic).",
+      },
+      {
+        title: "Solvability Evaluator",
+        description: "Filters patterns before hypothesis generation. Checks each pattern against the capability inventory (what kinds of agents the system can produce) and historical outcomes (which patterns were previously validated or invalidated). Assigns pass/flag/drop status with a reason. Only 'pass' patterns proceed to hypothesis generation.",
+        tip: "Historical trial verdicts automatically feed back into solvability scoring on the next pipeline run.",
+      },
+      {
+        title: "Hypothesis Generator",
+        description: "Proposes testable 'If/Then/Because' solutions for each surviving pattern. Frames hypotheses as operational agent workflows, NOT product features — e.g., 'If we build an agent that monitors Gong calls for expansion signals, then we'll identify 30% more opportunities.' Includes assumptions, expected outcomes, test criteria, effort estimates, and risks. Uses agent ideas from the Scout as strong guidance.",
+      },
+      {
+        title: "Hiring Manager",
+        description: "Creates specialist Agent New Hires — one per pattern. Designs a persona, assigns skills (recommend, action_plan, process_doc, investigate), and defines ongoing Job Functions with triggers, case schemas, decision rights, and performance metrics. Batches 2 patterns at a time to prevent output truncation. Agents go through a screening gate before being proposed.",
+        tip: "The Hiring Manager receives the full onboarding context describing your role, so it creates agents tailored to an experimentation specialist.",
+      },
+      {
+        title: "Screening Gate",
+        description: "A quality check before an agent is proposed. For each of the agent's skills, generates a test case and invokes the actual skill executor. Scores the output on 5 criteria: content length, references to input IDs (proves it read the context), hallucination check, next steps, and domain keyword coverage. Must pass 100% with zero hard failures.",
+        tip: "This is a 'can you do the job' smoke test, not hypothesis validation. Hypothesis validation happens through Trials after deployment.",
       },
     ],
   },
@@ -64,26 +111,16 @@ const SECTIONS: GuideSection[] = [
   {
     id: "intake",
     icon: Plus,
-    title: "Intake — Adding Problems",
-    subtitle: "Three ways to report problems",
+    title: "Sources — Adding Problems",
+    subtitle: "How problems enter the system",
     steps: [
       {
-        title: "Manual entry",
-        description: "The 'Manual Entry' tab has a form for individual problems. Fill in title (required), description (required), reporter, domain, severity, and tags. Click 'Add Problem' — it becomes a draft.",
+        title: "Integration sources",
+        description: "Problems are ingested from connected integrations (Salesforce, Gong, Slack, Wisdom). Go to the Sources page to see connected integrations, toggle them on/off, and trigger syncs.",
       },
       {
-        title: "CSV bulk import",
-        description: "The 'CSV Bulk Import' tab lets you paste CSV data or upload a .csv file. Required columns: title, description. Optional: reported_by, domain, severity, tags. Click 'Preview' to check parsing, then 'Import' to add all rows as drafts.",
-        tip: "Tags in CSV should be separated by semicolons (;) within the field, since commas separate columns.",
-      },
-      {
-        title: "AI-powered parsing",
-        description: "The 'AI Parse' tab is for unstructured text — paste a meeting transcript, support ticket, Slack thread, or any text. Click 'Extract Problems' and the AI will identify discrete problems. Review each suggestion: accept, edit, or reject. Related existing problems are shown below each suggestion.",
-        tip: "When the API server is connected, this uses Claude for intelligent extraction. When offline, it uses keyword-based parsing.",
-      },
-      {
-        title: "Processing drafts",
-        description: "After adding problems, they appear in the table below as drafts. Select them with checkboxes, then: 'Export JSON/CSV' to download for external processing, 'Simulate Pipeline' to run mock processing, or 'Import Results' to load results from a real pipeline run.",
+        title: "Manual patterns and hypotheses",
+        description: "On the Board page, use the Pattern and Hypothesis create buttons to manually add entries. Manual entries are merged into the pipeline alongside auto-generated ones.",
       },
     ],
   },
@@ -133,8 +170,8 @@ const SECTIONS: GuideSection[] = [
         description: "Click the Edit (pencil) button on an expanded card to modify its fields directly — title, description, severity, domain, tags, etc. Click Save to apply edits or Cancel to discard. Edits are stored as overlays on the original data.",
       },
       {
-        title: "Problem sources",
-        description: "Expanded problem cards show a 'Sources' section listing which integration records support this problem. Click '+ Add' to manually link a source. Source badges (tiny colored icons) appear on collapsed cards too.",
+        title: "Problem sources & evidence",
+        description: "Problem cards show source badges (Gong, ZendeskSupport, etc.) indicating which data sources contributed to discovering this problem. Expand a card to see the full evidence: impact summary, affected roles, frequency, agent opportunity idea, and the actual customer feedback references from each source.",
       },
       {
         title: "Hypothesis outcomes",
@@ -211,7 +248,7 @@ const SECTIONS: GuideSection[] = [
       },
       {
         title: "Data persists in your browser",
-        description: "All review states, feedback, drafts, and configuration are saved in your browser's localStorage. Clearing browser data will reset everything. When the API server is running, pipeline data comes from the server instead.",
+        description: "All review states, feedback, and configuration are saved in your browser's localStorage. Clearing browser data will reset everything. When the API server is running, pipeline data comes from the server instead.",
       },
     ],
   },

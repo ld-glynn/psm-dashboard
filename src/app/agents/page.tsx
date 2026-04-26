@@ -8,7 +8,14 @@ import { skillRatingStyle } from "@/lib/colors";
 import { approveSpec, deployAgent, invokeAgent, pauseAgent, resumeAgent, retireAgent } from "@/lib/api-client";
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { tooltips } from "@/lib/tooltip-content";
-import type { SkillRating } from "@/lib/types";
+import type { SkillRating, Trial } from "@/lib/types";
+import { TrialStatusDisplay } from "@/components/TrialStatus";
+import { TrialSetup } from "@/components/TrialSetup";
+import { TrialCheckIn } from "@/components/TrialCheckIn";
+import { TrialVerdictModal } from "@/components/TrialVerdict";
+import { RegisterAgentFlow } from "@/components/RegisterAgentFlow";
+import { createTrial, startTrial, addTrialCheckIn, renderTrialVerdict } from "@/lib/api-client";
+import { useEntityDetail } from "@/lib/entity-detail-context";
 
 const skillTypeLabels: Record<string, string> = {
   recommend: "Recommend",
@@ -133,9 +140,14 @@ function SkillFeedbackUI({
 }
 
 export default function AgentsPage() {
-  const { data, skillFeedback, rateSkill, serverAvailable } = usePipelineData();
+  const { openDetail } = useEntityDetail();
+  const { data, skillFeedback, rateSkill, serverAvailable, getTrialForAgent, saveTrial } = usePipelineData();
   const [lifecycleFilter, setLifecycleFilter] = useState<string>("all");
   const [expandedWork, setExpandedWork] = useState<Set<string>>(new Set());
+  const [registerOpen, setRegisterOpen] = useState(false);
+  const [trialSetupAgent, setTrialSetupAgent] = useState<string | null>(null);
+  const [trialCheckInId, setTrialCheckInId] = useState<string | null>(null);
+  const [trialVerdictId, setTrialVerdictId] = useState<string | null>(null);
 
   const patternMap = Object.fromEntries(data.patterns.map((p) => [p.pattern_id, p]));
   const hypMap = Object.fromEntries(data.hypotheses.map((h) => [h.hypothesis_id, h]));
@@ -190,6 +202,14 @@ export default function AgentsPage() {
           </div>
           <h2 className="text-sm font-semibold text-foreground inline">Agent New Hires</h2><InfoTooltip text={tooltips.agentNewHires} />
           <span className="text-xs text-muted-foreground">{data.newHires.length} specialists</span>
+          {serverAvailable && (
+            <button
+              onClick={() => setRegisterOpen(true)}
+              className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 transition-colors"
+            >
+              Register Existing Agent
+            </button>
+          )}
         </div>
 
         {/* Lifecycle state summary + filter */}
@@ -260,7 +280,7 @@ export default function AgentsPage() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-foreground">{agent.name}</h3>
+                      <h3 className="font-semibold text-foreground cursor-pointer hover:text-blue-500 transition-colors" onClick={() => openDetail("agent", agent.agent_id)}>{agent.name}</h3>
                       <span className={`text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wide font-medium ${stateBadgeStyles[state] || ""}`}>
                         {state}
                       </span>
@@ -308,8 +328,34 @@ export default function AgentsPage() {
                 <p className="text-xs text-muted-foreground leading-relaxed mb-3">{agent.persona}</p>
 
                 {pattern && (
-                  <div className="text-xs px-2 py-1 rounded bg-yellow-50 dark:bg-yellow-500/8 border border-yellow-200 dark:border-yellow-500/15 text-amber-700 dark:text-yellow-300/70 mb-3 inline-block">
-                    Owns: {pattern.name} ({pattern.problem_ids.length} problems)
+                  <div className="mb-3 space-y-2">
+                    <div className="text-xs px-2 py-1 rounded bg-accent border border-border text-foreground inline-block">
+                      Owns: {pattern.name} ({pattern.problem_ids.length} problems)
+                    </div>
+                    {/* Evidence trail */}
+                    {(pattern.upstream_sources?.length || pattern.agent_ideas?.length) ? (
+                      <div className="text-[11px] space-y-1.5">
+                        {pattern.upstream_sources && pattern.upstream_sources.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
+                            <span className="text-[9px] text-muted-foreground uppercase tracking-wide mr-1">Evidence from:</span>
+                            {pattern.upstream_sources.map((s) => (
+                              <span key={s} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">{s}</span>
+                            ))}
+                            {pattern.source_record_ids && (
+                              <span className="text-[9px] text-muted-foreground">({pattern.source_record_ids.length} records)</span>
+                            )}
+                          </div>
+                        )}
+                        {pattern.agent_ideas && pattern.agent_ideas.length > 0 && (
+                          <div className="bg-blue-500/5 border border-blue-500/20 rounded px-2 py-1.5">
+                            <span className="text-[9px] text-blue-600 dark:text-blue-400 uppercase tracking-wide">Suggested agents:</span>
+                            {pattern.agent_ideas.slice(0, 3).map((idea, idx) => (
+                              <p key={idx} className="text-[10px] text-muted-foreground leading-relaxed mt-0.5">{idea}</p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ) : null}
                   </div>
                 )}
 
@@ -338,6 +384,22 @@ export default function AgentsPage() {
                     })}
                   </div>
                 </div>
+
+                {/* Trial status */}
+                {(state === "deployed" || state === "active" || state === "proposed" || state === "approved") && (
+                  <TrialStatusDisplay
+                    trial={getTrialForAgent(agent.agent_id)}
+                    onStartTrial={() => setTrialSetupAgent(agent.agent_id)}
+                    onCheckIn={() => {
+                      const t = getTrialForAgent(agent.agent_id);
+                      if (t) setTrialCheckInId(t.trial_id);
+                    }}
+                    onVerdict={() => {
+                      const t = getTrialForAgent(agent.agent_id);
+                      if (t) setTrialVerdictId(t.trial_id);
+                    }}
+                  />
+                )}
 
                 {/* Work outputs (expandable) */}
                 {(outputsByAgent[agent.agent_id]?.length || 0) > 0 && (
@@ -480,6 +542,93 @@ export default function AgentsPage() {
           </div>
         </div>
       </div>
+
+      {/* Trial modals */}
+      {trialSetupAgent && (() => {
+        const agent = data.newHires.find((a) => a.agent_id === trialSetupAgent);
+        const hyp = agent ? hypMap[agent.hypothesis_ids?.[0]] : null;
+        return agent ? (
+          <TrialSetup
+            open
+            onClose={() => setTrialSetupAgent(null)}
+            agentId={agent.agent_id}
+            agentName={agent.name}
+            hypothesisId={agent.hypothesis_ids?.[0] || ""}
+            testCriteria={hyp?.test_criteria || ["Agent produces useful output"]}
+            onCreateTrial={async (params) => {
+              if (serverAvailable) {
+                const created = await createTrial(params);
+                await startTrial(created.trial_id);
+                saveTrial({ ...created, status: "active", started_at: new Date().toISOString(), ends_at: new Date(Date.now() + params.duration_days * 86400000).toISOString() });
+              } else {
+                const trial: Trial = {
+                  ...params, trial_id: `TRIAL-LOCAL-${Date.now()}`, pattern_id: hyp?.pattern_id || "",
+                  created_at: new Date().toISOString(), started_at: new Date().toISOString(),
+                  ends_at: new Date(Date.now() + params.duration_days * 86400000).toISOString(),
+                  completed_at: null, status: "active", check_ins: [], verdict: null, verdict_note: null, lessons_learned: [],
+                };
+                saveTrial(trial);
+              }
+            }}
+          />
+        ) : null;
+      })()}
+
+      {trialCheckInId && (() => {
+        const trial = getTrialForAgent(data.newHires.find((a) => getTrialForAgent(a.agent_id)?.trial_id === trialCheckInId)?.agent_id || "");
+        return trial ? (
+          <TrialCheckIn
+            open
+            onClose={() => setTrialCheckInId(null)}
+            trial={trial}
+            onSubmit={async (tid, note, progress) => {
+              if (serverAvailable) {
+                const updated = await addTrialCheckIn(tid, note, progress);
+                saveTrial(updated);
+              } else {
+                const ci = { check_in_id: `CI-${tid}-${trial.check_ins.length + 1}`, timestamp: new Date().toISOString(), note, progress_indicator: progress as any };
+                saveTrial({ ...trial, check_ins: [...trial.check_ins, ci] });
+              }
+            }}
+          />
+        ) : null;
+      })()}
+
+      {trialVerdictId && (() => {
+        const trial = getTrialForAgent(data.newHires.find((a) => getTrialForAgent(a.agent_id)?.trial_id === trialVerdictId)?.agent_id || "");
+        const hyp = trial ? hypMap[trial.hypothesis_id] : null;
+        return trial ? (
+          <TrialVerdictModal
+            open
+            onClose={() => setTrialVerdictId(null)}
+            trial={trial}
+            hypothesisStatement={hyp?.statement || ""}
+            onSubmit={async (tid, verdict, note, lessons, extendDays) => {
+              if (serverAvailable) {
+                const updated = await renderTrialVerdict(tid, verdict, note, lessons, extendDays);
+                saveTrial(updated);
+              } else {
+                saveTrial({
+                  ...trial,
+                  status: verdict === "extended" ? "active" : "completed",
+                  verdict: verdict as any,
+                  verdict_note: note,
+                  lessons_learned: lessons,
+                  completed_at: verdict === "extended" ? null : new Date().toISOString(),
+                  ends_at: verdict === "extended" ? new Date(Date.now() + (extendDays || 30) * 86400000).toISOString() : trial.ends_at,
+                });
+              }
+            }}
+          />
+        ) : null;
+      })()}
+
+      {/* Register Agent */}
+      <RegisterAgentFlow
+        open={registerOpen}
+        onClose={() => setRegisterOpen(false)}
+        onConfirmed={() => window.location.reload()}
+      />
     </div>
   );
 }

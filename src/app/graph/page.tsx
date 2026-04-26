@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEntityDetail, type EntityType } from "@/lib/entity-detail-context";
 import {
   ReactFlow,
   Background,
@@ -20,6 +22,9 @@ const nodeDefaults = {
 
 export default function GraphPage() {
   const { data } = usePipelineData();
+  const router = useRouter();
+  const { openDetail } = useEntityDetail();
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
 
   const nodes: Node[] = useMemo(() => {
     const n: Node[] = [];
@@ -161,31 +166,117 @@ export default function GraphPage() {
     return e;
   }, [data]);
 
+  const onNodeClick = useCallback((_event: any, node: Node) => {
+    setSelectedNode(node.id);
+  }, []);
+
+  // Build detail for selected node
+  const selectedDetail = useMemo(() => {
+    if (!selectedNode) return null;
+    const problem = data.catalog.find((e) => e.problem_id === selectedNode);
+    if (problem) return { type: "problem" as const, title: problem.title, description: problem.description_normalized, domain: problem.domain, severity: problem.severity, tags: problem.tags };
+    const pattern = data.patterns.find((p) => p.pattern_id === selectedNode);
+    if (pattern) return { type: "pattern" as const, title: pattern.name, description: pattern.description, root_cause: pattern.root_cause_hypothesis, confidence: pattern.confidence, problems: pattern.problem_ids.length, sources: pattern.upstream_sources, ideas: pattern.agent_ideas };
+    const hyp = data.hypotheses.find((h) => h.hypothesis_id === selectedNode);
+    if (hyp) return { type: "hypothesis" as const, title: hyp.statement.slice(0, 100), description: hyp.statement, effort: hyp.effort_estimate, confidence: hyp.confidence, criteria: hyp.test_criteria };
+    const agent = data.newHires.find((a) => a.agent_id === selectedNode);
+    if (agent) return { type: "agent" as const, title: agent.name, description: agent.persona, skills: agent.skills.map((s) => s.skill_type) };
+    return null;
+  }, [selectedNode, data]);
+
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-sm font-bold text-foreground">Relationship Graph</h1>
         <p className="text-xs text-muted-foreground mt-1">
-          Problems → Patterns → Hypotheses → Agent New Hires
+          Problems → Patterns → Hypotheses → Agent New Hires. Click any node for details.
         </p>
       </div>
-      <div
-        className="bg-sidebar border border-border rounded-xl overflow-hidden"
-        style={{ height: "calc(100vh - 180px)" }}
-      >
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          fitView
-          minZoom={0.3}
-          maxZoom={1.5}
-          proOptions={{ hideAttribution: true }}
-        >
-          <Background color="#e5e7eb" gap={20} />
-          <Controls
-            className="!bg-card !border-border !rounded-lg [&>button]:!bg-card [&>button]:!border-border [&>button]:!text-muted-foreground [&>button:hover]:!bg-secondary"
-          />
-        </ReactFlow>
+      <div className="flex gap-4" style={{ height: "calc(100vh - 180px)" }}>
+        <div className="flex-1 bg-sidebar border border-border rounded-xl overflow-hidden">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodeClick={onNodeClick}
+            fitView
+            minZoom={0.3}
+            maxZoom={1.5}
+            proOptions={{ hideAttribution: true }}
+          >
+            <Background color="#e5e7eb" gap={20} />
+            <Controls
+              className="!bg-card !border-border !rounded-lg [&>button]:!bg-card [&>button]:!border-border [&>button]:!text-muted-foreground [&>button:hover]:!bg-secondary"
+            />
+          </ReactFlow>
+        </div>
+
+        {/* Detail panel */}
+        {selectedDetail && (
+          <div className="w-80 bg-card border border-border rounded-xl p-4 overflow-y-auto shrink-0">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[9px] uppercase tracking-wide text-muted-foreground">{selectedDetail.type}</span>
+              <button onClick={() => setSelectedNode(null)} className="text-[10px] text-muted-foreground hover:text-foreground">close</button>
+            </div>
+            <h3 className="text-xs font-semibold text-foreground mb-2">{selectedDetail.title}</h3>
+            <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">{selectedDetail.description}</p>
+
+            {selectedDetail.type === "pattern" && (
+              <div className="space-y-2 text-[11px]">
+                {selectedDetail.confidence != null && <div className="text-muted-foreground">Confidence: {(selectedDetail.confidence * 100).toFixed(0)}%</div>}
+                {selectedDetail.problems != null && <div className="text-muted-foreground">{selectedDetail.problems} problems clustered</div>}
+                {selectedDetail.root_cause && <div><span className="text-foreground font-medium">Root cause:</span> <span className="text-muted-foreground">{selectedDetail.root_cause}</span></div>}
+                {selectedDetail.sources && selectedDetail.sources.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {selectedDetail.sources.map((s: string) => (
+                      <span key={s} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">{s}</span>
+                    ))}
+                  </div>
+                )}
+                {selectedDetail.ideas && selectedDetail.ideas.length > 0 && (
+                  <div className="mt-2 bg-blue-500/5 border border-blue-500/20 rounded px-2 py-1.5">
+                    <span className="text-[9px] text-blue-600 dark:text-blue-400 uppercase tracking-wide">Agent ideas</span>
+                    {selectedDetail.ideas.slice(0, 2).map((idea: string, i: number) => (
+                      <p key={i} className="text-[10px] text-muted-foreground mt-0.5">{idea}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {selectedDetail.type === "hypothesis" && (
+              <div className="space-y-2 text-[11px]">
+                <div className="text-muted-foreground">Effort: {selectedDetail.effort} | Confidence: {((selectedDetail.confidence || 0) * 100).toFixed(0)}%</div>
+                {selectedDetail.criteria && (
+                  <div>
+                    <span className="text-foreground font-medium">Test criteria:</span>
+                    <ul className="list-disc pl-4 text-muted-foreground mt-1">
+                      {selectedDetail.criteria.map((c: string, i: number) => <li key={i}>{c}</li>)}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {selectedDetail.type === "agent" && selectedDetail.skills && (
+              <div className="flex flex-wrap gap-1 mt-1">
+                {selectedDetail.skills.map((s: string, i: number) => (
+                  <span key={i} className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">{s}</span>
+                ))}
+              </div>
+            )}
+
+            <button
+              onClick={() => {
+                if (selectedNode && selectedDetail.type) {
+                  openDetail(selectedDetail.type as EntityType, selectedNode);
+                }
+              }}
+              className="mt-4 text-[10px] text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              View full detail →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

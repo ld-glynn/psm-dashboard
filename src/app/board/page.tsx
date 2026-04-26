@@ -14,10 +14,9 @@ import { SlideOver } from "@/components/SlideOver";
 import { CreatePatternForm } from "@/components/CreatePatternForm";
 import { CreateHypothesisForm } from "@/components/CreateHypothesisForm";
 import { ProblemIntakeForm } from "@/components/ProblemIntakeForm";
-import { BulkImport } from "@/components/BulkImport";
-import { AiIntake } from "@/components/AiIntake";
 import { EditProblemModal, EditPatternModal, EditHypothesisModal } from "@/components/EditEntryModal";
 import { tooltips } from "@/lib/tooltip-content";
+import { useEntityDetail } from "@/lib/entity-detail-context";
 import type { ReviewStatus } from "@/lib/types";
 
 type FilterMode = "all" | "unreviewed" | "approved" | "rejected";
@@ -32,18 +31,25 @@ const TABS: { key: TabMode; label: string; tooltipKey: keyof typeof tooltips }[]
 ];
 
 export default function BoardPage() {
+  const { openDetail } = useEntityDetail();
   const {
-    data, reviews, hypFeedback, serverAvailable,
+    data, reviews, hypFeedback, serverAvailable, ingestionRecords,
     setReview, saveEdits, setHypOutcome,
     addSourceToProblem, removeSourceFromProblem,
-    addDraft, addBulkDrafts, createPattern, createHypothesis,
+    createPattern, createHypothesis,
   } = usePipelineData();
+
+  // Build lookup: source_record_id → ingestion record's feedbackItems
+  const feedbackByRecordId = Object.fromEntries(
+    ingestionRecords
+      .filter((r) => r.feedbackItems && r.feedbackItems.length > 0)
+      .map((r) => [r.recordId, r.feedbackItems!])
+  );
   const [filter, setFilter] = useState<FilterMode>("all");
   const [activeTab, setActiveTab] = useState<TabMode>("all");
   const [createMode, setCreateMode] = useState<CreateMode>(null);
   const [editTarget, setEditTarget] = useState<{ type: string; data: any } | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [problemTab, setProblemTab] = useState<"manual" | "csv" | "ai">("manual");
 
   // Count review statuses
   const allIds = [
@@ -176,23 +182,31 @@ export default function BoardPage() {
             {data.catalog
               .filter((e) => matchesFilter(e.problem_id))
               .map((entry) => (
+                <div key={entry.problem_id} className="relative group">
+                  <button onClick={(e) => { e.stopPropagation(); openDetail("problem", entry.problem_id); }} className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 text-[8px] px-1 py-0.5 rounded bg-blue-600 text-white hover:bg-blue-500 transition-opacity" title="View full detail">Detail</button>
                 <ProblemCard
-                  key={entry.problem_id}
                   id={entry.problem_id}
                   title={entry.title}
                   severity={entry.severity}
                   domain={entry.domain}
                   tags={entry.tags}
                   description={entry.description_normalized}
-                  status={(entry as any).status === "draft" ? "draft" : undefined}
                   reviewStatus={reviews[entry.problem_id]?.status || "unreviewed"}
                   onReview={(status) => setReview(entry.problem_id, "catalog", status)}
                   onSaveEdits={(edits) => saveEdits(entry.problem_id, "catalog", edits)}
                   onEditModal={() => setEditTarget({ type: "problem", data: { id: entry.problem_id, title: entry.title, description: entry.description_normalized, severity: entry.severity, domain: entry.domain, tags: entry.tags } })}
+                  reporterRole={entry.reporter_role}
+                  affectedRoles={entry.affected_roles}
+                  frequency={entry.frequency}
+                  impactSummary={entry.impact_summary}
+                  agentIdea={entry.agent_idea}
+                  upstreamSources={entry.upstream_sources}
+                  feedbackItems={entry.source_record_ids?.flatMap((rid) => feedbackByRecordId[rid] || [])}
                   sources={(entry as any).sources || []}
                   onAddSource={(source) => addSourceToProblem(entry.problem_id, source)}
                   onRemoveSource={(sourceRecordId) => removeSourceFromProblem(entry.problem_id, sourceRecordId)}
                 />
+                </div>
               ))}
           </BoardColumn>
         )}
@@ -208,8 +222,9 @@ export default function BoardPage() {
             {data.patterns
               .filter((p) => matchesFilter(p.pattern_id))
               .map((pat) => (
+                <div key={pat.pattern_id} className="relative group">
+                  <button onClick={(e) => { e.stopPropagation(); openDetail("pattern", pat.pattern_id); }} className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 text-[8px] px-1 py-0.5 rounded bg-blue-600 text-white hover:bg-blue-500 transition-opacity" title="View full detail">Detail</button>
                 <PatternCard
-                  key={pat.pattern_id}
                   id={pat.pattern_id}
                   name={pat.name}
                   description={pat.description}
@@ -217,11 +232,16 @@ export default function BoardPage() {
                   confidence={pat.confidence}
                   domains={pat.domains_affected}
                   problemTitles={pat.problem_ids.map((pid) => data.catalog.find((e) => e.problem_id === pid)?.title).filter(Boolean) as string[]}
+                  rootCause={pat.root_cause_hypothesis}
+                  frequency={pat.frequency}
+                  upstreamSources={pat.upstream_sources}
+                  agentIdeas={pat.agent_ideas}
                   reviewStatus={reviews[pat.pattern_id]?.status || "unreviewed"}
                   onReview={(status) => setReview(pat.pattern_id, "pattern", status)}
                   onSaveEdits={(edits) => saveEdits(pat.pattern_id, "pattern", edits)}
                   onEditModal={() => setEditTarget({ type: "pattern", data: { id: pat.pattern_id, name: pat.name, description: pat.description, confidence: pat.confidence, domains: pat.domains_affected } })}
                 />
+                </div>
               ))}
           </BoardColumn>
         )}
@@ -237,13 +257,17 @@ export default function BoardPage() {
             {data.hypotheses
               .filter((h) => matchesFilter(h.hypothesis_id))
               .map((hyp) => (
+                <div key={hyp.hypothesis_id} className="relative group">
+                  <button onClick={(e) => { e.stopPropagation(); openDetail("hypothesis", hyp.hypothesis_id); }} className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 text-[8px] px-1 py-0.5 rounded bg-blue-600 text-white hover:bg-blue-500 transition-opacity" title="View full detail">Detail</button>
                 <HypothesisCard
-                  key={hyp.hypothesis_id}
                   id={hyp.hypothesis_id}
                   statement={hyp.statement}
                   effort={hyp.effort_estimate}
                   confidence={hyp.confidence}
                   testCriteria={hyp.test_criteria}
+                  assumptions={hyp.assumptions}
+                  expectedOutcome={hyp.expected_outcome}
+                  risks={hyp.risks}
                   patternName={data.patterns.find((p) => p.pattern_id === hyp.pattern_id)?.name}
                   problemTitles={(() => { const pat = data.patterns.find((p) => p.pattern_id === hyp.pattern_id); return pat ? pat.problem_ids.map((pid) => data.catalog.find((e) => e.problem_id === pid)?.title).filter(Boolean) as string[] : []; })()}
                   reviewStatus={reviews[hyp.hypothesis_id]?.status || "unreviewed"}
@@ -253,6 +277,7 @@ export default function BoardPage() {
                   outcome={hypFeedback[hyp.hypothesis_id]?.outcome || "untested"}
                   onSetOutcome={(outcome) => setHypOutcome(hyp.hypothesis_id, outcome)}
                 />
+                </div>
               ))}
           </BoardColumn>
         )}
@@ -260,29 +285,14 @@ export default function BoardPage() {
       </div>
 
       {/* Create Problem Slide-Over */}
-      <SlideOver open={createMode === "problem"} onClose={() => setCreateMode(null)} title="Add Problem">
-        <div className="flex items-center gap-1 mb-4 border-b border-border pb-3">
-          {(["manual", "csv", "ai"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setProblemTab(tab)}
-              className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
-                problemTab === tab ? "bg-accent text-foreground" : "text-muted-foreground hover:text-secondary-foreground hover:bg-accent"
-              }`}
-            >
-              {tab === "manual" ? "Manual" : tab === "csv" ? "CSV Import" : "AI Parse"}
-            </button>
-          ))}
-        </div>
-        {problemTab === "manual" && (
-          <ProblemIntakeForm onSubmit={(input) => { addDraft(input); setCreateMode(null); }} />
-        )}
-        {problemTab === "csv" && (
-          <BulkImport onImport={(inputs) => { addBulkDrafts(inputs); setCreateMode(null); }} />
-        )}
-        {problemTab === "ai" && (
-          <AiIntake catalog={data.catalog} serverAvailable={serverAvailable} onAccept={(input) => { addDraft(input); }} />
-        )}
+      <SlideOver open={createMode === "problem"} onClose={() => setCreateMode(null)} title="Create Problem">
+        <ProblemIntakeForm
+          onSubmit={(input) => {
+            // TODO: wire to backend API to create a problem directly
+            console.log("Create problem:", input);
+            setCreateMode(null);
+          }}
+        />
       </SlideOver>
 
       {/* Create Pattern Slide-Over */}

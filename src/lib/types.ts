@@ -19,6 +19,10 @@ export interface CatalogEntry {
   frequency: string | null;
   impact_summary: string | null;
   sources?: ProblemSource[];
+  // Provenance from Wisdom pipeline
+  upstream_sources?: string[];
+  source_record_ids?: string[];
+  agent_idea?: string | null;
 }
 
 export interface Pattern {
@@ -30,6 +34,9 @@ export interface Pattern {
   frequency: number;
   root_cause_hypothesis: string | null;
   confidence: number;
+  source_record_ids?: string[];
+  upstream_sources?: string[];
+  agent_ideas?: string[];
 }
 
 export interface ThemeSummary {
@@ -186,27 +193,14 @@ export interface EvalResult {
   case_results: EvalCaseResult[];
 }
 
-export type DraftPipelineStatus = "draft" | "exported" | "processing" | "completed";
-
-export interface DraftProblem {
-  problem_id: string;
-  title: string;
-  description: string;
-  reported_by: string;
-  domain: string;
-  severity: "low" | "medium" | "high" | "critical";
-  tags: string[];
-  status: DraftPipelineStatus;
-  created_at: string;
-}
-
 // --- Pipeline Runs ---
+
+export type PipelineRunStatus = "exported" | "processing" | "completed";
 
 export interface PipelineRun {
   runId: string;
-  draftIds: string[];
   exportedAt: string;
-  status: DraftPipelineStatus;
+  status: PipelineRunStatus;
   completedAt: string | null;
 }
 
@@ -251,6 +245,38 @@ export interface HypothesisFeedback {
   outcome: HypothesisOutcome;
   note: string | null;
   updatedAt: string;
+}
+
+// --- Trials ---
+
+export type TrialStatus = "setup" | "active" | "evaluating" | "completed";
+export type TrialVerdict = "validated" | "invalidated" | "extended" | "inconclusive";
+export type CheckInProgress = "on_track" | "at_risk" | "off_track";
+
+export interface TrialCheckIn {
+  check_in_id: string;
+  timestamp: string;
+  note: string;
+  progress_indicator: CheckInProgress;
+}
+
+export interface Trial {
+  trial_id: string;
+  agent_id: string;
+  hypothesis_id: string;
+  pattern_id: string;
+  duration_days: number;
+  success_criteria: string[];
+  check_in_frequency_days: number;
+  created_at: string;
+  started_at: string | null;
+  ends_at: string | null;
+  completed_at: string | null;
+  status: TrialStatus;
+  check_ins: TrialCheckIn[];
+  verdict: TrialVerdict | null;
+  verdict_note: string | null;
+  lessons_learned: string[];
 }
 
 // --- Cost Tracking ---
@@ -308,7 +334,7 @@ export interface SkillTypeTrend {
 
 // --- Integrations ---
 
-export type IntegrationSource = "salesforce" | "gong" | "slack" | "csv" | "manual";
+export type IntegrationSource = "salesforce" | "gong" | "slack" | "wisdom" | "csv" | "manual";
 export type IntegrationStatus = "connected" | "disconnected" | "error" | "mock";
 
 export interface IntegrationFilter {
@@ -334,9 +360,24 @@ export interface IngestionRecord {
   source: IntegrationSource;
   sourceRecordId: string | null;
   rawTextPreview: string;
+  rawTextFull?: string;
   ingestedAt: string;
   structured: boolean;
   extractedProblemId: string | null;
+  /**
+   * Optional provenance fields surfaced from the server's IngestionRecord.metadata.
+   * Present on live Wisdom records; absent on localStorage mock rows.
+   */
+  upstreamSources?: string[];
+  sourceCounts?: Record<string, number>;
+  feedbackSampleCount?: number;
+  feedbackItems?: { source: string; text: string; origin_id?: string; relevant_excerpt?: string }[];
+  summary?: string;
+  synthesis?: string;
+  agentIdea?: string;
+  matchedQueries?: string[];
+  cypherQuery?: string;
+  url?: string;
 }
 
 // --- Skill Outputs (deliverables) ---

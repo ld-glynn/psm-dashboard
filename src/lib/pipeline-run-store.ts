@@ -86,35 +86,30 @@ export function seedMockPipelineRuns(): void {
   const runs: PipelineRun[] = [
     {
       runId: "RUN-001",
-      draftIds: ["DRAFT-001", "DRAFT-002", "DRAFT-003", "DRAFT-004", "DRAFT-005"],
       exportedAt: "2026-03-10T09:15:00Z",
       status: "completed",
       completedAt: "2026-03-10T09:18:32Z",
     },
     {
       runId: "RUN-002",
-      draftIds: ["DRAFT-006", "DRAFT-007"],
       exportedAt: "2026-03-14T14:30:00Z",
       status: "completed",
       completedAt: "2026-03-14T14:33:15Z",
     },
     {
       runId: "RUN-003",
-      draftIds: ["DRAFT-008", "DRAFT-009", "DRAFT-010"],
       exportedAt: "2026-03-18T10:00:00Z",
       status: "completed",
       completedAt: "2026-03-18T10:04:47Z",
     },
     {
       runId: "RUN-004",
-      draftIds: ["DRAFT-011"],
       exportedAt: "2026-03-22T16:45:00Z",
       status: "completed",
       completedAt: "2026-03-22T16:46:20Z",
     },
     {
       runId: "RUN-005",
-      draftIds: ["DRAFT-012", "DRAFT-013", "DRAFT-014", "DRAFT-015"],
       exportedAt: "2026-03-25T11:00:00Z",
       status: "completed",
       completedAt: "2026-03-25T11:05:10Z",

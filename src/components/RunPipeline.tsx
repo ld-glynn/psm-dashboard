@@ -1,44 +1,97 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Play, RefreshCw, Loader2, Settings } from "lucide-react";
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { RunHistory } from "@/components/RunHistory";
 import { PipelineConfig } from "@/components/PipelineConfig";
 import { SlideOver } from "@/components/SlideOver";
+import { fetchRunHistory, type RunStatus } from "@/lib/api-client";
+
+const STAGE_LABELS: Record<string, string> = {
+  catalog: "Cataloging problems",
+  patterns: "Analyzing patterns",
+  solvability: "Evaluating solvability",
+  hypotheses: "Generating hypotheses",
+  hire: "Hiring agents",
+  specs: "Generating deployment specs",
+  execute: "Executing skills",
+};
 
 interface RunPipelineProps {
   serverAvailable: boolean;
-  onRunPipeline: (params: { stage?: string; withIntegrations?: boolean }) => Promise<void>;
+  onRunPipeline: (params: { stage?: string; start_stage?: string; withIntegrations?: boolean }) => Promise<void>;
   onSyncSources: () => Promise<void>;
-  onSimulateRun?: () => void;
 }
 
-export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources, onSimulateRun }: RunPipelineProps) {
+export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources }: RunPipelineProps) {
   const [running, setRunning] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [stage, setStage] = useState<string>("all");
+  const [startStage, setStartStage] = useState<string>("beginning");
   const [withIntegrations, setWithIntegrations] = useState(false);
   const [lastResult, setLastResult] = useState<string | null>(null);
+  const [progressMessage, setProgressMessage] = useState<string | null>(null);
+  const [completedStages, setCompletedStages] = useState<string[]>([]);
   const [historyKey, setHistoryKey] = useState(0);
   const [configOpen, setConfigOpen] = useState(false);
-  const [simulating, setSimulating] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopPolling = useCallback(() => {
+    if (pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  const startPolling = useCallback(() => {
+    // Poll run history for the latest running run
+    pollRef.current = setInterval(async () => {
+      try {
+        const runs = await fetchRunHistory();
+        const latest = runs[runs.length - 1];
+        if (latest && latest.status === "running") {
+          const stageLabel = latest.current_stage ? (STAGE_LABELS[latest.current_stage] || latest.current_stage) : null;
+          setProgressMessage(latest.progress_message || stageLabel || "Processing...");
+          setCompletedStages(latest.stages_completed || []);
+        }
+      } catch {
+        // ignore polling errors
+      }
+    }, 1500); // Poll every 1.5s for responsive progress
+    timerRef.current = setInterval(() => {
+      setElapsedSeconds((s) => s + 1);
+    }, 1000);
+  }, []);
 
   async function handleRun() {
     setRunning(true);
     setLastResult(null);
+    setProgressMessage("Starting pipeline...");
+    setCompletedStages([]);
+    setElapsedSeconds(0);
+    startPolling();
     try {
       await onRunPipeline({
         stage: stage === "all" ? undefined : stage,
+        start_stage: startStage === "beginning" ? undefined : startStage,
         withIntegrations,
       });
       setLastResult("Pipeline run completed");
-      setHistoryKey((k) => k + 1); // refresh history
+      setHistoryKey((k) => k + 1);
     } catch (e: any) {
       setLastResult(`Error: ${e.message}`);
       setHistoryKey((k) => k + 1);
     } finally {
+      stopPolling();
       setRunning(false);
+      setProgressMessage(null);
     }
   }
 
@@ -74,16 +127,27 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources, onS
         <div className="flex items-center gap-2 flex-wrap">
           <select
             className={selectClass}
+            value={startStage}
+            onChange={(e) => setStartStage(e.target.value)}
+            disabled={!serverAvailable || running}
+          >
+            <option value="beginning">From beginning</option>
+            <option value="patterns">From Patterns</option>
+            <option value="hypotheses">From Hypotheses</option>
+            <option value="hire">From Hiring</option>
+          </select>
+          <select
+            className={selectClass}
             value={stage}
             onChange={(e) => setStage(e.target.value)}
             disabled={!serverAvailable || running}
           >
-            <option value="all">All Stages</option>
-            <option value="catalog">Catalog only</option>
-            <option value="patterns">Through Patterns</option>
-            <option value="solvability">Through Solvability</option>
-            <option value="hypotheses">Through Hypotheses</option>
-            <option value="hire">Through Hiring</option>
+            <option value="all">Through all stages</option>
+            <option value="catalog">Stop after Catalog</option>
+            <option value="patterns">Stop after Patterns</option>
+            <option value="solvability">Stop after Solvability</option>
+            <option value="hypotheses">Stop after Hypotheses</option>
+            <option value="hire">Stop after Hiring</option>
             <option value="execute">Full + Execute</option>
           </select>
 
@@ -107,26 +171,6 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources, onS
             {running ? "Running..." : "Run Pipeline"}
           </button>
 
-          {onSimulateRun && (
-            <button
-              onClick={() => {
-                setSimulating(true);
-                setLastResult(null);
-                setTimeout(() => {
-                  onSimulateRun();
-                  setLastResult("Simulation complete — check Board for results");
-                  setSimulating(false);
-                  setHistoryKey((k) => k + 1);
-                }, 1500);
-              }}
-              disabled={simulating}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-amber-600 text-white hover:bg-amber-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              {simulating ? <Loader2 size={12} className="animate-spin" /> : <Play size={12} />}
-              {simulating ? "Simulating..." : "Simulate Run"}
-            </button>
-          )}
-
           <button
             onClick={handleSync}
             disabled={!serverAvailable || syncing}
@@ -145,7 +189,31 @@ export function RunPipeline({ serverAvailable, onRunPipeline, onSyncSources, onS
           </button>
         </div>
 
-        {lastResult && (
+        {/* Progress indicator */}
+        {running && progressMessage && (
+          <div className="mt-3 border border-border rounded-lg p-3 bg-background/50 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Loader2 size={12} className="animate-spin text-blue-500" />
+                <span className="text-xs font-medium text-foreground">{progressMessage}</span>
+              </div>
+              <span className="text-[10px] text-muted-foreground font-mono">
+                {Math.floor(elapsedSeconds / 60)}:{String(elapsedSeconds % 60).padStart(2, "0")}
+              </span>
+            </div>
+            {completedStages.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {completedStages.map((s) => (
+                  <span key={s} className="text-[9px] px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400">
+                    {STAGE_LABELS[s] || s} done
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {lastResult && !running && (
           <div className={`mt-2 text-xs ${lastResult.startsWith("Error") ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400"}`}>
             {lastResult}
           </div>

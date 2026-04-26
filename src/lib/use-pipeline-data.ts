@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { loadPipelineData } from "./data";
-import { getDrafts, saveDraft, saveDrafts, deleteDraft, nextDraftId, updateDraftStatus, seedMockDrafts } from "./draft-store";
 import { getReviews, setReview as storeSetReview, deleteReview as storeDeleteReview } from "./review-store";
 import {
   getSkillFeedback, setSkillFeedback as storeSetSkillFeedback,
@@ -19,32 +18,62 @@ import {
   clearCostEntries as storeClearCosts, getCostBudget, setCostBudget as storeSetBudget, nextCostId,
 } from "./cost-store";
 import { computeCostSummary, generateSimulatedCosts } from "./cost-utils";
-import { exportDraftsAsJSON, exportDraftsAsCSV, simulatePipelineRun } from "./pipeline-export";
 import {
   getIntegrations, toggleIntegration as storeToggleIntegration,
   getIngestionRecords, seedMockIntegrationData,
 } from "./integration-store";
 import { getSources, addSource as storeAddSource, removeSource as storeRemoveSource } from "./source-store";
+import { getTrials, saveTrial as storeSaveTrial, getTrialForAgent } from "./trial-store";
 import { getActivityEvents, addActivityEvent } from "./activity-store";
 import {
   getManualPatterns, saveManualPattern, nextManualPatternId,
   getManualHypotheses, saveManualHypothesis, nextManualHypothesisId,
 } from "./manual-entries-store";
 import { checkServerAvailable, triggerRun, triggerSync, fetchStageData } from "./api-client";
+import type { SyncParams, SyncResult } from "./api-client";
 import type {
-  DraftProblem, CatalogEntry, PipelineData, ReviewRecord, ReviewStatus, ReviewEntityType,
+  CatalogEntry, PipelineData, ReviewRecord, ReviewStatus, ReviewEntityType,
   SkillFeedback, SkillRating, HypothesisFeedback, HypothesisOutcome,
   PipelineRun, PipelineImportResult, StageCostEntry, CostBudget, CostSummary, PipelineStage,
   IntegrationConfig, IntegrationSource, IngestionRecord, ProblemSource,
-  Pattern, Hypothesis,
+  Pattern, Hypothesis, Trial,
 } from "./types";
 import type { ActivityEvent } from "./activity-store";
 
-function draftToCatalogEntry(d: DraftProblem): CatalogEntry & { status: string } {
+function mapServerIngestion(raw: any): IngestionRecord {
+  const meta = (raw?.metadata ?? {}) as Record<string, any>;
+  const rawText: string = typeof raw?.raw_text === "string" ? raw.raw_text : "";
+  const extractedIds: string[] = Array.isArray(raw?.extracted_problem_ids) ? raw.extracted_problem_ids : [];
+  const upstreamSources = Array.isArray(meta.upstream_sources)
+    ? meta.upstream_sources.filter((s: unknown): s is string => typeof s === "string")
+    : typeof meta.upstream_source === "string"
+      ? [meta.upstream_source]
+      : undefined;
+  const matchedQueries = Array.isArray(meta.matched_queries)
+    ? meta.matched_queries.filter((s: unknown): s is string => typeof s === "string")
+    : undefined;
+  const sourceCounts = typeof meta.source_counts === "object" && meta.source_counts !== null
+    ? meta.source_counts as Record<string, number>
+    : undefined;
   return {
-    problem_id: d.problem_id, title: d.title, description_normalized: d.description,
-    domain: d.domain, severity: d.severity, tags: d.tags, reporter_role: d.reported_by,
-    affected_roles: [], frequency: null, impact_summary: null, status: d.status,
+    recordId: String(raw?.record_id ?? ""),
+    source: (raw?.source ?? "csv") as IntegrationSource,
+    sourceRecordId: raw?.source_record_id ?? null,
+    rawTextPreview: rawText.length > 200 ? rawText.slice(0, 200) + "…" : rawText,
+    rawTextFull: rawText || undefined,
+    ingestedAt: String(raw?.ingested_at ?? new Date().toISOString()),
+    structured: Boolean(raw?.structured),
+    extractedProblemId: extractedIds.length > 0 ? extractedIds[0] : null,
+    upstreamSources: upstreamSources && upstreamSources.length > 0 ? upstreamSources : undefined,
+    sourceCounts: sourceCounts && Object.keys(sourceCounts).length > 0 ? sourceCounts : undefined,
+    feedbackSampleCount: typeof meta.feedback_sample_count === "number" ? meta.feedback_sample_count : undefined,
+    feedbackItems: Array.isArray(meta.feedback_items) ? meta.feedback_items : undefined,
+    summary: typeof meta.summary === "string" && meta.summary ? meta.summary : undefined,
+    synthesis: typeof meta.synthesis === "string" && meta.synthesis ? meta.synthesis : undefined,
+    agentIdea: typeof meta.agent_idea === "string" && meta.agent_idea ? meta.agent_idea : undefined,
+    matchedQueries: matchedQueries && matchedQueries.length > 0 ? matchedQueries : undefined,
+    cypherQuery: typeof meta.cypher_query === "string" ? meta.cypher_query : undefined,
+    url: typeof meta.url === "string" ? meta.url : undefined,
   };
 }
 
@@ -54,7 +83,6 @@ function applyEdits<T extends Record<string, any>>(entity: T, edits: Record<stri
 }
 
 export function usePipelineData() {
-  const [drafts, setDrafts] = useState<DraftProblem[]>([]);
   const [reviews, setReviewsState] = useState<Record<string, ReviewRecord>>({});
   const [skillFeedback, setSkillFeedbackState] = useState<Record<string, SkillFeedback>>({});
   const [hypFeedback, setHypFeedbackState] = useState<Record<string, HypothesisFeedback>>({});
@@ -67,55 +95,77 @@ export function usePipelineData() {
   const [problemSources, setProblemSources] = useState<Record<string, ProblemSource[]>>({});
   const [manualPatterns, setManualPatterns] = useState<Pattern[]>([]);
   const [manualHypotheses, setManualHypotheses] = useState<Hypothesis[]>([]);
+  const [trials, setTrials] = useState<Record<string, Trial>>({});
   const [activityEvents, setActivityEvents] = useState<ActivityEvent[]>([]);
   const [serverAvailable, setServerAvailable] = useState(false);
   const [apiData, setApiData] = useState<PipelineData | null>(null);
   const [version, setVersion] = useState(0);
 
   useEffect(() => {
-    seedMockDrafts();
-    seedMockIntegrationData();
-    seedMockHypothesisFeedback();
-    seedMockPipelineRuns();
-    setDrafts(getDrafts());
-    setReviewsState(getReviews());
-    setSkillFeedbackState(getSkillFeedback());
-    setHypFeedbackState(getHypothesisFeedback());
-    setPipelineRuns(getPipelineRuns());
-    setPipelineImports(getPipelineImports());
-    setCostEntries(getCostEntries());
-    setCostBudgetLocal(getCostBudget());
-    setIntegrationsState(getIntegrations());
-    setIngestionRecordsState(getIngestionRecords());
-    setProblemSources(getSources());
-    setManualPatterns(getManualPatterns());
-    setManualHypotheses(getManualHypotheses());
-    setActivityEvents(getActivityEvents());
+    console.log("[usePipelineData] init effect running, version:", version);
+    try {
+      seedMockIntegrationData();
+      seedMockHypothesisFeedback();
+      seedMockPipelineRuns();
+      console.log("[usePipelineData] seeds complete, reading stores...");
+      setReviewsState(getReviews());
+      setSkillFeedbackState(getSkillFeedback());
+      setHypFeedbackState(getHypothesisFeedback());
+      setPipelineRuns(getPipelineRuns());
+      setPipelineImports(getPipelineImports());
+      setCostEntries(getCostEntries());
+      setCostBudgetLocal(getCostBudget());
+      setIntegrationsState(getIntegrations());
+      setIngestionRecordsState(getIngestionRecords());
+      setProblemSources(getSources());
+      setManualPatterns(getManualPatterns());
+      setManualHypotheses(getManualHypotheses());
+      setTrials(getTrials());
+      setActivityEvents(getActivityEvents());
+      console.log("[usePipelineData] init effect complete");
+    } catch (e) {
+      console.error("[usePipelineData] init effect CRASHED:", e);
+    }
   }, [version]);
 
   // Check server availability on mount
   useEffect(() => {
-    checkServerAvailable().then(setServerAvailable);
+    console.log("[usePipelineData] checking server availability...");
+    checkServerAvailable().then((available) => {
+      console.log("[usePipelineData] server available:", available);
+      setServerAvailable(available);
+    }).catch((e) => {
+      console.error("[usePipelineData] server check failed:", e);
+      setServerAvailable(false);
+    });
   }, []);
 
   // Fetch live data from API when server is available
   useEffect(() => {
-    if (!serverAvailable) { setApiData(null); return; }
+    if (!serverAvailable) { console.log("[usePipelineData] server not available, skipping live fetch"); setApiData(null); return; }
     async function fetchLive() {
+      console.log("[usePipelineData] fetching live data from API...");
       try {
-        const [catalog, patterns, hypotheses, newHires, skillOutputs] = await Promise.all([
+        const [catalog, patterns, hypotheses, newHires, skillOutputs, ingestion] = await Promise.all([
           fetchStageData<any>("catalog"),
           fetchStageData<any>("patterns"),
           fetchStageData<any>("hypotheses"),
           fetchStageData<any>("new-hires"),
           fetchStageData<any>("skills"),
+          fetchStageData<any>("ingestion").catch(() => [] as any[]),
         ]);
+        console.log("[usePipelineData] live fetch complete:", { catalog: catalog.length, patterns: patterns.length, hypotheses: hypotheses.length, newHires: newHires.length, ingestion: (ingestion as any[]).length });
         const base = loadPipelineData();
         setApiData({
           catalog, patterns, hypotheses, newHires, skillOutputs,
           themes: base.themes, evalResults: base.evalResults,
         });
-      } catch {
+        if (Array.isArray(ingestion) && ingestion.length > 0) {
+          console.log(`[usePipelineData] mapping ${ingestion.length} server ingestion records`);
+          setIngestionRecordsState(ingestion.map(mapServerIngestion));
+        }
+      } catch (e) {
+        console.error("[usePipelineData] live fetch FAILED:", e);
         setApiData(null);
       }
     }
@@ -130,13 +180,12 @@ export function usePipelineData() {
 
   const data: PipelineData = useMemo(() => {
     const base = apiData || loadPipelineData();
-    const draftEntries = drafts.filter((d) => d.status === "draft").map(draftToCatalogEntry);
     const importedCatalog = pipelineImports.flatMap((imp) => imp.catalog);
     const importedPatterns = pipelineImports.flatMap((imp) => imp.patterns);
     const importedHypotheses = pipelineImports.flatMap((imp) => imp.hypotheses);
     const importedNewHires = pipelineImports.flatMap((imp) => imp.newHires);
 
-    const catalog = [...draftEntries, ...base.catalog, ...importedCatalog].map((e) => {
+    const catalog = [...base.catalog, ...importedCatalog].map((e) => {
       const review = reviews[e.problem_id];
       const edited = review?.edits ? applyEdits(e, review.edits) : e;
       // Attach sources
@@ -160,33 +209,9 @@ export function usePipelineData() {
     });
 
     return { ...base, catalog, patterns, hypotheses, newHires };
-  }, [drafts, reviews, pipelineImports, apiData, ingestionRecords, problemSources, manualPatterns, manualHypotheses]);
+  }, [reviews, pipelineImports, apiData, ingestionRecords, problemSources, manualPatterns, manualHypotheses]);
 
   const costSummary = useMemo(() => computeCostSummary(costEntries, costBudget), [costEntries, costBudget]);
-
-  // --- Draft actions ---
-  const addDraft = useCallback((input: Omit<DraftProblem, "problem_id" | "status" | "created_at">) => {
-    const draft: DraftProblem = { ...input, problem_id: nextDraftId(), status: "draft", created_at: new Date().toISOString() };
-    saveDraft(draft);
-    logActivity("draft", `New problem draft: ${draft.title}`);
-    bump();
-    return draft;
-  }, [bump]);
-
-  const addBulkDrafts = useCallback((inputs: Omit<DraftProblem, "problem_id" | "status" | "created_at">[]) => {
-    const newDrafts: DraftProblem[] = inputs.map((input, i) => {
-      const existing = getDrafts();
-      let max = 0;
-      for (const d of existing) { const match = d.problem_id.match(/^DRAFT-(\d+)$/); if (match) max = Math.max(max, parseInt(match[1], 10)); }
-      return { ...input, problem_id: `DRAFT-${String(max + 1 + i).padStart(3, "0")}`, status: "draft" as const, created_at: new Date().toISOString() };
-    });
-    saveDrafts(newDrafts);
-    logActivity("intake", `Bulk imported ${newDrafts.length} problems`);
-    bump();
-    return newDrafts;
-  }, [bump]);
-
-  const removeDraft = useCallback((problemId: string) => { deleteDraft(problemId); bump(); }, [bump]);
 
   // --- Review actions ---
   const setReview = useCallback((entityId: string, entityType: ReviewEntityType, status: ReviewStatus) => {
@@ -218,36 +243,8 @@ export function usePipelineData() {
     bump();
   }, [bump]);
 
-  // --- Pipeline run actions ---
-  const exportAndRun = useCallback((draftIds: string[], format: "json" | "csv") => {
-    const selectedDrafts = getDrafts().filter((d) => draftIds.includes(d.problem_id));
-    if (selectedDrafts.length === 0) return;
-    if (format === "json") exportDraftsAsJSON(selectedDrafts); else exportDraftsAsCSV(selectedDrafts);
-    updateDraftStatus(draftIds, "exported");
-    savePipelineRun({ runId: nextRunId(), draftIds, exportedAt: new Date().toISOString(), status: "exported", completedAt: null });
-    logActivity("pipeline_run", `Exported ${draftIds.length} drafts as ${format.toUpperCase()}`);
-    bump();
-  }, [bump]);
-
-  const simulateRun = useCallback((draftIds: string[]) => {
-    const selectedDrafts = getDrafts().filter((d) => draftIds.includes(d.problem_id));
-    if (selectedDrafts.length === 0) return;
-    const runId = nextRunId();
-    updateDraftStatus(draftIds, "processing");
-    savePipelineRun({ runId, draftIds, exportedAt: new Date().toISOString(), status: "processing", completedAt: null });
-    const result = simulatePipelineRun(selectedDrafts, runId);
-    savePipelineImport(result);
-    updateDraftStatus(draftIds, "completed");
-    updatePipelineRun(runId, { status: "completed", completedAt: new Date().toISOString() });
-    logActivity("pipeline_run", `Simulated pipeline for ${draftIds.length} drafts`, `Created ${result.patterns.length} patterns, ${result.hypotheses.length} hypotheses, ${result.newHires.length} agents`);
-    bump();
-  }, [bump]);
-
   const importResults = useCallback((result: PipelineImportResult) => {
     savePipelineImport(result);
-    const allDrafts = getDrafts();
-    const matchingIds = allDrafts.filter((d) => result.catalog.some((c) => c.title === d.title)).map((d) => d.problem_id);
-    if (matchingIds.length > 0) updateDraftStatus(matchingIds, "completed");
     logActivity("pipeline_run", `Imported pipeline results: ${result.catalog.length} catalog entries`);
     bump();
   }, [bump]);
@@ -255,11 +252,12 @@ export function usePipelineData() {
   const clearPipelineData = useCallback(() => { clearPipelineImports(); clearPipelineRuns(); bump(); }, [bump]);
 
   // --- API pipeline actions ---
-  const runPipelineAPI = useCallback(async (params: { stage?: string; withIntegrations?: boolean }) => {
+  const runPipelineAPI = useCallback(async (params: { stage?: string; start_stage?: string; withIntegrations?: boolean }) => {
     if (!serverAvailable) throw new Error("Server not available");
     logActivity("pipeline_run", "Pipeline run started", params.stage ? `Stage: ${params.stage}` : "All stages");
     const result = await triggerRun({
       stage: params.stage,
+      start_stage: params.start_stage,
       with_integrations: params.withIntegrations,
     });
     logActivity("pipeline_run", "Pipeline run completed", `${JSON.stringify(result.summary)}`);
@@ -272,6 +270,20 @@ export function usePipelineData() {
     const result = await triggerSync({ mock: true });
     logActivity("sync", `Sync completed: ${result.problems_extracted} problems extracted`, `${result.total_records} records from ${Object.keys(result.source_counts).join(", ")}`);
     bump();
+  }, [serverAvailable, bump]);
+
+  const runSyncAPI = useCallback(async (params: SyncParams): Promise<SyncResult> => {
+    if (!serverAvailable) throw new Error("Server not available");
+    const label = params.source ?? "all";
+    logActivity("sync", `${label} sync started`, params.mock ? "mock mode" : "live mode");
+    const result = await triggerSync(params);
+    logActivity(
+      "sync",
+      `${label} sync completed: ${result.problems_extracted} problems extracted`,
+      `${result.total_records} records from ${Object.keys(result.source_counts).join(", ")}`,
+    );
+    bump();
+    return result;
   }, [serverAvailable, bump]);
 
   // --- Cost actions ---
@@ -300,7 +312,7 @@ export function usePipelineData() {
   const createPattern = useCallback((input: Omit<Pattern, "pattern_id">) => {
     const pattern: Pattern = { ...input, pattern_id: nextManualPatternId() };
     saveManualPattern(pattern);
-    logActivity("draft", `Manual pattern created: ${pattern.name}`, `${pattern.problem_ids.length} problems linked`);
+    logActivity("review", `Manual pattern created: ${pattern.name}`, `${pattern.problem_ids.length} problems linked`);
     bump();
     return pattern;
   }, [bump]);
@@ -308,27 +320,25 @@ export function usePipelineData() {
   const createHypothesis = useCallback((input: Omit<Hypothesis, "hypothesis_id">) => {
     const hypothesis: Hypothesis = { ...input, hypothesis_id: nextManualHypothesisId() };
     saveManualHypothesis(hypothesis);
-    logActivity("draft", `Manual hypothesis created for ${hypothesis.pattern_id}`);
+    logActivity("review", `Manual hypothesis created for ${hypothesis.pattern_id}`);
     bump();
     return hypothesis;
   }, [bump]);
 
   return {
-    data, drafts, reviews, skillFeedback, hypFeedback,
+    data, reviews, skillFeedback, hypFeedback,
     pipelineRuns, pipelineImports,
     costEntries, costSummary, costBudget,
     integrations, ingestionRecords,
     activityEvents, serverAvailable,
-    // Draft actions
-    addDraft, addBulkDrafts, removeDraft,
     // Review actions
     setReview, saveEdits, resetReview,
     // Feedback actions
     rateSkill, setHypOutcome,
     // Pipeline run actions
-    exportAndRun, simulateRun, importResults, clearPipelineData,
+    importResults, clearPipelineData,
     // API pipeline actions
-    runPipelineAPI, syncSourcesAPI,
+    runPipelineAPI, syncSourcesAPI, runSyncAPI,
     // Cost actions
     addCost, removeCost, simulateCosts, clearCosts, updateBudget,
     // Integration actions
@@ -337,5 +347,8 @@ export function usePipelineData() {
     addSourceToProblem, removeSourceFromProblem,
     // Manual entry actions
     createPattern, createHypothesis,
+    // Trial actions
+    trials, getTrialForAgent: (agentId: string) => getTrialForAgent(agentId),
+    saveTrial: (trial: Trial) => { storeSaveTrial(trial); bump(); },
   };
 }

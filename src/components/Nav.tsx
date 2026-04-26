@@ -5,12 +5,16 @@ import { usePathname } from "next/navigation";
 import {
   Home, Database, BarChart3, Columns3, GitBranch,
   Users, HelpCircle, Search, Sun, Moon, ChevronLeft, ChevronRight,
+  AlertCircle, Layers, Lightbulb,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const links = [
   { href: "/", label: "Dashboard", icon: Home },
   { href: "/integrations", label: "Sources", icon: Database },
+  { href: "/problems", label: "Problems", icon: AlertCircle },
+  { href: "/patterns", label: "Patterns", icon: Layers },
+  { href: "/hypotheses", label: "Hypotheses", icon: Lightbulb },
   { href: "/pipeline", label: "Pipeline", icon: BarChart3 },
   { href: "/board", label: "Board", icon: Columns3 },
   { href: "/graph", label: "Graph", icon: GitBranch },

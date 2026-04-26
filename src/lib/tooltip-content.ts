@@ -31,13 +31,7 @@ export const tooltips = {
   hypothesisTestCriteria: "Specific criteria for testing this hypothesis. How will you know if it worked?",
 
   // --- Intake ---
-  singleProblem: "Manually describe a problem you've observed. It will be added as a draft for pipeline processing.",
-  bulkImport: "Upload a CSV or paste tabular data with multiple problems. Required columns: title, description. Optional: domain, severity, tags.",
-  aiParse: "Paste unstructured text like meeting transcripts, support tickets, or notes. AI will extract structured problems automatically.",
-  draftStatus: "Draft = not yet processed. Exported = sent to pipeline. Processing = pipeline running. Completed = results available.",
-  exportDrafts: "Download selected problems as JSON or CSV for external processing or backup.",
-  simulatePipeline: "Run a mock pipeline on selected drafts to preview how they would be processed. Creates patterns, hypotheses, and agents locally.",
-  importResults: "Upload a JSON file with pipeline results from an external run. Links results back to original drafts.",
+  importResults: "Upload a JSON file with pipeline results from an external run.",
 
   // --- Integrations ---
   integrationSource: "External data sources that feed problems into the pipeline. Connect your tools to automatically ingest issues.",
@@ -60,7 +54,7 @@ export const tooltips = {
   costSimulate: "Generate realistic cost estimates based on current pipeline data volumes and stage configurations.",
   costManual: "Manually log API costs from external sources. Useful for tracking costs from real pipeline runs.",
   costBudget: "Set a monthly spending limit and warning threshold. The progress bar changes color as you approach the limit.",
-  activityFeed: "Timeline of recent actions: pipeline runs, syncs, reviews, and drafts. Helps track what happened and when.",
+  activityFeed: "Timeline of recent actions: pipeline runs, syncs, and reviews. Helps track what happened and when.",
 
   // --- Agents page ---
   engineAgents: "Tier 1 agents that run the pipeline stages. These are fixed — you don't create or modify them.",

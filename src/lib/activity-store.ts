@@ -2,7 +2,7 @@ import type { IntegrationSource } from "./types";
 
 export interface ActivityEvent {
   id: string;
-  type: "pipeline_run" | "sync" | "review" | "draft" | "intake" | "system";
+  type: "pipeline_run" | "sync" | "review" | "intake" | "system";
   message: string;
   detail: string | null;
   timestamp: string;

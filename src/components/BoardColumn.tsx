@@ -91,8 +91,7 @@ function ReviewButtons({
   );
 }
 
-function cardBorder(reviewStatus?: ReviewStatus, isDraft?: boolean): string {
-  if (isDraft) return "border-dashed border-orange-200 dark:border-orange-500/30";
+function cardBorder(reviewStatus?: ReviewStatus): string {
   if (reviewStatus && reviewStatus !== "unreviewed") {
     return reviewStatusStyle[reviewStatus].border;
   }
@@ -143,12 +142,18 @@ interface SourceProps {
 }
 
 export function ProblemCard({
-  id, title, severity, domain, tags, description, status,
+  id, title, severity, domain, tags, description,
+  reporterRole, affectedRoles, frequency, impactSummary, agentIdea,
+  upstreamSources, feedbackItems,
   reviewStatus, onReview, onSaveEdits, onEditModal,
   sources, onAddSource, onRemoveSource,
 }: {
   id: string; title: string; severity: string; domain: string;
-  tags: string[]; description: string; status?: "draft" | "cataloged";
+  tags: string[]; description: string;
+  reporterRole?: string | null; affectedRoles?: string[]; frequency?: string | null;
+  impactSummary?: string | null; agentIdea?: string | null;
+  upstreamSources?: string[];
+  feedbackItems?: { source: string; text: string; relevant_excerpt?: string; origin_id?: string }[];
 } & ReviewProps & SourceProps) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -157,7 +162,6 @@ export function ProblemCard({
   const sevColors: Record<string, string> = {
     critical: "bg-red-500", high: "bg-orange-500", medium: "bg-yellow-500", low: "bg-green-500",
   };
-  const isDraft = status === "draft";
 
   function handleSave(e: React.MouseEvent) {
     e.stopPropagation();
@@ -179,7 +183,7 @@ export function ProblemCard({
 
   return (
     <div
-      className={`bg-card border rounded-lg p-3 cursor-pointer hover:border-ring transition-colors ${cardBorder(reviewStatus, isDraft)}`}
+      className={`bg-card border rounded-lg p-3 cursor-pointer hover:border-ring transition-colors ${cardBorder(reviewStatus)}`}
       onClick={() => !isEditing && setExpanded(!expanded)}
     >
       <div className="flex items-start gap-2">
@@ -187,9 +191,6 @@ export function ProblemCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
             <span className="text-xs text-muted-foreground">{id}</span>
-            {isDraft && (
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-orange-100 dark:bg-orange-500/15 text-orange-600 dark:text-orange-400 font-medium uppercase tracking-wide">Draft</span>
-            )}
             <ReviewBadge status={reviewStatus} />
           </div>
 
@@ -214,17 +215,68 @@ export function ProblemCard({
           ) : (
             <>
               <div className="text-xs font-medium text-foreground leading-snug">{title}</div>
+              {!expanded && frequency && (
+                <span className="text-[9px] text-muted-foreground">{frequency}</span>
+              )}
               {expanded && (
-                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>
+                <>
+                  <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>
+                  <div className="mt-2 space-y-1.5 text-[10px]">
+                    {impactSummary && (
+                      <p className="text-muted-foreground"><span className="text-foreground font-medium">Impact:</span> {impactSummary}</p>
+                    )}
+                    <div className="flex flex-wrap gap-2">
+                      {reporterRole && <span className="text-muted-foreground">Reported by: <span className="text-foreground">{reporterRole}</span></span>}
+                      {frequency && <span className="text-muted-foreground">Frequency: <span className="text-foreground">{frequency}</span></span>}
+                    </div>
+                    {affectedRoles && affectedRoles.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        <span className="text-muted-foreground">Affects:</span>
+                        {affectedRoles.map((r) => (
+                          <span key={r} className="px-1.5 py-0.5 rounded bg-accent text-accent-foreground text-[9px]">{r}</span>
+                        ))}
+                      </div>
+                    )}
+                    {agentIdea && (
+                      <div className="bg-blue-500/5 border border-blue-500/20 rounded px-2 py-1.5 mt-1">
+                        <span className="text-[9px] text-blue-600 dark:text-blue-400 uppercase tracking-wide">Agent opportunity</span>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">{agentIdea}</p>
+                      </div>
+                    )}
+                    {feedbackItems && feedbackItems.length > 0 && (
+                      <div className="mt-2">
+                        <span className="text-[9px] text-muted-foreground uppercase tracking-wide">Source references ({feedbackItems.length})</span>
+                        <div className="mt-1 space-y-1.5 max-h-[250px] overflow-y-auto">
+                          {feedbackItems.map((item, i) => (
+                            <div key={i} className="text-[10px] border-l-2 border-blue-500/20 pl-2 py-1">
+                              {item.source && (
+                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mr-1">{item.source}</span>
+                              )}
+                              {item.origin_id && (
+                                <span className="text-[8px] font-mono text-muted-foreground/50 mr-1">{item.origin_id.slice(0, 12)}...</span>
+                              )}
+                              <p className="text-muted-foreground leading-relaxed mt-0.5">
+                                {item.relevant_excerpt || item.text.slice(0, 200)}{!item.relevant_excerpt && item.text.length > 200 ? "..." : ""}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
               {!expanded && sources && sources.length > 0 && (
                 <SourceBadges sources={sources} />
               )}
+              {!expanded && (!sources || sources.length === 0) && upstreamSources && upstreamSources.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {upstreamSources.map((s) => (
+                    <span key={s} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">{s}</span>
+                  ))}
+                </div>
+              )}
             </>
-          )}
-
-          {expanded && !isEditing && onAddSource && onRemoveSource && (
-            <SourceEditor sources={sources || []} onAdd={onAddSource} onRemove={onRemoveSource} />
           )}
 
           {expanded && !isEditing && (
@@ -239,13 +291,16 @@ export function ProblemCard({
 // --- PatternCard ---
 
 export function PatternCard({
-  id, name, description, problemCount, confidence, domains,
-  problemTitles,
+  id, name, description, problemCount, confidence, domains, frequency,
+  rootCause, problemTitles, upstreamSources, agentIdeas,
   reviewStatus, onReview, onSaveEdits, onEditModal,
 }: {
   id: string; name: string; description: string;
-  problemCount: number; confidence: number; domains: string[];
+  problemCount: number; confidence: number; domains: string[]; frequency?: number;
+  rootCause?: string | null;
   problemTitles?: string[];
+  upstreamSources?: string[];
+  agentIdeas?: string[];
 } & ReviewProps) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -285,6 +340,13 @@ export function PatternCard({
       ) : (
         <>
           <div className="text-xs font-medium text-foreground leading-snug">{name}</div>
+          <div className="flex items-center gap-2 mt-0.5 text-[9px] text-muted-foreground">
+            <span>{confidence != null ? `${Math.round(confidence * 100)}% confidence` : ""}</span>
+            {frequency != null && <span>{frequency} occurrences</span>}
+          </div>
+          {rootCause && (
+            <p className="text-[10px] text-muted-foreground italic mt-1 leading-relaxed">Root cause: {rootCause}</p>
+          )}
           {problemTitles && problemTitles.length > 0 && (
             <div className="mt-1.5 space-y-0.5">
               {problemTitles.slice(0, 3).map((title, i) => (
@@ -299,7 +361,23 @@ export function PatternCard({
             </div>
           )}
           {expanded && (
-            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>
+            <>
+              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>
+              {upstreamSources && upstreamSources.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  <span className="text-[9px] text-muted-foreground">Evidence from:</span>
+                  {upstreamSources.map((s) => (
+                    <span key={s} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">{s}</span>
+                  ))}
+                </div>
+              )}
+              {agentIdeas && agentIdeas.length > 0 && (
+                <div className="mt-2 bg-blue-500/5 border border-blue-500/20 rounded px-2 py-1.5">
+                  <span className="text-[9px] text-blue-600 dark:text-blue-400 uppercase tracking-wide">Agent opportunity</span>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{agentIdeas[0]}</p>
+                </div>
+              )}
+            </>
           )}
         </>
       )}
@@ -317,12 +395,14 @@ const OUTCOMES: HypothesisOutcome[] = ["untested", "testing", "validated", "inva
 
 export function HypothesisCard({
   id, statement, effort, confidence, testCriteria,
+  assumptions, expectedOutcome, risks,
   patternName, problemTitles,
   reviewStatus, onReview, onSaveEdits, onEditModal,
   outcome, onSetOutcome,
 }: {
   id: string; statement: string; effort: string;
   confidence: number; testCriteria: string[];
+  assumptions?: string[]; expectedOutcome?: string; risks?: string[];
   patternName?: string;
   problemTitles?: string[];
   outcome?: HypothesisOutcome;
@@ -407,13 +487,44 @@ export function HypothesisCard({
             </div>
           )}
           {expanded && (
-            <div className="mt-2 space-y-1">
-              {testCriteria.map((tc, i) => (
-                <div key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
-                  <span className="text-green-600 dark:text-green-400 mt-0.5">&#10003;</span>
-                  {tc}
+            <div className="mt-2 space-y-2">
+              {expectedOutcome && (
+                <div className="text-[10px] bg-green-500/5 border border-green-500/20 rounded px-2 py-1.5">
+                  <span className="text-green-600 dark:text-green-400 font-medium">Expected: </span>
+                  <span className="text-muted-foreground">{expectedOutcome}</span>
                 </div>
-              ))}
+              )}
+              <div className="space-y-1">
+                <span className="text-[9px] text-muted-foreground uppercase tracking-wide">Test criteria</span>
+                {testCriteria.map((tc, i) => (
+                  <div key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                    <span className="text-green-600 dark:text-green-400 mt-0.5">&#10003;</span>
+                    {tc}
+                  </div>
+                ))}
+              </div>
+              {assumptions && assumptions.length > 0 && (
+                <div className="space-y-1">
+                  <span className="text-[9px] text-amber-600 dark:text-yellow-400 uppercase tracking-wide">Assumptions</span>
+                  {assumptions.map((a, i) => (
+                    <div key={i} className="text-[10px] text-muted-foreground flex items-start gap-1.5">
+                      <span className="text-amber-500 mt-0.5">!</span>
+                      {a}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {risks && risks.length > 0 && (
+                <div className="space-y-1">
+                  <span className="text-[9px] text-red-600 dark:text-red-400 uppercase tracking-wide">Risks</span>
+                  {risks.map((r, i) => (
+                    <div key={i} className="text-[10px] text-muted-foreground flex items-start gap-1.5">
+                      <span className="text-red-500 mt-0.5">&#9888;</span>
+                      {r}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           <div className="flex items-center gap-2 mt-2">

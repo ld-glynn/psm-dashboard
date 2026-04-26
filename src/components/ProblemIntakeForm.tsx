@@ -1,158 +1,87 @@
 "use client";
 
 import { useState } from "react";
-import type { DraftProblem } from "@/lib/types";
 
-const DOMAINS = [
-  "process",
-  "tooling",
-  "communication",
-  "knowledge",
-  "infrastructure",
-  "people",
-  "strategy",
-  "customer",
-  "other",
-];
-
-const SEVERITIES: DraftProblem["severity"][] = ["critical", "high", "medium", "low"];
+interface ProblemInput {
+  title: string;
+  description: string;
+  severity: "low" | "medium" | "high" | "critical";
+  domain: string;
+  tags: string;
+  reported_by: string;
+}
 
 interface ProblemIntakeFormProps {
-  onSubmit: (input: Omit<DraftProblem, "problem_id" | "status" | "created_at">) => void;
+  onSubmit: (input: ProblemInput) => void;
 }
+
+const SEVERITIES = ["critical", "high", "medium", "low"] as const;
+const DOMAINS = ["process", "tooling", "communication", "knowledge", "infrastructure", "people", "strategy", "customer", "other"];
 
 export function ProblemIntakeForm({ onSubmit }: ProblemIntakeFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [reportedBy, setReportedBy] = useState("");
+  const [severity, setSeverity] = useState<ProblemInput["severity"]>("medium");
   const [domain, setDomain] = useState("other");
-  const [severity, setSeverity] = useState<DraftProblem["severity"]>("medium");
-  const [tagsInput, setTagsInput] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [tags, setTags] = useState("");
+  const [reportedBy, setReportedBy] = useState("");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!title.trim() || !description.trim()) return;
-
-    const tags = tagsInput
-      .split(",")
-      .map((t) => t.trim().toLowerCase().replace(/\s+/g, "_"))
-      .filter(Boolean);
-
     onSubmit({
       title: title.trim(),
       description: description.trim(),
-      reported_by: reportedBy.trim() || "Unknown",
-      domain,
       severity,
-      tags,
+      domain,
+      tags: tags.trim(),
+      reported_by: reportedBy.trim() || "Manual entry",
     });
-
     setTitle("");
     setDescription("");
-    setReportedBy("");
-    setDomain("other");
     setSeverity("medium");
-    setTagsInput("");
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 2000);
+    setDomain("other");
+    setTags("");
+    setReportedBy("");
   }
 
-  const inputClass =
-    "w-full bg-muted border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring transition-colors";
-  const labelClass = "block text-xs font-medium text-muted-foreground mb-1.5";
+  const inputClass = "w-full bg-muted border border-border rounded px-3 py-2 text-xs text-foreground focus:outline-none focus:border-ring";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-3 p-4">
       <div>
-        <label className={labelClass}>Title *</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="What's the problem?"
-          className={inputClass}
-          required
-        />
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wide">Title</label>
+        <input className={inputClass} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Short problem title" required />
       </div>
-
       <div>
-        <label className={labelClass}>Description *</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Describe the problem in detail — what's happening, who's affected, what impact does it have?"
-          className={`${inputClass} min-h-[100px] resize-y`}
-          required
-        />
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wide">Description</label>
+        <textarea className={`${inputClass} min-h-[80px] resize-y`} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe the problem, who's affected, and the impact" required />
       </div>
-
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className={labelClass}>Reported By</label>
-          <input
-            type="text"
-            value={reportedBy}
-            onChange={(e) => setReportedBy(e.target.value)}
-            placeholder="Name"
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <label className={labelClass}>Domain</label>
-          <select
-            value={domain}
-            onChange={(e) => setDomain(e.target.value)}
-            className={inputClass}
-          >
-            {DOMAINS.map((d) => (
-              <option key={d} value={d}>
-                {d.charAt(0).toUpperCase() + d.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className={labelClass}>Severity</label>
-          <select
-            value={severity}
-            onChange={(e) => setSeverity(e.target.value as DraftProblem["severity"])}
-            className={inputClass}
-          >
-            {SEVERITIES.map((s) => (
-              <option key={s} value={s}>
-                {s.charAt(0).toUpperCase() + s.slice(1)}
-              </option>
-            ))}
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wide">Severity</label>
+          <select className={inputClass} value={severity} onChange={(e) => setSeverity(e.target.value as ProblemInput["severity"])}>
+            {SEVERITIES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
         <div>
-          <label className={labelClass}>Tags (comma-separated)</label>
-          <input
-            type="text"
-            value={tagsInput}
-            onChange={(e) => setTagsInput(e.target.value)}
-            placeholder="onboarding, ramp-up"
-            className={inputClass}
-          />
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wide">Domain</label>
+          <select className={inputClass} value={domain} onChange={(e) => setDomain(e.target.value)}>
+            {DOMAINS.map((d) => <option key={d} value={d}>{d}</option>)}
+          </select>
         </div>
       </div>
-
-      <div className="flex items-center gap-3 pt-2">
-        <button
-          type="submit"
-          disabled={!title.trim() || !description.trim()}
-          className="px-4 py-2 text-xs font-medium rounded-md bg-blue-600 text-foreground hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-        >
-          Add Problem
-        </button>
-        {success && (
-          <span className="text-xs text-green-600 dark:text-green-400">Added!</span>
-        )}
+      <div>
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wide">Tags (comma-separated)</label>
+        <input className={inputClass} value={tags} onChange={(e) => setTags(e.target.value)} placeholder="experimentation, metrics, adoption" />
       </div>
+      <div>
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wide">Reported by</label>
+        <input className={inputClass} value={reportedBy} onChange={(e) => setReportedBy(e.target.value)} placeholder="Name or role" />
+      </div>
+      <button type="submit" className="w-full py-2 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500 transition-colors">
+        Add Problem
+      </button>
     </form>
   );
 }
