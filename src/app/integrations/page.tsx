@@ -21,6 +21,35 @@ function sourceUrl(source: string, originId: string): string | null {
   return null;
 }
 
+type LinkableItem = {
+  source: string;
+  url: string;
+  summary: string;
+  originId: string;
+};
+
+function getLinkableItems(record: IngestionRecord): LinkableItem[] {
+  const items = record.feedbackItems || [];
+  const out: LinkableItem[] = [];
+  for (const item of items) {
+    if (!item.origin_id) continue;
+    const url = sourceUrl(item.source, item.origin_id);
+    if (!url) continue;
+    const summary = (item.relevant_excerpt || item.text || "").trim().replace(/\s+/g, " ");
+    out.push({ source: item.source, url, summary, originId: item.origin_id });
+  }
+  return out;
+}
+
+function recordSkipReason(record: IngestionRecord): string {
+  const items = record.feedbackItems || [];
+  if (items.length === 0) return "No underlying feedback items";
+  const withId = items.filter((i) => i.origin_id);
+  if (withId.length === 0) return `${items.length} item${items.length !== 1 ? "s" : ""} but none have an origin_id`;
+  const sources = Array.from(new Set(withId.map((i) => i.source)));
+  return `No URL mapping for source${sources.length !== 1 ? "s" : ""}: ${sources.join(", ")}`;
+}
+
 const sourceIcons: Record<string, any> = {
   salesforce: Database,
   gong: Phone,
@@ -37,6 +66,9 @@ export default function IntegrationsPage() {
   const totalUnstructured = ingestionRecords.length - totalStructured;
   const [recordsPage, setRecordsPage] = useState(1);
   const RECORDS_PAGE_SIZE = 10;
+
+  const displayedRecords = ingestionRecords.filter((r) => getLinkableItems(r).length > 0);
+  const erroredRecords = ingestionRecords.filter((r) => getLinkableItems(r).length === 0);
 
   return (
     <div className="space-y-8">
@@ -56,81 +88,87 @@ export default function IntegrationsPage() {
 
       {/* Discovered problems */}
       <div>
-        {ingestionRecords.length > 0 ? (
+        {displayedRecords.length > 0 ? (
           <>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-semibold text-foreground">
-                Discovered Records ({ingestionRecords.length})
+                Discovered Records ({displayedRecords.length})
               </h2>
               <div className="text-xs text-muted-foreground">
                 {(() => {
-                  const allSources = new Set(ingestionRecords.flatMap((r) => r.upstreamSources || []));
-                  const totalMentions = ingestionRecords.reduce((sum, r) => sum + (r.feedbackSampleCount || 0), 0);
+                  const allSources = new Set(displayedRecords.flatMap((r) => r.upstreamSources || []));
+                  const totalMentions = displayedRecords.reduce((sum, r) => sum + (r.feedbackSampleCount || 0), 0);
                   return `${totalMentions} mentions across ${allSources.size} source${allSources.size !== 1 ? "s" : ""}`;
                 })()}
               </div>
             </div>
             <div className="space-y-2">
               {paginate(
-                [...ingestionRecords].sort((a, b) => (b.feedbackSampleCount || 0) - (a.feedbackSampleCount || 0)),
+                [...displayedRecords].sort((a, b) => (b.feedbackSampleCount || 0) - (a.feedbackSampleCount || 0)),
                 recordsPage,
                 RECORDS_PAGE_SIZE,
               ).map((record) => (
                 <IngestionRecordCard key={record.recordId} record={record} />
               ))}
             </div>
-            <Pagination total={ingestionRecords.length} pageSize={RECORDS_PAGE_SIZE} page={recordsPage} onPageChange={setRecordsPage} />
+            <Pagination total={displayedRecords.length} pageSize={RECORDS_PAGE_SIZE} page={recordsPage} onPageChange={setRecordsPage} />
           </>
-        ) : (
+        ) : ingestionRecords.length === 0 ? (
           <div className="text-xs text-muted-foreground text-center py-8 border border-border rounded-lg bg-card">
             No problems discovered yet. Click &quot;Find Problems&quot; above to scan your data sources.
           </div>
-        )}
+        ) : null}
       </div>
+
+      {/* Skipped records (no source link available) */}
+      {erroredRecords.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <h2 className="text-sm font-semibold text-red-600 dark:text-red-400">
+              Skipped Records ({erroredRecords.length})
+            </h2>
+            <span className="text-xs text-muted-foreground">— no source link available, not shown above</span>
+          </div>
+          <div className="border border-red-500/30 bg-red-500/5 rounded-lg overflow-hidden">
+            <ul className="divide-y divide-red-500/20">
+              {erroredRecords.map((r) => {
+                const firstLine = (r.rawTextPreview || "").split("\n")[0] || r.rawTextPreview || "(no title)";
+                const title = firstLine.replace(/^Title:\s*/i, "").trim();
+                return (
+                  <li key={r.recordId} className="px-4 py-2">
+                    <div className="text-xs font-medium text-foreground truncate">{title}</div>
+                    <div className="text-[11px] text-red-600 dark:text-red-400 mt-0.5">{recordSkipReason(r)}</div>
+                    <div className="text-[10px] text-muted-foreground mt-0.5 font-mono">{r.recordId}</div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 function IngestionRecordCard({ record }: { record: IngestionRecord }) {
   const [expanded, setExpanded] = useState(false);
-  const [expandedSources, setExpandedSources] = useState<Set<string>>(new Set());
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   // Parse title from raw text
   const firstLine = record.rawTextPreview.split("\n")[0] || record.rawTextPreview;
   const title = firstLine.replace(/^Title:\s*/i, "").trim();
 
-  const feedbackItems = record.feedbackItems || [];
+  const linkableItems = getLinkableItems(record);
   const mentionCount = record.feedbackSampleCount || 0;
   const sourceCount = record.upstreamSources?.length || 0;
 
-  // Group feedback by source
-  type FeedbackItem = NonNullable<IngestionRecord["feedbackItems"]>[number];
-  const feedbackBySource: Record<string, FeedbackItem[]> = {};
-  for (const item of feedbackItems) {
+  // Group linkable items by source
+  const linksBySource: Record<string, LinkableItem[]> = {};
+  for (const item of linkableItems) {
     const key = item.source || "Unknown";
-    if (!feedbackBySource[key]) feedbackBySource[key] = [];
-    feedbackBySource[key].push(item);
+    if (!linksBySource[key]) linksBySource[key] = [];
+    linksBySource[key].push(item);
   }
-  const sortedSources = Object.entries(feedbackBySource).sort((a, b) => b[1].length - a[1].length);
-
-  function toggleSource(source: string) {
-    setExpandedSources((prev) => {
-      const next = new Set(prev);
-      if (next.has(source)) next.delete(source);
-      else next.add(source);
-      return next;
-    });
-  }
-
-  function toggleItem(key: string) {
-    setExpandedItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  }
+  const sortedSources = Object.entries(linksBySource).sort((a, b) => b[1].length - a[1].length);
 
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
@@ -188,95 +226,44 @@ function IngestionRecordCard({ record }: { record: IngestionRecord }) {
             </div>
           )}
 
-          {/* Feedback grouped by source */}
-          {sortedSources.length > 0 && (
-            <div>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-2">
-                Feedback references ({feedbackItems.length})
-              </p>
-              <div className="space-y-1">
-                {sortedSources.map(([source, items]) => {
-                  const isOpen = expandedSources.has(source);
-                  return (
-                    <div key={source} className="border border-border/50 rounded">
-                      <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); toggleSource(source); }}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-accent/20 transition-colors"
-                      >
-                        {isOpen ? <ChevronDown size={12} className="text-muted-foreground shrink-0" /> : <ChevronRight size={12} className="text-muted-foreground shrink-0" />}
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                          {source}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground">
-                          {items.length} mention{items.length !== 1 ? "s" : ""}
-                        </span>
-                      </button>
-                      {isOpen && (
-                        <div className="px-3 pb-2 space-y-2 max-h-[500px] overflow-y-auto">
-                          {items.map((item, i) => {
-                            const itemKey = `${source}-${i}`;
-                            const showFull = expandedItems.has(itemKey);
-                            const hasExcerpt = !!item.relevant_excerpt;
-                            return (
-                              <div key={i} className="text-[11px] border-l-2 border-blue-500/20 pl-3 py-1.5">
-                                {/* Relevant excerpt (primary) */}
-                                {hasExcerpt ? (
-                                  <p className="text-foreground leading-relaxed">{item.relevant_excerpt}</p>
-                                ) : (
-                                  <p className="text-muted-foreground leading-relaxed">{item.text.slice(0, 200)}{item.text.length > 200 ? "..." : ""}</p>
-                                )}
-                                {/* Source reference + full context toggle */}
-                                <div className="flex items-center gap-2 mt-1">
-                                  {item.origin_id && (() => {
-                                    const url = sourceUrl(source, item.origin_id || "");
-                                    return url ? (
-                                      <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[9px] text-blue-600 dark:text-blue-400 hover:underline">
-                                        <ExternalLink size={9} /> View in {source}
-                                      </a>
-                                    ) : (
-                                      <span className="text-[9px] font-mono text-muted-foreground" title={`Source record: ${item.origin_id}`}>
-                                        ref: {item.origin_id.slice(0, 12)}...
-                                      </span>
-                                    );
-                                  })()}
-                                  {hasExcerpt && (
-                                    <button
-                                      type="button"
-                                      onClick={(e) => { e.stopPropagation(); toggleItem(itemKey); }}
-                                      className="text-[9px] text-blue-600 dark:text-blue-400 hover:underline"
-                                    >
-                                      {showFull ? "hide full context" : "show full context"}
-                                    </button>
-                                  )}
-                                </div>
-                                {/* Full context (toggled) */}
-                                {showFull && (
-                                  <div className="mt-1.5 text-[10px] text-muted-foreground bg-accent/30 rounded px-2 py-1.5 leading-relaxed">
-                                    {item.text}
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+          {/* Linkable sources */}
+          <div>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-2">
+              Sources ({linkableItems.length})
+            </p>
+            <div className="space-y-3">
+              {sortedSources.map(([source, items]) => (
+                <div key={source}>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                      {source}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {items.length} link{items.length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  <ul className="space-y-1">
+                    {items.map((item, i) => {
+                      const summary = item.summary.length > 140 ? item.summary.slice(0, 140) + "..." : item.summary;
+                      return (
+                        <li key={i} className="text-[11px] flex items-start gap-2 border-l-2 border-blue-500/20 pl-3 py-1">
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline shrink-0"
+                          >
+                            <ExternalLink size={10} /> Open
+                          </a>
+                          <span className="text-foreground leading-relaxed">{summary || "(no summary)"}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))}
             </div>
-          )}
-
-          {/* Fallback for records without structured feedback */}
-          {sortedSources.length === 0 && record.rawTextFull && (
-            <div>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1.5">Raw data</p>
-              <pre className="text-[11px] text-muted-foreground whitespace-pre-wrap leading-relaxed bg-accent/30 rounded px-3 py-2 max-h-[300px] overflow-y-auto">
-                {record.rawTextFull}
-              </pre>
-            </div>
-          )}
+          </div>
 
           {/* Metadata */}
           <div className="flex items-center gap-4 text-[10px] text-muted-foreground pt-1 border-t border-border/50">
