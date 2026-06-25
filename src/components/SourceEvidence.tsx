@@ -78,7 +78,7 @@ export function SourceEvidence({ sourceRecordIds, entityTitle, ingestionRecords,
   // If we have matched records but no feedbackItems, create items from the raw text
   if (allItems.length === 0 && matchedRecords.length > 0) {
     for (const rec of matchedRecords) {
-      const source = rec.upstreamSources?.[0] || rec.source || "wisdom";
+      const source = rec.upstreamSources?.[0] || rec.source || "glean";
       const text = rec.rawTextFull || rec.rawTextPreview || "";
       // Clean up raw text — remove "Title: " prefix lines
       const cleanText = text.split("\n").filter((l) => !l.startsWith("Title: ") && !l.startsWith("Entity type:")).join("\n").trim();

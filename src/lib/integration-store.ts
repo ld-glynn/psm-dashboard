@@ -68,7 +68,7 @@ export function seedMockIntegrationData(): void {
     { source: "salesforce", enabled: true, status: "mock", lastSyncAt: new Date(Date.now() - 2 * 3600000).toISOString(), recordCount: 5, errorMessage: null, syncFrequency: "hourly", connectionUrl: null, filters: defaultFilters },
     { source: "gong", enabled: true, status: "mock", lastSyncAt: new Date(Date.now() - 4 * 3600000).toISOString(), recordCount: 5, errorMessage: null, syncFrequency: "daily", connectionUrl: null, filters: defaultFilters },
     { source: "slack", enabled: true, status: "mock", lastSyncAt: new Date(Date.now() - 1 * 3600000).toISOString(), recordCount: 6, errorMessage: null, syncFrequency: "15min", connectionUrl: null, filters: defaultFilters },
-    { source: "wisdom", enabled: true, status: "mock", lastSyncAt: new Date(Date.now() - 3 * 3600000).toISOString(), recordCount: 3, errorMessage: null, syncFrequency: "daily", connectionUrl: null, filters: defaultFilters },
+    { source: "glean", enabled: true, status: "mock", lastSyncAt: new Date(Date.now() - 3 * 3600000).toISOString(), recordCount: 3, errorMessage: null, syncFrequency: "daily", connectionUrl: null, filters: defaultFilters },
   ];
   saveIntegrations(configs);
   console.log(`[integration-store] seedMock: seeded ${configs.length} integration configs (no ingestion records)`);

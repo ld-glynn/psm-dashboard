@@ -1,6 +1,6 @@
 "use client";
 
-import { Database, Phone, MessageSquare, Network, ArrowRight, Cpu } from "lucide-react";
+import { Database, Phone, MessageSquare, Search, ArrowRight, Cpu } from "lucide-react";
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { tooltips } from "@/lib/tooltip-content";
 import { sourceColors } from "@/lib/colors";
@@ -10,7 +10,7 @@ const sourceIcons: Record<string, any> = {
   salesforce: Database,
   gong: Phone,
   slack: MessageSquare,
-  wisdom: Network,
+  glean: Search,
 };
 
 export function IntegrationFlow({
