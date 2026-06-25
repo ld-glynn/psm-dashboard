@@ -71,7 +71,7 @@ export const sourceColors: Record<string, { bg: string; border: string; text: st
   salesforce: { bg: "bg-blue-50 dark:bg-blue-500/10", border: "border-blue-200 dark:border-blue-500/30", text: "text-blue-600 dark:text-blue-400", dot: "bg-blue-500 dark:bg-blue-400" },
   gong: { bg: "bg-violet-50 dark:bg-violet-500/10", border: "border-violet-200 dark:border-violet-500/30", text: "text-violet-600 dark:text-violet-400", dot: "bg-violet-500 dark:bg-violet-400" },
   slack: { bg: "bg-emerald-50 dark:bg-emerald-500/10", border: "border-emerald-200 dark:border-emerald-500/30", text: "text-emerald-600 dark:text-emerald-400", dot: "bg-emerald-500 dark:bg-emerald-400" },
-  wisdom: { bg: "bg-cyan-50 dark:bg-cyan-500/10", border: "border-cyan-200 dark:border-cyan-500/30", text: "text-cyan-700 dark:text-cyan-400", dot: "bg-cyan-500 dark:bg-cyan-400" },
+  glean: { bg: "bg-indigo-50 dark:bg-indigo-500/10", border: "border-indigo-200 dark:border-indigo-500/30", text: "text-indigo-700 dark:text-indigo-400", dot: "bg-indigo-500 dark:bg-indigo-400" },
   csv: { bg: "bg-gray-50 dark:bg-gray-500/10", border: "border-gray-200 dark:border-gray-500/30", text: "text-gray-600 dark:text-gray-400", dot: "bg-gray-500 dark:bg-gray-400" },
   manual: { bg: "bg-orange-50 dark:bg-orange-500/10", border: "border-orange-200 dark:border-orange-500/30", text: "text-orange-600 dark:text-orange-400", dot: "bg-orange-500 dark:bg-orange-400" },
   ai_intake: { bg: "bg-pink-50 dark:bg-pink-500/10", border: "border-pink-200 dark:border-pink-500/30", text: "text-pink-600 dark:text-pink-400", dot: "bg-pink-500 dark:bg-pink-400" },

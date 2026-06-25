@@ -75,27 +75,17 @@ export interface SyncParams {
   mock?: boolean;
   model?: string;
   /**
-   * Natural-language query for Enterpret Wisdom when source is `wisdom`.
+   * Natural-language search query for Glean when source is `glean`.
    * Pass a single string, or a list to run a multi-query sweep (results
-   * merged and deduped by entity id on the server).
+   * merged and deduped by document id on the server).
    */
-  wisdom_query?: string | string[];
-  wisdom_limit?: number;
+  glean_query?: string | string[];
+  glean_limit?: number;
   /**
-   * Cypher query for Enterpret Wisdom. When set, it replaces the
-   * search_knowledge_graph flow and calls execute_cypher_query instead.
+   * Restrict Glean search to a single connected app (e.g. "zendesk", "gong",
+   * "slack", "jira", "confluence"). Omit to search across everything indexed.
    */
-  wisdom_cypher?: string;
-  /** Record-first mode: time window in days */
-  wisdom_days?: number;
-  /** Record-first mode: max records to fetch */
-  wisdom_record_limit?: number;
-  /** Scan mode: "scout" (default), "deep" (record-first), "quick" (theme-first) */
-  scan_mode?: string;
-  /** Scout: max findings to emit */
-  scout_max_findings?: number;
-  /** Scout: max tool calls budget */
-  scout_max_tool_calls?: number;
+  glean_datasource?: string;
 }
 
 export interface SyncProblemSource {

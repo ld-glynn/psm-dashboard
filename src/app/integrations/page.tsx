@@ -7,7 +7,7 @@ import { InfoTooltip } from "@/components/InfoTooltip";
 import { Pagination, paginate } from "@/components/Pagination";
 import { tooltips } from "@/lib/tooltip-content";
 import { useState } from "react";
-import { Database, Phone, MessageSquare, Network, Loader2, ChevronRight, ChevronDown, ExternalLink } from "lucide-react";
+import { Database, Phone, MessageSquare, Search, Loader2, ChevronRight, ChevronDown, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { SyncResult } from "@/lib/api-client";
@@ -15,6 +15,7 @@ import type { IngestionRecord } from "@/lib/types";
 
 function sourceUrl(source: string, originId: string): string | null {
   if (!originId) return null;
+  // Legacy fallback for sources that carry only an origin id (no canonical URL).
   if (source === "ZendeskSupport") return `https://launchdarkly.zendesk.com/agent/tickets/${originId}`;
   if (source === "Gong") return `https://app.gong.io/call?id=${originId}`;
   if (source === "G2") return `https://www.g2.com/survey_responses/${originId}`;
@@ -32,11 +33,12 @@ function getLinkableItems(record: IngestionRecord): LinkableItem[] {
   const items = record.feedbackItems || [];
   const out: LinkableItem[] = [];
   for (const item of items) {
-    if (!item.origin_id) continue;
-    const url = sourceUrl(item.source, item.origin_id);
+    // Prefer the canonical URL Glean returns; fall back to the legacy
+    // origin-id → URL mapping for any source that only carries an id.
+    const url = item.url || (item.origin_id ? sourceUrl(item.source, item.origin_id) : null);
     if (!url) continue;
     const summary = (item.relevant_excerpt || item.text || "").trim().replace(/\s+/g, " ");
-    out.push({ source: item.source, url, summary, originId: item.origin_id });
+    out.push({ source: item.source, url, summary, originId: item.origin_id || "" });
   }
   return out;
 }
@@ -54,7 +56,7 @@ const sourceIcons: Record<string, any> = {
   salesforce: Database,
   gong: Phone,
   slack: MessageSquare,
-  wisdom: Network,
+  glean: Search,
 };
 
 export default function IntegrationsPage() {
@@ -83,8 +85,8 @@ export default function IntegrationsPage() {
         </p>
       </div>
 
-      {/* Wisdom sync panel */}
-      <WisdomSyncPanel runSyncAPI={runSyncAPI} />
+      {/* Glean sync panel */}
+      <GleanSyncPanel runSyncAPI={runSyncAPI} />
 
       {/* Discovered problems */}
       <div>
@@ -276,36 +278,25 @@ function IngestionRecordCard({ record }: { record: IngestionRecord }) {
   );
 }
 
-type AdvancedMode = "search" | "cypher";
+const GLEAN_DATASOURCES = ["zendesk", "gong", "slack", "jira", "confluence"];
 
-function WisdomSyncPanel({
+function GleanSyncPanel({
   runSyncAPI,
 }: {
   runSyncAPI: (params: {
     source?: string;
     mock?: boolean;
-    wisdom_query?: string | string[];
-    wisdom_limit?: number;
-    wisdom_cypher?: string;
-    wisdom_days?: number;
-    wisdom_record_limit?: number;
-    scan_mode?: string;
-    scout_max_findings?: number;
-    scout_max_tool_calls?: number;
+    glean_query?: string | string[];
+    glean_limit?: number;
+    glean_datasource?: string;
   }) => Promise<SyncResult>;
 }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [advancedMode, setAdvancedMode] = useState<AdvancedMode>("search");
-  const [scanMode, setScanMode] = useState<"deep" | "quick">("deep");
-  const [days, setDays] = useState(14);
-  const [recordLimit, setRecordLimit] = useState(500);
-  const [queries, setQueries] = useState(
-    "onboarding friction\npricing and packaging pain\nsupport escalations",
-  );
-  const [cypher, setCypher] = useState(
-    "MATCH (t:Theme) WHERE t.category_enum = 'COMPLAINT' AND t.type = 'DEFAULT' RETURN t.record_id AS id, t.name AS title, t.display_name AS name, t.description AS description, t.category_enum AS category LIMIT 25",
-  );
+  const [datasource, setDatasource] = useState(""); // "" = all sources
   const [limit, setLimit] = useState(15);
+  const [queries, setQueries] = useState(
+    "experiment metrics not registering\nsample ratio mismatch\nexperiment setup confusion",
+  );
   const [mock, setMock] = useState(false);
   const [busy, setBusy] = useState(false);
   const [progressStep, setProgressStep] = useState<string | null>(null);
@@ -323,10 +314,9 @@ function WisdomSyncPanel({
     setResult(null);
 
     const steps = [
-      "Scout orienting — learning the knowledge graph schema...",
-      "Scout exploring — querying for recurring themes...",
-      "Scout drilling — finding specific feedback insights...",
-      "Scout recording — capturing findings with evidence...",
+      "Searching Glean across connected apps...",
+      "Filtering for experimentation problems...",
+      "Distilling documents into problems...",
       "Saving results...",
     ];
     let stepIdx = 0;
@@ -337,13 +327,20 @@ function WisdomSyncPanel({
     }, 8000);
 
     try {
-      const r = await runSyncAPI({
-        source: "wisdom",
-        mock,
-        scan_mode: "scout",
-        scout_max_findings: recordLimit,
-        scout_max_tool_calls: Math.max(recordLimit, 25),
-      });
+      const params: {
+        source: string;
+        mock: boolean;
+        glean_query?: string | string[];
+        glean_limit?: number;
+        glean_datasource?: string;
+      } = { source: "glean", mock };
+      if (!mock) {
+        if (parsedQueries.length === 1) params.glean_query = parsedQueries[0];
+        else if (parsedQueries.length > 1) params.glean_query = parsedQueries;
+        params.glean_limit = limit;
+      }
+      if (datasource) params.glean_datasource = datasource;
+      const r = await runSyncAPI(params);
       setResult(r);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -354,82 +351,48 @@ function WisdomSyncPanel({
     }
   }
 
-  async function onRunAdvanced() {
-    setBusy(true);
-    setError(null);
-    setResult(null);
-    try {
-      const params: {
-        source: string;
-        mock: boolean;
-        wisdom_query?: string | string[];
-        wisdom_limit?: number;
-        wisdom_cypher?: string;
-      } = { source: "wisdom", mock };
-      if (advancedMode === "search" && !mock) {
-        if (parsedQueries.length === 1) params.wisdom_query = parsedQueries[0];
-        else if (parsedQueries.length > 1) params.wisdom_query = parsedQueries;
-        params.wisdom_limit = limit;
-      } else if (advancedMode === "cypher" && !mock) {
-        params.wisdom_cypher = cypher.trim();
-      }
-      const r = await runSyncAPI(params);
-      setResult(r);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  const canRunAdvanced =
-    !busy &&
-    (advancedMode === "search"
-      ? mock || parsedQueries.length > 0
-      : mock || cypher.trim().length > 0);
-
   return (
     <div className="border border-border rounded-lg bg-card">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2">
-          <Network size={14} className="text-muted-foreground" />
-          <h2 className="text-sm font-semibold text-foreground">Wisdom</h2>
+          <Search size={14} className="text-muted-foreground" />
+          <h2 className="text-sm font-semibold text-foreground">Glean</h2>
           <span className="text-[10px] text-muted-foreground">
-            Search your data sources for problems via Enterpret
+            Search your company knowledge for problems via Glean
           </span>
         </div>
       </div>
 
       <div className="p-4 space-y-4">
-        {/* Scout-powered problem discovery */}
+        {/* Glean-powered problem discovery */}
         <div className="space-y-3">
           <div>
-            <p className="text-xs text-foreground font-medium">Find problems across your data sources</p>
+            <p className="text-xs text-foreground font-medium">Find problems across your connected apps</p>
             <p className="text-[11px] text-muted-foreground mt-0.5">
-              The Scout agent explores Enterpret&apos;s knowledge graph, identifies significant problem themes with cross-source
-              recurrence, then drills into specific feedback records from Gong, Zendesk, and Slack. Each finding links
-              directly back to its source.
+              Searches Glean across Zendesk, Gong, Slack, Jira, and Confluence for experimentation-related
+              problems, then distills each matching document into a structured problem linked back to its source.
+              Recurrence and clustering are reconstructed downstream by the Pattern Analyzer.
             </p>
           </div>
 
           <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-center gap-1.5">
-              <label className="text-[10px] text-muted-foreground">Max findings:</label>
+              <label className="text-[10px] text-muted-foreground">Datasource:</label>
               <select
-                value={recordLimit}
-                onChange={(e) => setRecordLimit(Number(e.target.value))}
+                value={datasource}
+                onChange={(e) => setDatasource(e.target.value)}
                 disabled={busy}
                 className="bg-muted border border-border rounded px-2 py-1 text-xs text-foreground"
               >
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={30}>30</option>
-                <option value={50}>50</option>
+                <option value="">All sources</option>
+                {GLEAN_DATASOURCES.map((ds) => (
+                  <option key={ds} value={ds}>{ds}</option>
+                ))}
               </select>
             </div>
             <Button size="sm" disabled={busy} onClick={onFindProblems}>
               {busy && <Loader2 className="animate-spin" size={12} />}
-              {busy ? "Scout exploring..." : "Find Problems"}
+              {busy ? "Searching..." : "Find Problems"}
             </Button>
           </div>
 
@@ -452,7 +415,7 @@ function WisdomSyncPanel({
           </button>
         </div>
 
-        {/* Advanced: custom queries & cypher */}
+        {/* Advanced: custom search queries */}
         {showAdvanced && (
           <div className="border-t border-border pt-3 space-y-3">
             <label className="flex items-center gap-2 text-[11px] text-muted-foreground">
@@ -462,71 +425,29 @@ function WisdomSyncPanel({
                 onChange={(e) => setMock(e.target.checked)}
                 className="accent-primary"
               />
-              Mock mode (use sample data — no API token needed)
+              Mock mode (use sample data — no Glean token needed)
             </label>
 
-            <div className="flex items-center gap-1">
-              <Button
-                size="sm"
-                variant={advancedMode === "search" ? "default" : "outline"}
-                onClick={() => setAdvancedMode("search")}
-              >
-                Search
-              </Button>
-              <Button
-                size="sm"
-                variant={advancedMode === "cypher" ? "default" : "outline"}
-                onClick={() => setAdvancedMode("cypher")}
-              >
-                Cypher
-              </Button>
-            </div>
-
-            {advancedMode === "search" ? (
-              <>
-                <label className="block text-[11px] text-muted-foreground">
-                  Queries (one per line — multiple lines run a sweep, deduped by entity)
-                </label>
-                <textarea
-                  value={queries}
-                  onChange={(e) => setQueries(e.target.value)}
-                  rows={4}
-                  disabled={mock}
-                  className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-xs font-mono shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
-                  placeholder="onboarding friction&#10;pricing churn signals"
-                />
-                <div className="flex items-center gap-3">
-                  <label className="text-[11px] text-muted-foreground">Limit per query</label>
-                  <Input
-                    type="number"
-                    value={limit}
-                    onChange={(e) => setLimit(Math.max(1, Math.min(100, Number(e.target.value) || 15)))}
-                    disabled={mock}
-                    className="w-24"
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <label className="block text-[11px] text-muted-foreground">
-                  Cypher query (replaces search_knowledge_graph — uses execute_cypher_query)
-                </label>
-                <textarea
-                  value={cypher}
-                  onChange={(e) => setCypher(e.target.value)}
-                  rows={5}
-                  disabled={mock}
-                  className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-xs font-mono shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
-                  placeholder="MATCH (e:Entity) WHERE e.mention_count > 5 RETURN e LIMIT 25"
-                />
-              </>
-            )}
-
-            <div className="flex justify-end">
-              <Button size="sm" disabled={!canRunAdvanced} onClick={onRunAdvanced}>
-                {busy && <Loader2 className="animate-spin" size={12} />}
-                {busy ? "Running…" : "Run custom query"}
-              </Button>
+            <label className="block text-[11px] text-muted-foreground">
+              Search queries (one per line — multiple lines run a sweep, deduped by document)
+            </label>
+            <textarea
+              value={queries}
+              onChange={(e) => setQueries(e.target.value)}
+              rows={4}
+              disabled={mock}
+              className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-xs font-mono shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
+              placeholder="experiment metrics not registering&#10;sample ratio mismatch"
+            />
+            <div className="flex items-center gap-3">
+              <label className="text-[11px] text-muted-foreground">Results per query</label>
+              <Input
+                type="number"
+                value={limit}
+                onChange={(e) => setLimit(Math.max(1, Math.min(100, Number(e.target.value) || 15)))}
+                disabled={mock}
+                className="w-24"
+              />
             </div>
           </div>
         )}
@@ -541,18 +462,11 @@ function WisdomSyncPanel({
         {result && (
           <div className="text-[11px] border border-green-500/30 bg-green-500/5 rounded px-3 py-2">
             <span className="text-green-600 dark:text-green-400 font-medium">
-              Scout found {result.problems_extracted} problem{result.problems_extracted !== 1 ? "s" : ""}
+              Found {result.problems_extracted} problem{result.problems_extracted !== 1 ? "s" : ""}
             </span>
             <span className="text-muted-foreground">
               {" "}from {result.total_records} record{result.total_records !== 1 ? "s" : ""} — run the pipeline to catalog and find patterns
             </span>
-            {(result as any).scout_trace && (
-              <p className="text-muted-foreground mt-1">
-                Scout used {(result as any).scout_trace.tool_calls_used} tool calls,
-                emitted {(result as any).scout_trace.findings_emitted} findings.
-                {(result as any).scout_trace.finish_reason && ` Reason: ${(result as any).scout_trace.finish_reason}`}
-              </p>
-            )}
           </div>
         )}
       </div>

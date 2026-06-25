@@ -19,7 +19,7 @@ export interface CatalogEntry {
   frequency: string | null;
   impact_summary: string | null;
   sources?: ProblemSource[];
-  // Provenance from Wisdom pipeline
+  // Provenance from integration sources (Glean, Gong, etc.)
   upstream_sources?: string[];
   source_record_ids?: string[];
   agent_idea?: string | null;
@@ -334,7 +334,7 @@ export interface SkillTypeTrend {
 
 // --- Integrations ---
 
-export type IntegrationSource = "salesforce" | "gong" | "slack" | "wisdom" | "csv" | "manual";
+export type IntegrationSource = "salesforce" | "gong" | "slack" | "glean" | "csv" | "manual";
 export type IntegrationStatus = "connected" | "disconnected" | "error" | "mock";
 
 export interface IntegrationFilter {
@@ -366,17 +366,16 @@ export interface IngestionRecord {
   extractedProblemId: string | null;
   /**
    * Optional provenance fields surfaced from the server's IngestionRecord.metadata.
-   * Present on live Wisdom records; absent on localStorage mock rows.
+   * Present on live Glean records; absent on localStorage mock rows.
    */
   upstreamSources?: string[];
   sourceCounts?: Record<string, number>;
   feedbackSampleCount?: number;
-  feedbackItems?: { source: string; text: string; origin_id?: string; relevant_excerpt?: string }[];
+  feedbackItems?: { source: string; text: string; origin_id?: string; relevant_excerpt?: string; url?: string }[];
   summary?: string;
   synthesis?: string;
   agentIdea?: string;
   matchedQueries?: string[];
-  cypherQuery?: string;
   url?: string;
 }
 

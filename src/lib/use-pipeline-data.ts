@@ -72,7 +72,6 @@ function mapServerIngestion(raw: any): IngestionRecord {
     synthesis: typeof meta.synthesis === "string" && meta.synthesis ? meta.synthesis : undefined,
     agentIdea: typeof meta.agent_idea === "string" && meta.agent_idea ? meta.agent_idea : undefined,
     matchedQueries: matchedQueries && matchedQueries.length > 0 ? matchedQueries : undefined,
-    cypherQuery: typeof meta.cypher_query === "string" ? meta.cypher_query : undefined,
     url: typeof meta.url === "string" ? meta.url : undefined,
   };
 }

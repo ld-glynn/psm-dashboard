@@ -51,13 +51,13 @@ const SECTIONS: GuideSection[] = [
     subtitle: "The Tier 1 AI agents that run each stage of PSM",
     steps: [
       {
-        title: "Scout (Wisdom Adapter)",
-        description: "Queries the Enterpret Wisdom knowledge graph to discover experimentation-related themes from Gong calls, Zendesk tickets, Slack messages, G2 reviews, and Jira tickets. Filters by experimentation keywords, enriches each theme with customer feedback samples and upstream source attribution, then generates a one-line summary, a synthesis of why it matters, and a specific agent opportunity idea for each theme.",
-        tip: "The Scout uses two Claude Haiku calls for summarization and excerpt extraction, keeping costs low while processing hundreds of themes.",
+        title: "Glean Search",
+        description: "Searches Glean across LaunchDarkly's connected apps — Zendesk tickets, Gong calls, Slack messages, Jira tickets, and Confluence docs — to discover experimentation-related problems. Filters results by experimentation keywords and problem signals, then keeps each matching document with its source URL and datasource for provenance. Recurrence and clustering are reconstructed downstream by the Pattern Analyzer rather than pre-aggregated.",
+        tip: "Glean returns individual documents (not pre-aggregated themes), so each problem links directly back to its source document.",
       },
       {
         title: "Structurer",
-        description: "Converts raw Wisdom themes into structured RawProblem objects. Extracts title, description, domain, and tags. Preserves provenance metadata: which sources contributed (Gong, Zendesk), how many mentions, what agent opportunity was identified. Falls back to a heuristic extractor if the LLM call fails, building descriptions from the synthesis and agent idea fields.",
+        description: "Converts raw Glean documents into structured RawProblem objects. Extracts title, description, domain, and tags. Preserves provenance metadata: which document/datasource it came from and its source URL. Falls back to a heuristic extractor if the LLM call fails, building the description from the document's text.",
         tip: "Problems are batched 8 at a time to stay within token limits.",
       },
       {
@@ -77,7 +77,7 @@ const SECTIONS: GuideSection[] = [
       },
       {
         title: "Hypothesis Generator",
-        description: "Proposes testable 'If/Then/Because' solutions for each surviving pattern. Frames hypotheses as operational agent workflows, NOT product features — e.g., 'If we build an agent that monitors Gong calls for expansion signals, then we'll identify 30% more opportunities.' Includes assumptions, expected outcomes, test criteria, effort estimates, and risks. Uses agent ideas from the Scout as strong guidance.",
+        description: "Proposes testable 'If/Then/Because' solutions for each surviving pattern. Frames hypotheses as operational agent workflows, NOT product features — e.g., 'If we build an agent that monitors Gong calls for expansion signals, then we'll identify 30% more opportunities.' Includes assumptions, expected outcomes, test criteria, effort estimates, and risks.",
       },
       {
         title: "Hiring Manager",
@@ -116,7 +116,7 @@ const SECTIONS: GuideSection[] = [
     steps: [
       {
         title: "Integration sources",
-        description: "Problems are ingested from connected integrations (Salesforce, Gong, Slack, Wisdom). Go to the Sources page to see connected integrations, toggle them on/off, and trigger syncs.",
+        description: "Problems are ingested from connected integrations (Salesforce, Gong, Slack, Glean). Go to the Sources page to see connected integrations, toggle them on/off, and trigger syncs.",
       },
       {
         title: "Manual patterns and hypotheses",
