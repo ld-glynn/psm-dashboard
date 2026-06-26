@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   Home, Database, BarChart3, Columns3, GitBranch,
   Users, HelpCircle, Search, Sun, Moon, ChevronLeft, ChevronRight,
-  AlertCircle, Layers, Lightbulb,
+  AlertCircle, Layers, Lightbulb, Presentation,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -22,6 +22,7 @@ const links = [
 ];
 
 const bottomLinks = [
+  { href: "/story", label: "Present", icon: Presentation },
   { href: "/guide", label: "Guide", icon: HelpCircle },
 ];
 
