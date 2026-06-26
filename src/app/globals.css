@@ -71,6 +71,67 @@
   }
 }
 
+/* --- Aura (scoped pipeline redesign) ----------------------------------- */
+/* Ported fonts + tactical palette, applied only within `.aura` so the rest of
+   the app is untouched. OKLCH L/C/H params live in CSS vars and follow the
+   app's light/dark (next-themes toggles `.dark` on <html>). Light is the
+   default to match the app's default mode; `.dark .aura` swaps to the dark set. */
+.aura {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* Aura LIGHT (reference :root.light) */
+  --aura-bg: 0.985 0.003 280;
+  --aura-fg: 0.20 0.02 280;
+  --aura-panel: 1 0 0;
+  --aura-panel-elevated: 0.97 0.005 280;
+  --aura-accent: 0.54 0.22 275;
+  --aura-accent-foreground: 0.99 0 0;
+  --aura-accent-glow: 0.46 0.22 275;
+  --aura-success: 0.62 0.18 145;
+  --aura-success-foreground: 0.99 0 0;
+  --aura-warning: 0.70 0.18 70;
+  --aura-danger: 0.58 0.22 25;
+  --aura-secondary: 0.95 0.008 280;
+  --aura-secondary-foreground: 0.22 0.02 280;
+  --aura-muted: 0.95 0.008 280;
+  --aura-muted-foreground: 0.48 0.02 280;
+  --aura-border: 0.90 0.008 280;
+  --aura-border-strong: 0.82 0.012 280;
+  --aura-shadow-panel: 0 18px 40px -22px rgb(15 15 40 / 0.18);
+}
+.dark .aura {
+  /* Aura DARK (reference :root) */
+  --aura-bg: 0.13 0.01 280;
+  --aura-fg: 0.92 0.01 280;
+  --aura-panel: 0.17 0.012 280;
+  --aura-panel-elevated: 0.20 0.014 280;
+  --aura-accent: 0.62 0.21 275;
+  --aura-accent-foreground: 0.98 0 0;
+  --aura-accent-glow: 0.74 0.16 275;
+  --aura-success: 0.88 0.20 125;
+  --aura-success-foreground: 0.18 0.04 130;
+  --aura-warning: 0.80 0.18 75;
+  --aura-danger: 0.65 0.22 25;
+  --aura-secondary: 0.24 0.014 280;
+  --aura-secondary-foreground: 0.92 0.01 280;
+  --aura-muted: 0.24 0.014 280;
+  --aura-muted-foreground: 0.62 0.02 280;
+  --aura-border: 0.25 0.012 280;
+  --aura-border-strong: 0.32 0.014 280;
+  --aura-shadow-panel: 0 20px 50px -20px rgb(0 0 0 / 0.6);
+}
+.aura .font-mono {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+}
+.aura-grid {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in oklab, oklch(var(--aura-border-strong)) 70%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 24px 24px;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

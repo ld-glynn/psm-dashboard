@@ -1,9 +1,8 @@
 "use client";
 
 import { usePipelineData } from "@/lib/use-pipeline-data";
-import { PipelineFlow } from "@/components/PipelineFlow";
+import { PipelineFlowAura } from "@/components/PipelineFlowAura";
 import { CostPanel } from "@/components/CostPanel";
-import { RunPipeline } from "@/components/RunPipeline";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, XCircle, Clock, AlertTriangle, ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
@@ -34,18 +33,23 @@ export default function PipelinePage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-sm font-bold text-foreground">Pipeline</h1>
-        <p className="text-xs text-muted-foreground mt-1">Run, configure, and monitor the processing pipeline.</p>
+      {/* Aura-themed flow centerpiece (scoped) */}
+      <div className="aura aura-grid bg-aura-bg text-aura-fg rounded-xl border border-aura-border p-6">
+        <div className="mb-6 flex items-baseline gap-3">
+          <h1 className="font-display text-xl font-bold tracking-tight text-aura-fg">Pipeline</h1>
+          <span className="text-aura-muted-foreground">/</span>
+          <span className="font-mono text-[11px] uppercase tracking-widest text-aura-muted-foreground">
+            Run · Configure · Monitor
+          </span>
+        </div>
+        <PipelineFlowAura
+          data={data}
+          ingestionCount={ingestionCount}
+          serverAvailable={serverAvailable}
+          onRun={() => runPipelineAPI({})}
+          onSync={() => syncSourcesAPI()}
+        />
       </div>
-
-      <RunPipeline
-        serverAvailable={serverAvailable}
-        onRunPipeline={runPipelineAPI}
-        onSyncSources={syncSourcesAPI}
-      />
-
-      <PipelineFlow data={data} ingestionCount={ingestionCount} costSummary={costSummary} />
 
 
       {/* Run Log */}
