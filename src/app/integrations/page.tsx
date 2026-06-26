@@ -297,7 +297,9 @@ function GleanSyncPanel({
   const [queries, setQueries] = useState(
     "experiment metrics not registering\nsample ratio mismatch\nexperiment setup confusion",
   );
-  const [mock, setMock] = useState(false);
+  // Default to mock (sample data): live search needs GLEAN_INSTANCE/GLEAN_API_TOKEN
+  // on the backend, which most setups won't have wired in. Uncheck to go live.
+  const [mock, setMock] = useState(true);
   const [busy, setBusy] = useState(false);
   const [progressStep, setProgressStep] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -390,6 +392,16 @@ function GleanSyncPanel({
                 ))}
               </select>
             </div>
+            <label className="flex items-center gap-1.5 text-[11px] text-muted-foreground" title="Mock mode uses bundled sample data. Live search requires GLEAN_INSTANCE/GLEAN_API_TOKEN on the backend.">
+              <input
+                type="checkbox"
+                checked={mock}
+                onChange={(e) => setMock(e.target.checked)}
+                disabled={busy}
+                className="accent-primary"
+              />
+              Mock mode
+            </label>
             <Button size="sm" disabled={busy} onClick={onFindProblems}>
               {busy && <Loader2 className="animate-spin" size={12} />}
               {busy ? "Searching..." : "Find Problems"}
@@ -418,16 +430,6 @@ function GleanSyncPanel({
         {/* Advanced: custom search queries */}
         {showAdvanced && (
           <div className="border-t border-border pt-3 space-y-3">
-            <label className="flex items-center gap-2 text-[11px] text-muted-foreground">
-              <input
-                type="checkbox"
-                checked={mock}
-                onChange={(e) => setMock(e.target.checked)}
-                className="accent-primary"
-              />
-              Mock mode (use sample data — no Glean token needed)
-            </label>
-
             <label className="block text-[11px] text-muted-foreground">
               Search queries (one per line — multiple lines run a sweep, deduped by document)
             </label>
@@ -460,14 +462,24 @@ function GleanSyncPanel({
         )}
 
         {result && (
-          <div className="text-[11px] border border-green-500/30 bg-green-500/5 rounded px-3 py-2">
-            <span className="text-green-600 dark:text-green-400 font-medium">
-              Found {result.problems_extracted} problem{result.problems_extracted !== 1 ? "s" : ""}
-            </span>
-            <span className="text-muted-foreground">
-              {" "}from {result.total_records} record{result.total_records !== 1 ? "s" : ""} — run the pipeline to catalog and find patterns
-            </span>
-          </div>
+          result.problems_extracted > 0 ? (
+            <div className="text-[11px] border border-green-500/30 bg-green-500/5 rounded px-3 py-2">
+              <span className="text-green-600 dark:text-green-400 font-medium">
+                Found {result.problems_extracted} problem{result.problems_extracted !== 1 ? "s" : ""}
+              </span>
+              <span className="text-muted-foreground">
+                {" "}from {result.total_records} record{result.total_records !== 1 ? "s" : ""} — run the pipeline to catalog and find patterns
+              </span>
+            </div>
+          ) : result.total_records > 0 ? (
+            <div className="text-[11px] border border-amber-500/30 bg-amber-500/5 rounded px-3 py-2 text-amber-700 dark:text-amber-400">
+              {result.total_records} matching record{result.total_records !== 1 ? "s" : ""} found, but all were already ingested — see Discovered Records below, or run the pipeline to catalog them.
+            </div>
+          ) : (
+            <div className="text-[11px] border border-border bg-muted/30 rounded px-3 py-2 text-muted-foreground">
+              No matching records found{mock ? " in the sample data" : " in Glean for this query/datasource"}.
+            </div>
+          )
         )}
       </div>
     </div>
